@@ -1,0 +1,15 @@
+{
+  "chain": { "name": "Robinhood Chain", "chainId": 4663, "explorer": "https://robinhoodchain.blockscout.com" },
+  "ArchitectOTC": {
+    "address": "0x9656513aC910a9839B51dB7c92a6914ABB4F52e8",
+    "deployed": "2026-09-19",
+    "deployTx": "0x4300673b9443966ce8025304d9f34403e403b0643173f4237ab8c6a328d2e5ce",
+    "deployBlock": 67069460,
+    "verification": "Sourcify exact match + Blockscout full match",
+    "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0x9656513aC910a9839B51dB7c92a6914ABB4F52e8/",
+    "blockscout": "https://robinhoodchain.blockscout.com/address/0x9656513aC910a9839B51dB7c92a6914ABB4F52e8?tab=contract",
+    "constructor": { "weth": "0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73", "nlyra": "0xb9d3824149ad8ac984153ceec91d5a2405d1fb95", "burner": "0x371bB2107f6E021EF2a5a980a9204F5a73151926", "router": "0xcaf681a66d020601342297493863e78c959e5cb2", "usdg": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168", "flusher": "0x96D0B8008d1E38d45A1B9cFCCCC932629059246c", "feeBps": 50 },
+    "compiler": "solc 0.8.24, optimizer 200 runs, evmVersion cancun, viaIR false",
+    "page": "https://nlyra.xyz/otc"
+  }
+}

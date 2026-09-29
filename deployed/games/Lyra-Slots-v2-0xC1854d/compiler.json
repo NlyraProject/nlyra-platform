@@ -1,0 +1,25 @@
+{
+  "compiler": "v0.8.26+commit.8a97fa7a",
+  "language": "solidity",
+  "contractName": "LyraSlotsV2",
+  "mainFile": "LyraSlotsV2.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    }
+  },
+  "license": "mit",
+  "constructorArgs": "0x000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb950000000000000000000000003bcc63463838c5ecbc21816b06f9419f01d0d3e70000000000000000000000009b3f07126f9c23df4d89a2ab3473a3de6294008a0000000000000000000000000000000000000000000000056bc75e2d6310000000000000000000000000000000000000000000000000003635c9adc5dea0000000000000000000000000000000000000000000000000943b1377290cbd800000"
+}

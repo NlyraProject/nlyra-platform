@@ -1,0 +1,562 @@
+[
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "anchor_",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "pusher",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "constructor"
+ },
+ {
+  "inputs": [],
+  "name": "AnchorDown",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadAnswer",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadParam",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NoData",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotOwner",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotPusher",
+  "type": "error"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   },
+   {
+    "internalType": "int256",
+    "name": "anchorAnswer",
+    "type": "int256"
+   },
+   {
+    "internalType": "int256",
+    "name": "deviationBps",
+    "type": "int256"
+   },
+   {
+    "internalType": "uint16",
+    "name": "maxBps",
+    "type": "uint16"
+   }
+  ],
+  "name": "OffAnchor",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "TooSoon",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "ZeroAddress",
+  "type": "error"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "anchor",
+    "type": "address"
+   }
+  ],
+  "name": "AnchorSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "uint16",
+    "name": "bps",
+    "type": "uint16"
+   }
+  ],
+  "name": "MaxDeviationSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "uint32",
+    "name": "s",
+    "type": "uint32"
+   }
+  ],
+  "name": "MinPushIntervalSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferStarted",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferred",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "uint80",
+    "name": "roundId",
+    "type": "uint80"
+   },
+   {
+    "indexed": false,
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   },
+   {
+    "indexed": false,
+    "internalType": "int256",
+    "name": "anchorAnswer",
+    "type": "int256"
+   },
+   {
+    "indexed": false,
+    "internalType": "int256",
+    "name": "deviationBps",
+    "type": "int256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "updatedAt",
+    "type": "uint256"
+   }
+  ],
+  "name": "Pushed",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "pusher",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "PusherSet",
+  "type": "event"
+ },
+ {
+  "inputs": [],
+  "name": "acceptOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "anchor",
+  "outputs": [
+   {
+    "internalType": "contract AggregatorV3Interface",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "anchorData",
+  "outputs": [
+   {
+    "internalType": "uint80",
+    "name": "roundId",
+    "type": "uint80"
+   },
+   {
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "updatedAt",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "age",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "decimals",
+  "outputs": [
+   {
+    "internalType": "uint8",
+    "name": "",
+    "type": "uint8"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "description",
+  "outputs": [
+   {
+    "internalType": "string",
+    "name": "",
+    "type": "string"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint80",
+    "name": "_roundId",
+    "type": "uint80"
+   }
+  ],
+  "name": "getRoundData",
+  "outputs": [
+   {
+    "internalType": "uint80",
+    "name": "roundId",
+    "type": "uint80"
+   },
+   {
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "startedAt",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "updatedAt",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint80",
+    "name": "answeredInRound",
+    "type": "uint80"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isPusher",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "latestRound",
+  "outputs": [
+   {
+    "internalType": "uint80",
+    "name": "",
+    "type": "uint80"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "latestRoundData",
+  "outputs": [
+   {
+    "internalType": "uint80",
+    "name": "roundId",
+    "type": "uint80"
+   },
+   {
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "startedAt",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "updatedAt",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint80",
+    "name": "answeredInRound",
+    "type": "uint80"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "maxDeviationBps",
+  "outputs": [
+   {
+    "internalType": "uint16",
+    "name": "",
+    "type": "uint16"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "minPushInterval",
+  "outputs": [
+   {
+    "internalType": "uint32",
+    "name": "",
+    "type": "uint32"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "owner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "pendingOwner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "int256",
+    "name": "answer",
+    "type": "int256"
+   }
+  ],
+  "name": "push",
+  "outputs": [
+   {
+    "internalType": "uint80",
+    "name": "roundId",
+    "type": "uint80"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "a",
+    "type": "address"
+   }
+  ],
+  "name": "setAnchor",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "string",
+    "name": "d",
+    "type": "string"
+   }
+  ],
+  "name": "setDescription",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint16",
+    "name": "bps",
+    "type": "uint16"
+   }
+  ],
+  "name": "setMaxDeviationBps",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint32",
+    "name": "s",
+    "type": "uint32"
+   }
+  ],
+  "name": "setMinPushInterval",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "p",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "setPusher",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "n",
+    "type": "address"
+   }
+  ],
+  "name": "transferOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "version",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ }
+]

@@ -1,0 +1,28 @@
+{
+  "compiler": "v0.6.6+commit.6c089d02",
+  "language": "solidity",
+  "contractName": "UniswapV2Router02",
+  "mainFile": "UniswapV2Router02.sol",
+  "settings": {
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "ipfs"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 999999
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    }
+  },
+  "license": "none",
+  "constructorArgs": "0x000000000000000000000000fa6253ee74f7956b022998f7bfa271990c8a82a80000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad73"
+}

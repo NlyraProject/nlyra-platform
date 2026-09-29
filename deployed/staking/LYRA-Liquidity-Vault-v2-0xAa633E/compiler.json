@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "LyraLiquidityVaultV2",
+  "mainFile": "LyraVaultV2.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "mit",
+  "constructorArgs": "0x0000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad73000000000000000000000000371bb2107f6e021ef2a5a980a9204f5a73151926000000000000000000000000a6cd59b326f8bc5cf68ecd2377eee13afbbb165700000000000000000000000073991a25c818bf1f1128deaab1492d45638de0d30000000000000000000000004b71be063e72b0be36f690535c9c0ce533a9fb5c0000000000000000000000001f7d7550b1b028f7571e69a784071f0205fd2efa0000000000000000000000003fdabf7ab5d871b89f1d9da04dc2e0733db70caf0000000000000000000000000000000000000000000000004563918244f40000"
+}

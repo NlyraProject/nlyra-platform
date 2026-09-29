@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lyra Shield — private $NLYRA transfers</title>
+<meta name="description" content="Deposit $NLYRA, withdraw to a fresh wallet. Nobody can link the two — not even us. Zero-knowledge privacy with an honest association set, on Robinhood Chain.">
+<!--OG-->
+<meta property="og:title" content="Lyra Shield — the world gave up its privacy. You don't have to.">
+<meta property="og:description" content="Private $NLYRA transfers with zero-knowledge proofs. Audited circuits, no custody, no backdoor. Your proof is generated in YOUR browser.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://nlyra.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<!--/OG-->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b18'/%3E%3Cpath d='M32 12 L48 20 v12 c0 12-8 18-16 21-8-3-16-9-16-21V20z' fill='none' stroke='%234cc9f0' stroke-width='3'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/snarkjs@0.7.4/build/snarkjs.min.js"></script>
+<script type="module">
+  // poseidon-lite: misma función hash que el circuito. Poseidon tiene una
+  // variante por cantidad de entradas: 2 para el árbol/precommitment,
+  // 3 para el commitment = poseidon(value, label, precommitment).
+  import { poseidon2, poseidon3 } from 'https://cdn.jsdelivr.net/npm/poseidon-lite/+esm';
+  // LeanIMT REAL: el árbol promueve nodos sin hermano sin hashearlos y el
+  // índice de la prueba no es la posición en el array. Hacerlo a mano da
+  // pruebas que el circuito rechaza — usamos la misma librería que el SDK.
+  import { LeanIMT } from 'https://cdn.jsdelivr.net/npm/@zk-kit/lean-imt/+esm';
+  window.__poseidon2 = poseidon2;
+  window.__poseidon3 = poseidon3;
+  window.__LeanIMT = LeanIMT;
+  window.dispatchEvent(new Event('poseidon-ready'));
+</script>
+<style>
+  :root {
+    --bg:#070b18; --card:rgba(15,21,40,.72); --solid:#0f1528; --line:rgba(140,160,200,.14);
+    --line2:rgba(140,160,200,.24); --ink:#e9eef8; --ink2:#9aa7bd; --ink3:#5d6a82;
+    --cyan:#4cc9f0; --safe:#34d399; --gold:#fbbf24; --red:#f87171;
+    --grad:linear-gradient(100deg,#4cc9f0,#6a8dd8);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:Inter,system-ui,sans-serif;line-height:1.55}
+  h1,h2,h3{font-family:'Space Grotesk',Inter,sans-serif}
+  a{color:var(--cyan);text-decoration:none}
+  button{font-family:inherit;cursor:pointer;transition:transform .15s,box-shadow .2s,border-color .2s,background .2s}
+  button:active{transform:translateY(1px)}
+  .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+  .aurora::before{content:'';position:absolute;width:60vmax;height:60vmax;border-radius:50%;filter:blur(100px);opacity:.13;background:var(--cyan);top:-25vmax;left:-15vmax}
+  .shell{position:relative;z-index:1}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px clamp(16px,4vw,40px);flex-wrap:wrap;gap:10px}
+  .brand .ms{font-family:'Space Grotesk';font-weight:700;font-size:19px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .brand .by{font-size:10.5px;color:var(--ink3);font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .nav-r{display:flex;gap:14px;align-items:center;font-size:13.5px;font-weight:600;flex-wrap:wrap}
+  .nav-r a{color:var(--ink2)} .nav-r a:hover{color:var(--cyan)}
+  .wbtn{padding:9px 18px;border-radius:12px;border:1px solid var(--line2);background:var(--solid);color:var(--ink);font-weight:700;font-size:13px}
+  .wbtn.on{border-color:rgba(52,211,153,.5);color:var(--safe)}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px}
+  header{text-align:center;padding:26px 0 6px}
+  h1{font-size:clamp(28px,5vw,46px);letter-spacing:-.02em;margin-bottom:10px}
+  h1 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--ink2);font-size:clamp(14px,2vw,16.5px);max-width:620px;margin:0 auto}
+  .sub b{color:var(--ink)}
+  .stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 8px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 20px;text-align:center;min-width:120px}
+  .stat .n{font-size:20px;font-weight:700;font-family:'Space Grotesk'}
+  .stat span{font-size:10px;color:var(--ink3);font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+  .tabs{display:flex;justify-content:center;margin:22px 0 16px}
+  .tabs .t{padding:11px 30px;background:none;border:1px solid var(--line2);color:var(--ink2);font-size:14px;font-weight:700}
+  .tabs .t:first-child{border-radius:12px 0 0 12px;border-right:0}
+  .tabs .t:last-child{border-radius:0 12px 12px 0}
+  .tabs .t.on{background:rgba(76,201,240,.1);color:var(--cyan);border-color:rgba(76,201,240,.5)}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;margin-bottom:18px}
+  .f{margin-bottom:14px}
+  .f label{display:block;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px}
+  .f input,.f textarea{width:100%;background:rgba(7,11,24,.7);border:1px solid var(--line2);border-radius:12px;color:var(--ink);font-family:inherit;font-size:14.5px;padding:12px 14px;outline:none}
+  .f input:focus,.f textarea:focus{border-color:rgba(76,201,240,.5);box-shadow:0 0 0 3px rgba(76,201,240,.12)}
+  .f textarea{min-height:90px;resize:vertical;font-family:ui-monospace,monospace;font-size:12px}
+  .denoms{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:6px}
+  .den{border:1px solid var(--line2);border-radius:14px;padding:14px;text-align:center;background:rgba(7,11,24,.4)}
+  .den.on{border-color:var(--cyan);background:rgba(76,201,240,.08)}
+  .den b{display:block;font-family:'Space Grotesk';font-size:17px}
+  .den span{font-size:10.5px;color:var(--ink3)}
+  .act{width:100%;padding:14px;border:0;border-radius:13px;font-family:'Space Grotesk';font-weight:700;font-size:15.5px;background:var(--grad);color:#06101f}
+  .act:disabled{opacity:.45;cursor:not-allowed}
+  .act:not(:disabled):hover{transform:translateY(-1.5px);box-shadow:0 12px 30px rgba(76,201,240,.28)}
+  .warn{border:1px solid rgba(251,191,36,.45);background:rgba(251,191,36,.07);border-radius:14px;padding:14px;font-size:13px;color:var(--ink2);margin:14px 0}
+  .warn b{color:var(--gold)}
+  .danger{border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.07)}
+  .danger b{color:var(--red)}
+  .note-box{background:rgba(7,11,24,.85);border:1px solid rgba(251,191,36,.5);border-radius:14px;padding:14px;margin:12px 0}
+  .note-box code{display:block;font-family:ui-monospace,monospace;font-size:11px;color:var(--gold);word-break:break-all;line-height:1.7}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .row button{flex:1;padding:11px;border-radius:11px;border:1px solid var(--line2);background:none;color:var(--ink2);font-size:13px;font-weight:700}
+  .row button:hover{color:var(--cyan);border-color:rgba(76,201,240,.5)}
+  .steps{display:grid;gap:8px;margin:14px 0}
+  .step{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink3);padding:8px 12px;border-radius:10px;background:rgba(7,11,24,.4)}
+  .step.on{color:var(--ink);background:rgba(76,201,240,.07)}
+  .step.done{color:var(--safe)}
+  .step .ico{width:20px;text-align:center}
+  .how{font-size:13.5px;color:var(--ink2)}
+  .how li{margin:8px 0 8px 18px}
+  .how b{color:var(--ink)}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:90;background:var(--solid);border:1px solid var(--line2);border-radius:14px;padding:12px 20px;font-size:13.5px;max-width:92vw;display:none;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+  .toast.on{display:block}
+  .toast.ok{border-color:rgba(52,211,153,.5)} .toast.err{border-color:rgba(248,113,113,.5)}
+  footer{text-align:center;padding:26px 16px 40px;font-size:11.5px;color:var(--ink3)}
+  @media(max-width:600px){.denoms{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="aurora"></div>
+<div class="shell">
+
+<nav>
+  <a class="brand" href="/"><div><span class="ms">LYRA SHIELD</span><div class="by">by NERON &amp; LYRA</div></div></a>
+  <div class="nav-r">
+    <a href="/">Scanner</a><a href="/dex">DEX</a><a href="/launch">Launchpad</a><a href="/staking">Staking</a><a href="/faq">FAQ</a>
+    <button class="wbtn" id="wbtn" onclick="connect()">Connect wallet</button>
+  </div>
+</nav>
+
+<header class="wrap">
+  <h1>The world gave up its privacy.<br><span class="g">You don't have to.</span></h1>
+  <p class="sub">Deposit $NLYRA. Withdraw to a brand-new wallet. <b>Nobody can link the two</b> — not the chain, not us. Zero-knowledge proofs, audited circuits, <b>no custody and no backdoor</b>. Your proof is built inside <b>your own browser</b>; our server only pays the gas.</p>
+  <div class="stats">
+    <div class="stat"><div class="n" id="s-set">—</div><span>Depositors</span></div>
+    <div class="stat"><div class="n" id="s-tvl">—</div><span>$NLYRA shielded</span></div>
+    <div class="stat"><div class="n" id="s-relay">—</div><span>Relayer</span></div>
+  </div>
+  <div id="anon-warn" style="max-width:640px;margin:14px auto 0"></div>
+  <div id="relay-note" style="max-width:640px;margin:10px auto 0"></div>
+</header>
+
+<div class="wrap">
+  <div class="tabs">
+    <button class="t on" id="tab-dep" onclick="setTab('dep')">🔒 Deposit</button>
+    <button class="t" id="tab-wd" onclick="setTab('wd')">🕶️ Withdraw</button>
+  </div>
+
+  <!-- ── DEPÓSITO ── -->
+  <div class="panel" id="p-dep">
+    <div class="f"><label>Amount — fixed denominations only (this is what protects you)</label>
+      <div class="denoms" id="denoms"></div>
+      <p style="font-size:11.5px;color:var(--ink3);margin-top:8px">If you deposited 137,492 and withdrew 137,492, anyone could match them. Fixed sizes make your withdrawal look like everyone else's.</p>
+    </div>
+    <div class="warn danger">
+      <b>⚠️ READ THIS OR LOSE YOUR MONEY.</b> Depositing creates a secret note. That note is the ONLY way to withdraw. It is never sent to any server. If you lose it, your $NLYRA are gone <b>forever</b> — we cannot recover them, nobody can. That's not a flaw, it's the proof there is no backdoor.
+    </div>
+    <div class="warn" style="border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.06)">
+      <b>0% fee in $NLYRA — every token you deposit comes back out.</b> Instead, your wallet will ask for one extra tiny transaction (<span id="prepay-amt">~0.0003</span> ETH, a few cents) that fuels the relayer. That's what pays the gas of your future withdrawal <b>and</b> drops a little ETH into your fresh wallet, so it never needs funding from anywhere.
+    </div>
+    <button class="act" id="dep-go" onclick="doDeposit()">Generate note &amp; deposit</button>
+    <div id="dep-steps" class="steps" style="display:none"></div>
+    <div id="note-out"></div>
+  </div>
+
+  <!-- ── RETIRO ── -->
+  <div class="panel" id="p-wd" style="display:none">
+    <div class="f"><label>Your secret note</label>
+      <textarea id="wd-note" placeholder="paste the note you saved when you deposited"></textarea>
+    </div>
+    <div class="f"><label>Recipient — use a FRESH wallet that has never touched your identity</label>
+      <input id="wd-to" placeholder="0x…">
+    </div>
+    <div class="warn">
+      <b>How to stay anonymous:</b> withdraw to a wallet with <b>zero history</b>. Wait a while after depositing — withdrawing 30 seconds later links you by timing. The relayer pays the gas <b>and sends your new wallet a little ETH</b>, so it never needs funding from anywhere. 0% fee — you receive every token. Ideally use a VPN or Tor.
+    </div>
+    <button class="act" id="wd-go" onclick="doWithdraw()">Generate proof &amp; withdraw privately</button>
+    <div id="wd-steps" class="steps" style="display:none"></div>
+  </div>
+
+  <div class="panel">
+    <h3 style="font-size:17px;margin-bottom:10px">How it actually works</h3>
+    <ol class="how">
+      <li><b>You deposit</b> and the pool stores a hash (a "commitment") in a Merkle tree. The chain sees a deposit — that part is public, and it's fine.</li>
+      <li><b>You keep a secret note.</b> It never leaves your device.</li>
+      <li><b>Later, from anywhere</b>, your browser builds a zero-knowledge proof that says: <i>"I know the note of one valid deposit in this tree, and it hasn't been spent"</i> — <b>without revealing which one</b>.</li>
+      <li><b>A relayer publishes it</b> and pays the gas. It cannot steal: the recipient is sealed inside the proof. Change one character and the contract rejects it.</li>
+      <li><b>Honest by design:</b> an association set — built from our own scanner, public and auditable — keeps proven criminal addresses out. Privacy for honest people, not a laundromat. And if the set ever excludes you unfairly, <b>ragequit</b> returns your funds to your original wallet. No custody, ever.</li>
+    </ol>
+  </div>
+</div>
+
+<footer>
+  <b>NERON &amp; LYRA</b> — nlyra.xyz · Robinhood Chain · circuits by <a href="https://github.com/0xbow-io/privacy-pools-core" target="_blank" rel="noopener">Privacy Pools</a> (Apache-2.0, audited) · <a href="/faq">every contract, verified</a>
+</footer>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const CFG0 = "__SHIELD_CONFIG__";
+const CFG = typeof CFG0 === 'string' ? {} : CFG0;
+const CHAIN = { chainId:'0x1237', chainName:'Robinhood Chain', nativeCurrency:{name:'ETH',symbol:'ETH',decimals:18},
+  rpcUrls:['https://rpc.mainnet.chain.robinhood.com'], blockExplorerUrls:['https://robinhoodchain.blockscout.com'] };
+const SNARK_FIELD = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
+const DENOMS = [100000n, 500000n, 1000000n];
+let denom = DENOMS[0], provider=null, signer=null, me=null, tab='dep', poseidon=null;
+
+const ro = new ethers.JsonRpcProvider(CHAIN.rpcUrls[0]);
+const $ = (id)=>document.getElementById(id);
+const EP_ABI = ['function deposit(address _asset, uint256 _value, uint256 _precommitment) returns (uint256)','function latestRoot() view returns (uint256)'];
+const POOL_ABI = ['function SCOPE() view returns (uint256)','event Deposited(address indexed _depositor, uint256 _commitment, uint256 _label, uint256 _value, uint256 _merkleRoot)'];
+const T_ABI = ['function approve(address,uint256) returns (bool)','function allowance(address,address) view returns (uint256)','function balanceOf(address) view returns (uint256)'];
+
+function toast(m, c){ const t=$('toast'); t.textContent=m; t.className='toast on '+(c||''); clearTimeout(t._t); t._t=setTimeout(()=>t.className='toast', 7000); }
+function setTab(t){ tab=t; $('tab-dep').className='t'+(t==='dep'?' on':''); $('tab-wd').className='t'+(t==='wd'?' on':'');
+  $('p-dep').style.display = t==='dep'?'block':'none'; $('p-wd').style.display = t==='wd'?'block':'none'; }
+function steps(el, list){ const e=$(el); e.style.display='grid';
+  e.innerHTML = list.map(s=>`<div class="step ${s.state||''}"><span class="ico">${s.state==='done'?'✅':s.state==='on'?'⏳':'•'}</span><span>${s.t}</span></div>`).join(''); }
+
+async function P(){
+  if(poseidon) return poseidon;
+  if(!window.__poseidon2){
+    await new Promise((ok,fail)=>{ const t=setTimeout(()=>fail(new Error('poseidon failed to load')),15000);
+      window.addEventListener('poseidon-ready',()=>{clearTimeout(t);ok();},{once:true}); });
+  }
+  poseidon = (arr)=>{
+    const a = arr.map(BigInt);
+    if(a.length === 2) return BigInt(window.__poseidon2(a));
+    if(a.length === 3) return BigInt(window.__poseidon3(a));
+    throw new Error('poseidon: unsupported arity ' + a.length);
+  };
+  return poseidon;
+}
+const rnd = () => { const b=new Uint8Array(31); crypto.getRandomValues(b);
+  return BigInt('0x'+[...b].map(x=>x.toString(16).padStart(2,'0')).join('')) % SNARK_FIELD; };
+
+async function connect(){
+  if(!window.ethereum) return toast('No wallet found — open in MetaMask or Rabby','err');
+  try{
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts',[]);
+    try{ await provider.send('wallet_switchEthereumChain',[{chainId:CHAIN.chainId}]); }
+    catch(_){ await provider.send('wallet_addEthereumChain',[CHAIN]); }
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner(); me = (await signer.getAddress()).toLowerCase();
+    const b=$('wbtn'); b.textContent = me.slice(0,6)+'…'+me.slice(-4); b.classList.add('on');
+  }catch(e){ toast('Connection cancelled','err'); }
+}
+
+let denomCounts = {};
+function renderDenoms(){
+  $('denoms').innerHTML = DENOMS.map((d,i)=>{
+    const n = denomCounts[Number(d)] || 0;
+    // el número que importa: cuántos depósitos hay de ESTA denominación
+    const col = n>=20?'var(--safe)':n>=5?'var(--gold)':'var(--red)';
+    return `<div class="den ${d===denom?'on':''}" onclick="pickDenom(${i})"><b>${(Number(d)/1000).toLocaleString()}K</b><span>$NLYRA</span>
+      <div style="font-size:10.5px;color:${col};font-weight:700;margin-top:6px">${n} in pool · 1-in-${n||1}</div></div>`;
+  }).join('');
+}
+// Honestidad brutal: si el conjunto es chico, la privacidad NO existe todavía.
+function renderAnonWarning(){
+  const el = $('anon-warn'); if(!el) return;
+  const n = denomCounts[Number(denom)] || 0;
+  if(n >= 20){ el.innerHTML = `<div class="warn"><b>Anonymity set: ${n} deposits</b> at this size. A withdrawal here is genuinely hard to trace.</div>`; return; }
+  if(n >= 5){ el.innerHTML = `<div class="warn"><b>⚠️ Anonymity set: only ${n} deposits</b> at this size — an observer has a 1-in-${n} chance of guessing which deposit is yours. Moderate protection. It gets stronger as more people join.</div>`; return; }
+  el.innerHTML = `<div class="warn danger"><b>⚠️ THE POOL IS ALMOST EMPTY — YOU WOULD NOT BE ANONYMOUS.</b>
+    Only <b>${n}</b> deposit${n===1?'':'s'} of this size exist${n===1?'s':''}. If you deposit and withdraw now, anyone watching the chain can link you${n<=1?' with certainty':''}.
+    The math is honest: your privacy comes from the crowd, not from us. <b>Deposit now to help build it — but wait for the pool to grow before withdrawing</b>, or use it only when this number is high.</div>`;
+}
+function pickDenom(i){ denom = DENOMS[i]; renderDenoms(); renderAnonWarning(); }
+
+// ── DEPÓSITO ──
+async function doDeposit(){
+  if(!signer) { await connect(); if(!signer) return; }
+  if(!CFG.entrypoint) return toast('Shield is not live yet','err');
+  const go=$('dep-go'); go.disabled=true;
+  try{
+    const p = await P();
+    const nullifier = rnd(), secret = rnd();
+    const precommitment = p([nullifier, secret]);
+    const amount = ethers.parseEther(denom.toString());
+
+    // ── SEGURIDAD: la nota se muestra y se confirma ANTES de mover un peso ──
+    // Los secretos ya existen; si el usuario cierra la pestaña después de
+    // depositar sin haberlos guardado, los fondos quedan encerrados para
+    // siempre. Por eso: guardar primero, depositar después.
+    const preNote = { v:1, nullifier:nullifier.toString(), secret:secret.toString(),
+      precommitment:precommitment.toString(), amount:denom.toString(), pool:CFG.pool, stage:'pre-deposit' };
+    const preEnc = 'lyrashield-v1:' + btoa(JSON.stringify(preNote));
+    window._note = preEnc;
+    $('note-out').innerHTML = `<div class="note-box"><b style="color:var(--gold);font-size:13px">🔑 YOUR SECRET NOTE — save it BEFORE you deposit</b><code id="note-code">${preEnc}</code>
+      <div class="row"><button onclick="cpNote()">📋 Copy</button><button onclick="dlNote()">💾 Download file</button></div>
+      <p style="font-size:11.5px;color:var(--ink3);margin-top:10px">This is your only key. We are showing it now, before your money moves, so a lost tab can never cost you your funds.</p></div>`;
+    const saved = await confirmSaved();
+    if(!saved){ $('dep-go').disabled=false; return toast('Deposit cancelled — nothing moved','err'); }
+
+    steps('dep-steps',[{t:'Secret note generated and saved by you',state:'done'},{t:'Approving $NLYRA…',state:'on'},{t:'Depositing'},{t:'Note updated with your deposit'}]);
+    const tok = new ethers.Contract(CFG.asset, T_ABI, signer);
+    if((await tok.allowance(me, CFG.entrypoint)) < amount){
+      await (await tok.approve(CFG.entrypoint, amount)).wait();
+    }
+    steps('dep-steps',[{t:'Secret note generated and saved by you',state:'done'},{t:'$NLYRA approved',state:'done'},{t:'Depositing — confirm in your wallet…',state:'on'},{t:'Note updated with your deposit'}]);
+    const ep = new ethers.Contract(CFG.entrypoint, EP_ABI, signer);
+    const tx = await ep.deposit(CFG.asset, amount, precommitment);
+    const rc = await tx.wait();
+
+    // sacamos label/commitment del evento del pool
+    const pool = new ethers.Contract(CFG.pool, POOL_ABI, ro);
+    let label=null, commitment=null, value=null;
+    for(const l of rc.logs){ try{ const d=pool.interface.parseLog(l);
+      if(d && d.name==='Deposited'){ label=d.args._label.toString(); commitment=d.args._commitment.toString(); value=d.args._value.toString(); } }catch(_){}}
+
+    const note = { v:1, nullifier:nullifier.toString(), secret:secret.toString(),
+      precommitment:precommitment.toString(), label, commitment, value, pool:CFG.pool, tx:rc.hash };
+    const enc = 'lyrashield-v1:' + btoa(JSON.stringify(note));
+    steps('dep-steps',[{t:'Secret note saved by you',state:'done'},{t:'$NLYRA approved',state:'done'},{t:'Deposited on-chain — 0% fee, every token is shielded',state:'done'},{t:'Note completed — save this final version',state:'on'}]);
+    $('note-out').innerHTML = `<div class="note-box"><b style="color:var(--gold);font-size:13px">🔑 FINAL NOTE — replace the one you saved with this</b><code id="note-code">${enc}</code>
+      <div class="row"><button onclick="cpNote()">📋 Copy</button><button onclick="dlNote()">💾 Download file</button></div>
+      <p style="font-size:11.5px;color:var(--ink3);margin-top:10px">Same secrets as before, now with your deposit details attached — it makes withdrawing instant. ${Number(denom).toLocaleString()} $NLYRA are shielded. No support, no recovery, by design.</p></div>`;
+    window._note = enc;
+    toast('Deposited ✅ — save the final note (it replaces the first one)','ok');
+
+    // Prepago de gas: en vez de cobrar fee en $NLYRA, el depósito deja un pelín
+    // de ETH en el relayer. Con eso el relayer paga el gas del retiro Y le manda
+    // ETH inicial a la wallet receptora. Si el usuario lo rechaza, el depósito
+    // queda igual — es una contribución, no un rehén.
+    try{
+      const prepay = ethers.parseEther(String(CFG.prepayEth||'0.0003'));
+      if(prepay > 0n && ethers.isAddress(CFG.feeRecipient)){
+        steps('dep-steps',[{t:'Secret note saved by you',state:'done'},{t:'$NLYRA approved',state:'done'},{t:'Deposited on-chain — 0% fee',state:'done'},{t:'Note completed and saved',state:'done'},{t:`Fueling the relayer (${CFG.prepayEth} ETH) so withdrawals cost you nothing…`,state:'on'}]);
+        const ptx = await signer.sendTransaction({ to: CFG.feeRecipient, value: prepay });
+        await ptx.wait();
+        steps('dep-steps',[{t:'Secret note saved by you',state:'done'},{t:'$NLYRA approved',state:'done'},{t:'Deposited on-chain — 0% fee',state:'done'},{t:'Note completed and saved',state:'done'},{t:'Relayer fueled — your future withdrawal is fully paid for',state:'done'}]);
+        toast('Gas prepaid ✅ your private withdrawal will cost nothing','ok');
+      }
+    }catch(_){ toast('Gas prepay skipped — your deposit is safe either way','err'); }
+    loadStats();
+  }catch(e){ toast((e?.reason||e?.shortMessage||e?.message||'failed').slice(0,140),'err'); }
+  go.disabled=false;
+}
+// Pide confirmación explícita de que guardó la nota, antes de tocar sus fondos.
+function confirmSaved(){
+  return new Promise((resolve)=>{
+    const box = document.createElement('div');
+    box.className = 'warn danger';
+    box.innerHTML = `<b>Did you save the note above?</b> Copy it or download the file now.
+      Once you deposit, that note is the ONLY way to get your $NLYRA back — there is no recovery, not even by us.
+      <div class="row"><button id="cs-yes" style="border-color:rgba(52,211,153,.5);color:var(--safe)">✅ I saved it — deposit now</button>
+      <button id="cs-no">Cancel</button></div>`;
+    $('note-out').appendChild(box);
+    box.querySelector('#cs-yes').onclick = ()=>{ box.remove(); resolve(true); };
+    box.querySelector('#cs-no').onclick = ()=>{ box.remove(); resolve(false); };
+  });
+}
+function cpNote(){ navigator.clipboard.writeText(window._note).then(()=>toast('Note copied — paste it somewhere safe','ok')); }
+function dlNote(){ const b=new Blob([window._note],{type:'text/plain'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(b); a.download='lyra-shield-note.txt'; a.click(); toast('Note downloaded','ok'); }
+
+// ── ÁRBOLES (LeanIMT con Poseidon) ──
+async function merkleProof(leaves, leaf){
+  const p = await P();
+  if(!window.__LeanIMT) throw new Error('merkle library still loading, try again in a second');
+  const tree = new window.__LeanIMT((a,b)=>p([a,b]));
+  tree.insertMany(leaves.map(BigInt));
+  const idx = tree.indexOf(BigInt(leaf));
+  if(idx < 0) throw new Error('your deposit is not in the pool tree yet — wait for a confirmation and retry');
+  const pr = tree.generateProof(idx);
+  return { root: pr.root, siblings: pr.siblings, index: pr.index };
+}
+const pad32 = (a)=>{ const o=a.map(BigInt); while(o.length<32) o.push(0n); return o.slice(0,32).map(String); };
+
+// ── RETIRO ──
+async function doWithdraw(){
+  const raw = $('wd-note').value.trim(), to = $('wd-to').value.trim();
+  if(!raw.startsWith('lyrashield-v1:')) return toast('That does not look like a Lyra Shield note','err');
+  if(!ethers.isAddress(to)) return toast('Enter a valid recipient address','err');
+  const go=$('wd-go'); go.disabled=true;
+  try{
+    const note = JSON.parse(atob(raw.slice('lyrashield-v1:'.length)));
+    steps('wd-steps',[{t:'Reading the pool state…',state:'on'},{t:'Building your proof (30-90s, in YOUR browser)'},{t:'Sending to the relayer'},{t:'Done'}]);
+
+    // estado: commitments del pool + labels aprobados por el ASP
+    const st = await (await fetch('/api/shield/state')).json();
+    if(!st.aspLabels?.length) throw new Error('the association set is not published yet');
+
+    // Nota guardada ANTES del depósito: recuperamos label/commitment de la cadena.
+    // commitment = poseidon(value, label, precommitment) — probamos contra cada
+    // depósito hasta encontrar el nuestro. Solo quien tiene la nota puede hacerlo.
+    if(!note.commitment || !note.label){
+      const p = await P();
+      const pool = new ethers.Contract(CFG.pool, POOL_ABI, ro);
+      const head = await ro.getBlockNumber();
+      let evs = [];
+      for(let b=Math.max(0,head-45000*12); b<=head; b+=45000){
+        evs = evs.concat(await pool.queryFilter(pool.filters.Deposited(), b, Math.min(b+44999,head)).catch(()=>[]));
+      }
+      const pc = BigInt(note.precommitment);
+      const mine = evs.find(e => p([e.args._value, e.args._label, pc]) === e.args._commitment);
+      if(!mine) throw new Error('no deposit found for this note — was the deposit ever confirmed?');
+      note.label = mine.args._label.toString();
+      note.commitment = mine.args._commitment.toString();
+      note.value = mine.args._value.toString();
+      toast('Deposit recovered from the chain ✅','ok');
+    }
+    const stateProof = await merkleProof(st.commitments, note.commitment);
+    const aspProof = await merkleProof(st.aspLabels, note.label);
+
+    const pool = new ethers.Contract(CFG.pool, POOL_ABI, ro);
+    const scope = await pool.SCOPE();
+    // retiro relayado: el processooor es el Entrypoint y el destino va en data
+    const relayData = ethers.AbiCoder.defaultAbiCoder().encode(
+      ['tuple(address recipient,address feeRecipient,uint256 relayFeeBPS)'],
+      [[to, CFG.feeRecipient, BigInt(CFG.feeBps ?? 0)]]);
+    const withdrawal = { processooor: CFG.entrypoint, data: relayData };
+    const encoded = ethers.AbiCoder.defaultAbiCoder().encode(
+      ['tuple(address processooor,bytes data)','uint256'], [withdrawal, scope]);
+    const context = BigInt(ethers.keccak256(encoded)) % SNARK_FIELD;
+
+    steps('wd-steps',[{t:'Pool state read',state:'done'},{t:'Building your proof (30-90s, in YOUR browser)…',state:'on'},{t:'Sending to the relayer'},{t:'Done'}]);
+    const input = {
+      withdrawnValue: note.value, stateRoot: String(stateProof.root), stateTreeDepth: String(stateProof.siblings.length),
+      ASPRoot: String(aspProof.root), ASPTreeDepth: String(aspProof.siblings.length), context: String(context),
+      label: note.label, existingValue: note.value, existingNullifier: note.nullifier, existingSecret: note.secret,
+      newNullifier: String((BigInt(note.nullifier) ^ 987654321n) % SNARK_FIELD),
+      newSecret: String((BigInt(note.secret) ^ 123456789n) % SNARK_FIELD),
+      stateSiblings: pad32(stateProof.siblings), stateIndex: String(stateProof.index),
+      ASPSiblings: pad32(aspProof.siblings), ASPIndex: String(aspProof.index),
+    };
+    const { proof, publicSignals } = await snarkjs.groth16.fullProve(input, '/shield/withdraw.wasm', '/shield/withdraw.zkey');
+
+    steps('wd-steps',[{t:'Pool state read',state:'done'},{t:'Proof built in your browser',state:'done'},{t:'Sending to the relayer (it pays the gas)…',state:'on'},{t:'Done'}]);
+    const payload = { withdrawal, scope: scope.toString(), proof: {
+      pA:[proof.pi_a[0],proof.pi_a[1]],
+      pB:[[proof.pi_b[0][1],proof.pi_b[0][0]],[proof.pi_b[1][1],proof.pi_b[1][0]]],
+      pC:[proof.pi_c[0],proof.pi_c[1]], pubSignals: publicSignals } };
+    const r = await fetch('/api/shield/relay',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const j = await r.json();
+    if(!r.ok||!j.ok) throw new Error(j.error||'relayer refused');
+
+    steps('wd-steps',[{t:'Pool state read',state:'done'},{t:'Proof built in your browser',state:'done'},{t:'Relayed on-chain — 0% fee, you receive every token',state:'done'},
+      {t:`Sent to ${to.slice(0,10)}… — <a href="${CHAIN.blockExplorerUrls[0]}/tx/${j.txHash}" target="_blank">view tx →</a>${j.gasDust?' · plus a little ETH for gas, so this wallet is ready to use':''}`,state:'done'}]);
+    toast('Withdrawn privately ✅ nobody can link it to your deposit','ok');
+    loadStats();
+  }catch(e){ toast(String(e.message||e).slice(0,160),'err'); }
+  go.disabled=false;
+}
+
+async function loadStats(){
+  try{
+    const [st, rs] = await Promise.all([
+      fetch('/api/shield/state').then(r=>r.json()).catch(()=>({})),
+      fetch('/api/shield/status').then(r=>r.json()).catch(()=>({})),
+    ]);
+    denomCounts = st.byDenom || {};
+    renderDenoms(); renderAnonWarning();
+    $('s-set').textContent = st.uniqueDepositors ?? '0';
+    if(CFG.asset && CFG.pool){
+      const t = new ethers.Contract(CFG.asset, T_ABI, ro);
+      const b = await t.balanceOf(CFG.pool);
+      const n = Number(ethers.formatEther(b));
+      $('s-tvl').textContent = n>=1e6 ? (n/1e6).toFixed(1)+'M' : n>=1e3 ? (n/1e3).toFixed(0)+'K' : n.toFixed(0);
+    }
+    // el estado del relayer, sin maquillaje: si no puede pagar gas, se dice
+    $('s-relay').textContent = !rs.enabled ? 'offline'
+      : !rs.aspRootPublished ? 'no ASP'
+      : rs.lowGas ? 'low gas' : 'online';
+    const rw = $('relay-note');
+    if(rw){
+      rw.innerHTML = !rs.enabled
+        ? `<div class="warn danger"><b>The relayer is offline.</b> You can still withdraw directly from your own wallet (you pay the gas, and that wallet becomes linked to your withdrawal), or use <b>ragequit</b> to return the funds to your original wallet. Nothing is ever stuck.</div>`
+        : rs.lowGas
+        ? `<div class="warn"><b>⚠️ The relayer is low on gas (${Number(rs.gasBalance).toFixed(4)} ETH, ~${rs.withdrawalsLeft} withdrawals left).</b> It runs on the small ETH prepay each depositor leaves, but if it runs dry you can always withdraw directly or ragequit — your funds are never held hostage.</div>`
+        : `<div class="warn" style="border-color:rgba(52,211,153,.35);background:rgba(52,211,153,.06)">Relayer funded: <b>~${rs.withdrawalsLeft} withdrawals</b> of gas available. <b>0% fee in $NLYRA</b> — it runs on the small ETH prepay from deposits. It pays your gas AND sends a little ETH to your fresh wallet so it never has to be funded from anywhere — and it cannot touch your money: the recipient is sealed inside your proof.</div>`;
+    }
+  }catch(_){}
+}
+if(CFG.prepayEth && $('prepay-amt')) $('prepay-amt').textContent = CFG.prepayEth;
+renderDenoms(); loadStats(); setInterval(loadStats, 60000);
+</script>
+</body>
+</html>

@@ -1,0 +1,1162 @@
+[
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "v3Factory",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "v2Router",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "v2Factory",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "v4PoolManager",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "treasury_",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "weth",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "constructor"
+ },
+ {
+  "inputs": [],
+  "name": "BadHook",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadPool",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadRoute",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "EthTransferFailed",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "Expired",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "FeeTooHigh",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "FeeTooLow",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "IsPaused",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NoQuoteToken",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotCaller",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotOwner",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "Reentrant",
+  "type": "error"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "got",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "want",
+    "type": "uint256"
+   }
+  ],
+  "name": "Slippage",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "TransferFailed",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "ZeroAddress",
+  "type": "error"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "beneficiary",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "Accrued",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "caller",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "CallerSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "beneficiary",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "Claimed",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "EthPending",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "EthWithdrawn",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "hooks",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "HookSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferStarted",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferred",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "pair",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "PairAllowed",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "paused",
+    "type": "bool"
+   }
+  ],
+  "name": "PausedSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "user",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "tokenIn",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "tokenOut",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amountIn",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "address",
+    "name": "feeToken",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "feeAmount",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   }
+  ],
+  "name": "Swap",
+  "type": "event"
+ },
+ {
+  "inputs": [],
+  "name": "V2_FACTORY",
+  "outputs": [
+   {
+    "internalType": "contract IUniswapV2Factory",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "V2_ROUTER",
+  "outputs": [
+   {
+    "internalType": "contract IUniswapV2Router",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "V3_FACTORY",
+  "outputs": [
+   {
+    "internalType": "contract IUniswapV3Factory",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "V4_POOL_MANAGER",
+  "outputs": [
+   {
+    "internalType": "contract IPoolManager",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "WETH",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "acceptOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "accrued",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "allowExoticPairs",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "allowUnverifiedPairs",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   }
+  ],
+  "name": "claim",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isCaller",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isHook",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isPairAllowed",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isQuoteToken",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "maxFeeBps",
+  "outputs": [
+   {
+    "internalType": "uint16",
+    "name": "",
+    "type": "uint16"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "minFeeBps",
+  "outputs": [
+   {
+    "internalType": "uint16",
+    "name": "",
+    "type": "uint16"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "owner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "paused",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "pendingEth",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "pendingOwner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "referrerOf",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "referrerShareBps",
+  "outputs": [
+   {
+    "internalType": "uint16",
+    "name": "",
+    "type": "uint16"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bool",
+    "name": "v",
+    "type": "bool"
+   }
+  ],
+  "name": "setAllowExoticPairs",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bool",
+    "name": "v",
+    "type": "bool"
+   }
+  ],
+  "name": "setAllowUnverifiedPairs",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "c",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "setCaller",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "h",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "setHook",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint16",
+    "name": "b",
+    "type": "uint16"
+   }
+  ],
+  "name": "setMaxFeeBps",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint16",
+    "name": "b",
+    "type": "uint16"
+   }
+  ],
+  "name": "setMinFeeBps",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "p",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "setPairAllowed",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bool",
+    "name": "v",
+    "type": "bool"
+   }
+  ],
+  "name": "setPaused",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "t",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "ok",
+    "type": "bool"
+   }
+  ],
+  "name": "setQuoteToken",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint16",
+    "name": "b",
+    "type": "uint16"
+   }
+  ],
+  "name": "setReferrerShareBps",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "t",
+    "type": "address"
+   }
+  ],
+  "name": "setTreasury",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "tokenIn",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "tokenOut",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "amountIn",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minAmountOut",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint16",
+    "name": "feeBps",
+    "type": "uint16"
+   },
+   {
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "deadline",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "swap",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "tokenOut",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minAmountOut",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint16",
+    "name": "feeBps",
+    "type": "uint16"
+   },
+   {
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "deadline",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "swapETH",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "payable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "tokenIn",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "amountIn",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minAmountOut",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint16",
+    "name": "feeBps",
+    "type": "uint16"
+   },
+   {
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "deadline",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "swapToETH",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "tokenIn",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "tokenOut",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "amountIn",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minAmountOut",
+    "type": "uint256"
+   },
+   {
+    "internalType": "address",
+    "name": "recipient",
+    "type": "address"
+   },
+   {
+    "internalType": "uint16",
+    "name": "feeBps",
+    "type": "uint16"
+   },
+   {
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "deadline",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "swapWithFee",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "n",
+    "type": "address"
+   }
+  ],
+  "name": "transferOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "treasury",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "int256",
+    "name": "amount0Delta",
+    "type": "int256"
+   },
+   {
+    "internalType": "int256",
+    "name": "amount1Delta",
+    "type": "int256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "",
+    "type": "bytes"
+   }
+  ],
+  "name": "uniswapV3SwapCallback",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes",
+    "name": "raw",
+    "type": "bytes"
+   }
+  ],
+  "name": "unlockCallback",
+  "outputs": [
+   {
+    "internalType": "bytes",
+    "name": "",
+    "type": "bytes"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "withdrawEth",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "stateMutability": "payable",
+  "type": "receive"
+ }
+]

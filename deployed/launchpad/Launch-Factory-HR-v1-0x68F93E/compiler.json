@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "ArchitectLaunchFactoryHR",
+  "mainFile": "ArchitectLaunchHR.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "mit",
+  "constructorArgs": "0x000000000000000000000000371bb2107f6e021ef2a5a980a9204f5a731519260000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad7300000000000000000000000073991a25c818bf1f1128deaab1492d45638de0d30000000000000000000000001f7d7550b1b028f7571e69a784071f0205fd2efa000000000000000000000000a6cd59b326f8bc5cf68ecd2377eee13afbbb1657000000000000000000000000000000000000aeb15c0b77f1363c65f06c6ad0b8000000000000000000000000000000000000000000017726636ae6e77c62917900000000000000000000000000000000000000000000000000000000000343f0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcbc10"
+}

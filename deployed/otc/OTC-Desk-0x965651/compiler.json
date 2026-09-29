@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "ArchitectOTC",
+  "mainFile": "ArchitectOTC.sol",
+  "settings": {
+    "evmVersion": "cancun",
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    }
+  },
+  "license": "mit",
+  "constructorArgs": "0x0000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad73000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb95000000000000000000000000371bb2107f6e021ef2a5a980a9204f5a73151926000000000000000000000000caf681a66d020601342297493863e78c959e5cb20000000000000000000000005fc5360d0400a0fd4f2af552add042d716f1d16800000000000000000000000096d0b8008d1e38d45a1b9cfcccc932629059246c0000000000000000000000000000000000000000000000000000000000000032"
+}

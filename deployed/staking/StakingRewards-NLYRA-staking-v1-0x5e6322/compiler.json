@@ -1,0 +1,9 @@
+{
+  "compiler": "v0.5.16+commit.9c3226ce",
+  "language": "solidity",
+  "contractName": "StakingRewards",
+  "mainFile": "StakingRewards.sol",
+  "settings": null,
+  "license": "mit",
+  "constructorArgs": "0x000000000000000000000000e30647793192d15bfa6e53ae8651368d332fe04c000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb95000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb95"
+}

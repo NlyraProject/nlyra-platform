@@ -1,0 +1,38 @@
+{
+  "compiler": "v0.7.6+commit.7338295f",
+  "language": "solidity",
+  "contractName": "SwapRouter",
+  "mainFile": "contracts/SwapRouter.sol",
+  "settings": {
+    "evmVersion": "istanbul",
+    "libraries": {},
+    "metadata": {
+      "bytecodeHash": "none",
+      "useLiteralContent": false
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 1000000
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "remappings": [
+      "@uniswap/v3-core/=lib/v3-core/",
+      "@uniswap/v2-core/=lib/v2-core/",
+      "@uniswap/lib/=lib/uniswap-lib/",
+      "@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/",
+      "base64-sol/=lib/base64-sol/"
+    ],
+    "viaIR": false
+  },
+  "license": "none",
+  "constructorArgs": "0000000000000000000000003fdabf7ab5d871b89f1d9da04dc2e0733db70caf0000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad73"
+}

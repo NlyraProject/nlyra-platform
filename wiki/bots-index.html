@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bots from zero — NLYRA Wiki</title>
+<meta name="description" content="New to trading bots? Learn on a live one first with Paper Mode on the Sniper — no deposit, no gas, no real funds. What a bot is, where your money sits, what it costs, and how to start one.">
+<meta property="og:title" content="Bots from zero">
+<meta property="og:description" content="New to trading bots? Learn on a live one first — Paper Mode on the Sniper needs no deposit, no gas and no real funds.">
+<meta property="og:type" content="article">
+<meta property="og:image" content="https://nlyra.xyz/desk2/og-bots.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/brand/dual-core.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/brand/nlyra-brand-tokens.css">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  img,svg{display:block;max-width:100%;height:auto}
+  picture{display:block}
+  body{line-height:1.6;overflow-x:hidden}
+  a:hover{text-decoration:none}
+
+  .prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:70;background:var(--brand-grad);transition:width .1s linear}
+
+  /* ═══ top ═══ */
+  .top{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:12px;height:56px;padding:0 16px;
+       background:rgba(7,11,24,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .top .lk{display:flex;align-items:center;gap:8px;color:var(--neron);font:700 15px var(--font-display);white-space:nowrap}
+  .top .lk img{width:28px;height:19px;object-fit:contain}
+  .top .lk .x{color:var(--text-3);font-weight:400}.top .lk .ly{color:var(--lyra)}
+  .top .sp{margin-left:auto}
+  .top a.cta{background:var(--brand-grad);color:#fff;font:700 13.5px var(--font-body);padding:9px 15px;border-radius:var(--radius-pill);
+             box-shadow:inset 0 1px 0 rgba(255,255,255,.2);white-space:nowrap}
+  .top a.cta:hover{filter:brightness(1.09);color:#fff}
+  .top a.q{color:var(--text-2);font:500 13.5px var(--font-body);padding:9px 10px;border-radius:var(--radius-sm)}
+  .top a.q:hover{color:var(--text);background:var(--nested)}
+  @media(max-width:560px){.top a.q{display:none}}
+
+  /* ═══ bands ═══ */
+  section{padding:72px 0;position:relative}
+  @media(min-width:760px){section{padding:104px 0}}
+  section.band{background:linear-gradient(180deg,rgba(20,27,51,.62),rgba(15,21,40,.28));
+               border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  section.dark{background:#05080F;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .in{max-width:720px;margin:0 auto;padding:0 20px}
+
+  /* ═══ type ═══ */
+  .eyebrow{font:700 11px var(--font-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--neron);margin-bottom:16px;
+           display:flex;align-items:center;gap:9px}
+  .eyebrow::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,var(--accent-line),transparent)}
+  .nl h1{font:700 clamp(40px,11vw,76px)/0.96 var(--font-display);letter-spacing:-.038em;text-wrap:balance;margin-bottom:18px}
+  .nl h1 em{font-style:normal;background:var(--brand-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .nl h2{font:700 clamp(28px,6.8vw,44px)/1.05 var(--font-display);letter-spacing:-.032em;text-wrap:balance;margin-bottom:16px}
+  .nl h2 em{font-style:italic;color:var(--lyra)}
+  .nl h3{font:600 clamp(19px,4.4vw,23px)/1.25 var(--font-display);letter-spacing:-.015em;margin-bottom:9px;color:var(--text)}
+  .nl p{font-size:17px;color:var(--text-2);margin-bottom:16px}
+  @media(min-width:760px){.nl p{font-size:18px}}
+  .nl p.lead{font-size:19.5px;line-height:1.5}
+  @media(min-width:760px){.nl p.lead{font-size:21px}}
+  .nl p.punch{font:600 clamp(21px,5vw,28px)/1.32 var(--font-display);color:var(--text);letter-spacing:-.02em;margin:30px 0;text-wrap:balance}
+  b,strong{color:var(--text);font-weight:600}
+  a{color:var(--neron);font-weight:500}a:hover{color:var(--lyra)}
+  code{font-family:var(--font-mono);font-size:.88em;color:var(--text);background:var(--nested);padding:2px 6px;border-radius:5px}
+  .sm{font-size:14.5px;color:var(--text-3);line-height:1.55}
+  .cap{font-size:14px;color:var(--text-3);line-height:1.55;margin-top:11px}
+  .cap b{color:var(--text-2)}
+
+  /* ═══ hero ═══ */
+  .hero{padding:46px 0 0}
+  @media(min-width:760px){.hero{padding:70px 0 0}}
+  .kick{display:flex;gap:12px;align-items:flex-start;background:rgba(251,191,36,.09);border:1px solid rgba(251,191,36,.32);
+        border-radius:15px;padding:14px 16px;margin-bottom:26px;font-weight:400}
+  .kick:hover{background:rgba(251,191,36,.14);border-color:rgba(251,191,36,.5)}
+  .kick .pill{flex:0 0 auto;font:700 10.5px var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:#0B0A06;
+              background:var(--caution);padding:5px 9px;border-radius:var(--radius-pill);margin-top:1px}
+  .kick .kt{font-size:15.5px;color:var(--text-2);line-height:1.5}
+  .kick .kt b{color:var(--caution);font-weight:700}
+  .kick .go{color:var(--caution);font-weight:600;white-space:nowrap}
+  @media(max-width:480px){.kick{flex-direction:column;gap:9px}.kick .pill{margin-top:0}}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:22px}
+  .chips span{font:500 12px var(--font-mono);color:var(--text-3);background:var(--nested);border:1px solid var(--line);padding:6px 12px;border-radius:var(--radius-pill)}
+
+  /* ═══ the video ═══ */
+  .vid{margin:30px 0 0;background:var(--card);border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;box-shadow:0 30px 60px -30px rgba(0,0,0,.85)}
+  .vid .vh{display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid var(--line)}
+  .vid .vh .dot{width:8px;height:8px;border-radius:50%;background:var(--lyra);box-shadow:0 0 0 3px rgba(232,79,224,.16);flex:0 0 auto}
+  .vid .vh .ttl{font:700 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+  .vid .vh .rule{font:400 12px var(--font-mono);color:var(--text-3);margin-left:auto}
+  .vid .vf{position:relative;aspect-ratio:16/9;background:#000}
+  .vid .vf iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  /* ═══ live grid bot ═══ */
+  .sim{margin:32px 0 0;background:var(--card);border:1px solid var(--line-strong);border-radius:18px;overflow:hidden;
+       box-shadow:0 30px 60px -30px rgba(0,0,0,.85)}
+  .sim .hd{display:flex;align-items:center;gap:9px;padding:13px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .sim .hd .dot{width:8px;height:8px;border-radius:50%;background:var(--safe);box-shadow:0 0 0 3px rgba(74,222,128,.16);flex:0 0 auto;
+                animation:bl 2.4s ease-in-out infinite}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:.35}}
+  .sim .hd .ttl{font:700 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-2)}
+  .sim .hd .rule{font:400 12px var(--font-mono);color:var(--text-3);margin-left:auto}
+  @media(max-width:560px){.sim .hd .rule{margin-left:0;width:100%;line-height:1.5}}
+  .sim canvas{display:block;width:100%;height:240px}
+  @media(min-width:640px){.sim canvas{height:300px}}
+  .sim .ft{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+  .sim .ft div{padding:13px 14px;border-left:1px solid var(--line)}
+  .sim .ft div:first-child{border-left:0}
+  .sim .ft .k{font:500 10px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3);margin-bottom:4px}
+  .sim .ft .v{font:700 20px var(--font-mono);color:var(--text);letter-spacing:-.02em}
+  .sim .ft .v.g{color:var(--safe)}.sim .ft .v.m{color:var(--lyra)}
+
+  /* ═══ visual panels ═══ */
+  .fig{margin:26px 0 0;background:var(--card);border:1px solid var(--line-strong);border-radius:18px;padding:20px 18px}
+  .nl .fig .lab{font:700 10.5px var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--text-3);margin-bottom:14px}
+  .fig svg{width:100%;height:auto}
+
+  /* three reasons */
+  .why{display:grid;gap:12px;margin:26px 0}
+  @media(min-width:700px){.why{grid-template-columns:repeat(3,1fr)}}
+  .why > div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 17px;display:flex;flex-direction:column;gap:13px}
+  .why svg{width:100%;height:auto}
+  .why .t{font:600 17px var(--font-display);color:var(--text);letter-spacing:-.01em;line-height:1.25}
+  .why .s{font-size:15px;color:var(--text-3);line-height:1.5}
+
+  /* rows */
+  .rows{display:grid;gap:10px;margin:24px 0}
+  .row{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 17px 16px 20px;position:relative;overflow:hidden}
+  .row::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--neron);opacity:.6}
+  .row.bad::before{background:var(--danger)}.row.good::before{background:var(--safe)}
+  .row .k{font:700 11px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--neron);margin-bottom:7px}
+  .row.bad .k{color:var(--danger)}.row.good .k{color:var(--safe)}
+  .row .v{font-size:16.5px;color:var(--text-2);line-height:1.55}
+  .row .v b{color:var(--text)}
+  .row .tag{display:inline-block;margin-top:11px;font:700 10.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;
+            padding:5px 10px;border-radius:var(--radius-pill);background:var(--nested);color:var(--text-2)}
+  .row .tag.you{background:var(--safe-bg);color:var(--safe)}
+  .row .tag.us{background:var(--caution-bg);color:var(--caution)}
+
+  /* gas bars */
+  .gas{display:grid;gap:18px;margin-top:4px}
+  .gas .lbl{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;gap:12px}
+  .gas .lbl .l{font:700 15.5px var(--font-mono);color:var(--text)}
+  .gas .lbl .r{font:500 13px var(--font-mono)}
+  .gas .bar{display:flex;height:36px;border-radius:9px;overflow:hidden;background:var(--nested);border:1px solid var(--line)}
+  .gas .bar i{display:block;height:100%}
+  .gas .bar .keep{background:linear-gradient(90deg,rgba(139,124,246,.6),rgba(232,79,224,.45))}
+  .gas .bar .burn{background:repeating-linear-gradient(45deg,#F87171,#F87171 5px,rgba(248,113,113,.62) 5px,rgba(248,113,113,.62) 10px)}
+  .gas .ok .lbl .r{color:var(--safe)}
+  .gas .no .lbl .r{color:var(--danger)}
+  .lg{display:flex;gap:16px;margin-top:15px;flex-wrap:wrap}
+  .lg span{display:flex;align-items:center;gap:7px;font:500 12.5px var(--font-mono);color:var(--text-3)}
+  .lg i{width:13px;height:13px;border-radius:4px;display:block;flex:0 0 auto}
+
+  /* stat tiles */
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:26px 0}
+  @media(min-width:640px){.stats{grid-template-columns:repeat(4,1fr)}}
+  .stats > div{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:19px 16px}
+  .stats .n{font:700 clamp(28px,7.5vw,38px)/1 var(--font-display);letter-spacing:-.035em;color:var(--text);margin-bottom:8px}
+  .stats .n.z{color:var(--safe)}
+  .stats .l{font:500 11.5px var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text-3);line-height:1.4}
+
+  /* money flow */
+  .flow{display:grid;gap:0;margin:28px 0 0}
+  .flow .bx{background:var(--card);border:1px solid var(--line-strong);border-radius:16px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+  .flow .bx .ic{flex:0 0 auto;width:42px;height:42px;border-radius:12px;background:var(--nested);display:grid;place-items:center;
+                border:1px solid var(--line);color:var(--text-2)}
+  .flow .bx .ic svg{width:21px;height:21px}
+  .flow .bx .n{font:700 10.5px var(--font-mono);letter-spacing:.16em;color:var(--text-3);margin-bottom:4px}
+  .flow .bx .t{font:700 18px var(--font-display);color:var(--text);letter-spacing:-.015em;margin-bottom:4px}
+  .flow .bx .s{font-size:15px;color:var(--text-3);line-height:1.5}
+  .flow .bx.mine{border-color:var(--accent-line);background:linear-gradient(135deg,rgba(139,124,246,.1),transparent)}
+  .flow .bx.mine .ic{background:var(--accent-bg);border-color:var(--accent-line);color:var(--neron)}
+  .flow .pipe{height:32px;margin-left:38px;border-left:2px dashed var(--line-strong);position:relative}
+  .flow .pipe::after{content:"";position:absolute;left:-5px;top:-4px;width:8px;height:8px;border-radius:50%;background:var(--neron);
+                     animation:drop 2.6s linear infinite;box-shadow:0 0 10px rgba(139,124,246,.85)}
+  @keyframes drop{0%{transform:translateY(0);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateY(30px);opacity:0}}
+  .flow .pipe.two::after{animation-delay:1.3s}
+
+  /* picker */
+  .pick{display:grid;gap:10px;margin:26px 0}
+  .pick a{display:grid;grid-template-columns:76px minmax(0,1fr);gap:14px;align-items:center;
+          background:var(--card);border:1px solid var(--line);border-radius:16px;padding:15px 17px;font-weight:400;
+          transition:transform .14s,border-color .14s,background .14s}
+  .pick a:hover{border-color:var(--accent-line);background:var(--nested);transform:translateX(3px)}
+  .pick .shape{width:76px;height:44px;background:rgba(7,11,24,.6);border:1px solid var(--line);border-radius:9px;padding:5px}
+  .pick .w{font:600 16.5px var(--font-display);color:var(--text);letter-spacing:-.012em;line-height:1.3;margin-bottom:3px}
+  .pick .n{font:700 12px var(--font-mono);letter-spacing:.06em;margin-bottom:5px}
+  .pick .s{font-size:14.5px;color:var(--text-3);line-height:1.45}
+  @media(max-width:430px){.pick a{grid-template-columns:60px minmax(0,1fr);gap:12px;padding:14px}.pick .shape{width:60px;height:38px}}
+
+  /* callouts */
+  .note{border-radius:16px;padding:18px 19px;margin:28px 0;border:1px solid}
+  .note .t{font:700 12px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
+  .nl .note p{margin:0;font-size:16.5px}
+  .note.ok{background:var(--safe-bg);border-color:rgba(74,222,128,.28)}.note.ok .t{color:var(--safe)}
+  .note.warn{background:var(--caution-bg);border-color:rgba(251,191,36,.28)}.note.warn .t{color:var(--caution)}
+  .note.info{background:var(--accent-bg);border-color:var(--accent-line)}.note.info .t{color:var(--neron)}
+  .note.big{background:linear-gradient(135deg,rgba(139,124,246,.18),rgba(232,79,224,.11));border-color:var(--accent-line);padding:24px 22px}
+  .note.big .t{color:var(--lyra)}
+  .nl .note.big p{font:600 clamp(19px,4.6vw,24px)/1.35 var(--font-display);color:var(--text);letter-spacing:-.018em}
+
+  /* steps with a rail */
+  .steps{margin-top:14px;counter-reset:s}
+  .st{counter-increment:s;position:relative;padding:0 0 40px 0}
+  @media(min-width:640px){
+    .st{padding-left:62px}
+    .st::before{content:"";position:absolute;left:19px;top:46px;bottom:-2px;width:2px;background:linear-gradient(180deg,var(--line-strong),transparent)}
+    .st:last-child::before{display:none}
+    .st .h::before{position:absolute;left:0;top:0}
+  }
+  .st .h{display:flex;align-items:center;gap:13px;margin-bottom:12px}
+  .st .h::before{content:counter(s);flex:0 0 auto;width:40px;height:40px;border-radius:13px;background:var(--brand-grad);color:#fff;
+                 font:700 18px var(--font-display);display:grid;place-items:center;
+                 box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 6px 18px -6px rgba(139,124,246,.6)}
+  .nl .st .h h3{margin:0}
+
+  /* screenshots */
+  figure{margin:22px 0 4px}
+  .shot{border:1px solid var(--line-strong);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:0 18px 40px -24px rgba(0,0,0,.9)}
+  .shot img{width:100%;height:auto}
+  figure.phone{max-width:340px}
+  figure.phone .shot{border-radius:22px;border:6px solid #1A2240;box-shadow:0 26px 50px -22px rgba(0,0,0,.95)}
+  figcaption{font-size:14px;color:var(--text-3);margin-top:11px;line-height:1.55}
+  figcaption b{color:var(--text-2);font-weight:600}
+
+  /* glossary */
+  .gl{display:grid;gap:8px;margin:24px 0}
+  .gl details{background:var(--card);border:1px solid var(--line);border-radius:13px;overflow:hidden}
+  .gl summary{cursor:pointer;list-style:none;padding:15px 17px;font:600 16.5px var(--font-display);color:var(--text);display:flex;align-items:center;gap:10px}
+  .gl summary::-webkit-details-marker{display:none}
+  .gl summary::after{content:"+";margin-left:auto;color:var(--neron);font:400 21px var(--font-mono);line-height:1}
+  .gl details[open] summary::after{content:"\2212"}
+  .gl details[open] summary{border-bottom:1px solid var(--line)}
+  .gl .c{padding:14px 17px 16px;font-size:16px;color:var(--text-2);line-height:1.55}
+
+  /* CTA */
+  .cta{margin:34px 0 0;background:linear-gradient(135deg,rgba(139,124,246,.2),rgba(232,79,224,.12));
+       border:1px solid var(--accent-line);border-radius:20px;padding:28px 22px}
+  .nl .cta h3{font-size:clamp(23px,5.6vw,30px);margin-bottom:9px}
+  .nl .cta p{font-size:16.5px;margin-bottom:20px}
+  .btns{display:flex;flex-wrap:wrap;gap:10px}
+  .btns a{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 24px;border-radius:var(--radius-pill);font:700 15px var(--font-body);white-space:nowrap}
+  .btns a.p{background:var(--brand-grad);color:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 26px -10px rgba(139,124,246,.7)}
+  .btns a.p:hover{filter:brightness(1.09);color:#fff}
+  .btns a.s{background:var(--nested);border:1px solid var(--line-strong);color:var(--text)}
+  .btns a.s:hover{background:var(--raised);color:var(--text)}
+  @media(max-width:460px){.btns{flex-direction:column}.btns a{width:100%}}
+  .end{display:grid;gap:10px;margin:30px 0 0}
+  @media(min-width:640px){.end{grid-template-columns:1fr 1fr}}
+  .end a{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:17px 18px;font-weight:400}
+  .end a:hover{border-color:var(--accent-line);background:var(--nested)}
+  .end .t{font:600 17px var(--font-display);color:var(--text);margin-bottom:5px}
+  .end .s{font-size:14.5px;color:var(--text-3);line-height:1.5}
+  .foot{max-width:720px;margin:0 auto;padding:30px 20px 70px;font-size:13.5px;color:var(--text-3);line-height:1.65}
+
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     ESCROW / KEEPER: los dos bloques que el diagrama necesita en los dos
+     tamanos. El resto del trabajo movil vive en el @media de mas abajo.
+     ═══════════════════════════════════════════════════════════════════════ */
+  .flow .pipe{display:flex;align-items:center;min-height:42px;height:auto;padding:9px 0 9px 16px}
+  .flow .pipe .pl{font:500 11.5px var(--font-mono);letter-spacing:.03em;color:var(--text-3);line-height:1.45}
+  .flow .pipe.sig{border-left-style:dotted}
+  .flow .pipe.sig::after{display:none}                      /* la senal no mueve plata: sin gota */
+  .flow .pipe::before{content:"";position:absolute;left:-6px;bottom:-2px;width:9px;height:9px;
+    border-right:2px solid var(--line-strong);border-bottom:2px solid var(--line-strong);transform:rotate(45deg)}
+
+  .perm{display:grid;gap:12px;margin:26px 0 0}
+  @media(min-width:700px){.perm{grid-template-columns:1fr 1fr}}
+  .perm .pm{border:1px solid var(--line);border-radius:16px;padding:16px 17px;background:var(--card)}
+  .perm .pm.can{border-color:rgba(74,222,128,.3);background:linear-gradient(180deg,rgba(74,222,128,.05),transparent)}
+  .perm .pm.cannot{border-color:rgba(248,113,113,.3);background:linear-gradient(180deg,rgba(248,113,113,.05),transparent)}
+  .perm .ph{display:flex;align-items:center;gap:9px;font:700 11.5px var(--font-mono);letter-spacing:.12em;
+            text-transform:uppercase;margin-bottom:12px}
+  .perm .ph .ic{width:19px;height:19px;border-radius:50%;display:grid;place-items:center;font-size:12px;flex:0 0 auto}
+  .perm .can .ph{color:var(--safe)}.perm .can .ph .ic{background:var(--safe-bg)}
+  .perm .cannot .ph{color:var(--danger)}.perm .cannot .ph .ic{background:var(--danger-bg)}
+  .perm ul{list-style:none;display:grid;gap:9px}
+  .perm li{position:relative;padding-left:16px;font-size:15px;color:var(--text-2);line-height:1.5}
+  .perm li::before{content:"";position:absolute;left:0;top:9px;width:5px;height:5px;border-radius:50%}
+  .perm .can li::before{background:var(--safe)}
+  .perm .cannot li::before{background:var(--danger)}
+  .pcta{margin-top:26px}
+  .pcn{font:500 12.5px var(--font-mono);color:var(--text-3);margin-top:10px}
+  .nl .pcn{font-size:12.5px}
+  section{scroll-margin-top:68px}
+  code{overflow-wrap:anywhere}
+
+  /* chrome movil: invisible en escritorio */
+  .chbar,.tocp,.scrim,.toc,.chnav{display:none}
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     MOVIL (2026-09-20). Una columna, 16 px de aire, barra de capitulo
+     pegajosa con progreso, indice plegable, numero de capitulo como marca
+     de agua y navegacion anterior / siguiente. El escritorio no entra aca.
+     ═══════════════════════════════════════════════════════════════════════ */
+  @media (max-width:759px){
+    :root{--bar:52px;--chb:38px}
+
+    /* ── medida y ritmo ── */
+    .in{padding:0 16px;position:relative}
+    .top{height:var(--bar);background:var(--bg);padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
+    .top .lk{font-size:14.5px}
+    .top a.cta{font-size:13px;padding:8px 13px}
+    section{padding:54px 0;scroll-margin-top:calc(var(--bar) + var(--chb) + 10px)}
+    .hero{padding:24px 0 0}
+    .nl p{font-size:16.5px;line-height:1.68;margin-bottom:18px}
+    .nl p.lead{font-size:18px;line-height:1.56}
+    .nl h1{font-size:clamp(33px,10.4vw,46px);margin-bottom:16px}
+    .nl h2{font-size:clamp(25px,7.2vw,33px);line-height:1.12;margin-bottom:14px}
+    .nl h3{font-size:18.5px}
+    .nl p.punch{font-size:21px;line-height:1.34;margin:28px 0}
+    .cap{font-size:13.5px;line-height:1.6;margin-top:12px}
+    .eyebrow{margin-bottom:12px;font-size:10.5px}
+
+    /* ── separacion entre tipos de bloque ── */
+    .fig{margin:28px 0 0;padding:16px 14px;border-radius:16px}
+    .fig .lab{margin-bottom:12px;font-size:10px}
+    .note{margin:30px 0;padding:16px;border-radius:14px}
+    .note.big{padding:20px 17px}
+    .rows{gap:12px;margin:26px 0}
+    .row{padding:15px 16px 15px 19px}
+    .row .v{font-size:16px}
+    figure{margin:24px 0 6px}
+    figcaption{font-size:13.5px;margin-top:10px}
+    .stats{margin:24px 0;gap:9px}
+    .stats > div{padding:16px 14px}
+    .why,.pick{gap:12px;margin:26px 0}
+    .gl{gap:9px;margin:26px 0}
+    .flow{margin:26px 0 0}
+    .flow .bx{padding:16px;gap:12px}
+    .flow .bx .ic{width:38px;height:38px;border-radius:11px}
+    .flow .pipe{margin-left:35px}
+    .perm{margin-top:24px}
+    .steps{margin-top:10px}
+    .st{padding-bottom:34px}
+
+    /* ── barra de capitulo ── */
+    .prog{display:none}
+    /* opaca a proposito: con fondo translucido el texto de abajo se transparentaba al pasar */
+    .chbar{display:block;position:sticky;top:var(--bar);z-index:55;
+           background:var(--bg);border-bottom:1px solid var(--line);
+           box-shadow:0 6px 18px -10px rgba(0,0,0,.9)}
+    .chbar .rowb{display:flex;align-items:center;gap:10px;width:100%;height:var(--chb);
+      padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(14px + env(safe-area-inset-right));
+      background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+    .chbar .ix{flex:0 0 auto;font:700 11px var(--font-mono);letter-spacing:.09em;color:var(--neron)}
+    .chbar .nm{flex:1 1 auto;min-width:0;font:500 11px var(--font-mono);letter-spacing:.13em;text-transform:uppercase;
+               color:var(--text-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .chbar .cv{flex:0 0 auto;width:15px;height:15px;color:var(--text-3);transition:transform .18s ease}
+    .chbar.open .cv{transform:rotate(180deg)}
+    .chbar .line{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--brand-grad);
+                 transition:width .12s linear;border-radius:0 2px 2px 0}
+
+    /* ── panel del indice ── */
+    .tocp{display:block;position:fixed;left:0;right:0;top:calc(var(--bar) + var(--chb));z-index:54;
+          background:rgba(7,11,24,.985);border-bottom:1px solid var(--line-strong);
+          max-height:min(58vh,480px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+          padding:6px 0 calc(8px + env(safe-area-inset-bottom));
+          opacity:0;visibility:hidden;transform:translateY(-6px);transition:opacity .16s ease,transform .16s ease,visibility .16s}
+    @supports(max-height:58dvh){.tocp{max-height:min(58dvh,480px)}}
+    .tocp.on{opacity:1;visibility:visible;transform:none}
+    .tocp ol{list-style:none}
+    .tocp a{display:flex;gap:12px;align-items:baseline;border-left:2px solid transparent;font-weight:400;
+            padding:11px calc(16px + env(safe-area-inset-right)) 11px calc(14px + env(safe-area-inset-left))}
+    .tocp a .i{flex:0 0 24px;font:700 11px var(--font-mono);color:var(--text-3)}
+    .tocp a .t{font:500 15px var(--font-body);color:var(--text-2);line-height:1.35}
+    .tocp a.on{border-left-color:var(--neron);background:var(--nested)}
+    .tocp a.on .i{color:var(--neron)}
+    .tocp a.on .t{color:var(--text)}
+    .scrim{display:block;position:fixed;inset:0;z-index:53;background:rgba(3,5,12,.55);
+           opacity:0;visibility:hidden;transition:opacity .16s ease,visibility .16s}
+    .scrim.on{opacity:1;visibility:visible}
+
+    /* ── indice plegable del hero ── */
+    .toc{display:block;margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+    .toc summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:13px 15px;-webkit-tap-highlight-color:transparent}
+    .toc summary::-webkit-details-marker{display:none}
+    .toc summary .m{font:500 12.5px var(--font-mono);letter-spacing:.06em;color:var(--text-3)}
+    .toc summary .m b{color:var(--text);font-weight:700}
+    .toc summary::after{content:"+";margin-left:auto;color:var(--neron);font:400 19px var(--font-mono);line-height:1}
+    .toc[open] summary::after{content:"\2212"}
+    .toc[open] summary{border-bottom:1px solid var(--line)}
+    .toc ol{list-style:none;padding:5px 0}
+    .toc a{display:flex;gap:11px;align-items:baseline;padding:9px 15px;font-weight:400}
+    .toc a .i{flex:0 0 24px;font:700 11px var(--font-mono);color:var(--text-3)}
+    .toc a .t{font:500 14.5px var(--font-body);color:var(--text-2);line-height:1.35}
+
+    /* ── el numero del capitulo como marca de agua ── */
+    section[data-ch]{position:relative}
+    section[data-ch]::before{content:attr(data-ch);position:absolute;top:26px;right:14px;
+      font:700 78px/1 var(--font-display);letter-spacing:-.06em;color:var(--text);opacity:.07;
+      pointer-events:none;user-select:none;-webkit-user-select:none}
+
+    /* ── anterior / siguiente ── */
+    .chnav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+    .chnav a{display:flex;flex-direction:column;justify-content:center;gap:3px;min-height:64px;padding:11px 13px;
+             background:var(--card);border:1px solid var(--line);border-radius:12px;font-weight:400}
+    .chnav a:active{background:var(--nested);border-color:var(--accent-line)}
+    .chnav a .d{font:700 9.5px var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-3)}
+    .chnav a .t{font:600 13.5px var(--font-body);color:var(--text-2);line-height:1.28}
+    .chnav a.nx{text-align:right;align-items:flex-end}
+    .chnav span.ph2{visibility:hidden}
+
+    /* ── la maqueta viva y las fichas, mas compactas ── */
+    /* las capturas de abajo de 760 px son del Desk en un celular: ocupan toda la columna */
+    figure.phone{max-width:none}
+    figure.phone .shot{border-width:5px;border-radius:18px}
+    .vid{margin:24px 0 0;border-radius:16px}
+    .sim{margin:26px 0 0;border-radius:16px}
+    .sim canvas{height:210px}
+    .sim .ft div{padding:11px 12px}
+    .sim .ft .v{font-size:17px}
+    .sim .hd{padding:11px 13px}
+    .kick{padding:13px 14px;margin-bottom:22px}
+    .gas .lbl{flex-wrap:wrap;gap:2px 12px}
+    .gas .lbl .l{font-size:14.5px}
+    .gas .lbl .r{font-size:12.5px}
+    .cta{padding:24px 18px;border-radius:18px}
+    .end{margin-top:26px}
+    .foot{padding:26px 16px calc(60px + env(safe-area-inset-bottom))}
+    .perm li{font-size:15px}
+
+    /* ── aparicion suave, solo movil ── */
+    .rv{opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease}
+    .rv.sh{opacity:1;transform:none}
+  }
+
+  @media (max-width:360px){
+    .in{padding:0 14px}
+    .nl h1{font-size:31px}
+    .sim .ft div{padding:10px 9px}
+    .sim .ft .v{font-size:15.5px}
+    .sim .ft .k{font-size:9px;letter-spacing:.1em}
+    .stats > div{padding:14px 12px}
+    .chbar .nm{letter-spacing:.09em}
+    .chnav a{min-height:60px;padding:10px 11px}
+    .chnav a .t{font-size:12.5px}
+  }
+
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}
+    .rv{opacity:1!important;transform:none!important}}
+</style>
+</head>
+<body class="nl">
+<div class="prog" id="prog"></div>
+
+<header class="top">
+  <a class="lk" href="/"><img src="/brand/dual-core.svg" alt=""><span>NERON</span><span class="x">&times;</span><span class="ly">LYRA</span></a>
+  <span class="sp"></span>
+  <a class="q" href="/docs">Docs</a>
+  <a class="cta" href="/desk/bots">Open the Desk</a>
+</header>
+
+<div class="hero"><div class="in">
+  <a class="kick" href="/desk/bots/new/sniper">
+    <span class="pill">Paper mode</span>
+    <span class="kt"><b>New to trading bots?</b> Learn on a live one before you fund anything: <b>Paper Mode</b> on the Sniper takes no deposit, no gas and no real funds. <span class="go">Start one &rarr;</span></span>
+  </a>
+  <h1>Bots from <em>zero</em></h1>
+  <p class="lead">A bot is a rule that never sleeps. There is one running in your browser right now, just below. One instruction: buy when the price drops a step, sell when it comes back up. Watch it for ten seconds &mdash; that is the whole idea.</p>
+  <div class="chips"><span>10 min read</span><span>Zero experience</span><span>Robinhood Chain</span></div>
+  <div class="vid">
+    <div class="vh"><span class="dot"></span><span class="ttl">Watch it in 4 minutes</span><span class="rule">narrated by LYRA</span></div>
+    <div class="vf"><iframe src="https://www.youtube-nocookie.com/embed/FB5Z_mrhLXc?rel=0" title="Bots from zero, narrated by LYRA" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+  </div>
+  <details class="toc" id="toc">
+    <summary><span class="m"><b id="tocn">12</b> chapters &middot; 10 min read</span></summary>
+    <ol id="tocol"></ol>
+  </details>
+
+  <div class="sim">
+    <div class="hd">
+      <span class="dot"></span><span class="ttl">Live demo &middot; grid bot</span>
+      <span class="rule">buy each step down &middot; sell each step up</span>
+    </div>
+    <canvas id="cv" aria-label="Animated demo of a grid bot buying dips and selling rallies"></canvas>
+    <div class="ft">
+      <div><div class="k">Buys</div><div class="v g" id="nb">0</div></div>
+      <div><div class="k">Sells</div><div class="v m" id="ns">0</div></div>
+      <div><div class="k">Booked</div><div class="v" id="pf">$0.00</div></div>
+    </div>
+  </div>
+  <p class="cap">Fake prices, real logic. Green dots are buys, pink are sells, and the dotted lines are the steps you chose when you made the bot. A step turns solid green while the bot is holding it. Nobody is watching that chart &mdash; a machine is.</p>
+</div></div>
+
+<!-- MOBILE (2026-09-20): barra de capitulo + progreso. Oculta en escritorio. -->
+<div class="chbar" id="chbar">
+  <button class="rowb" id="chbtn" type="button" aria-expanded="false" aria-controls="tocp">
+    <span class="ix" id="chix">01</span>
+    <span class="nm" id="chnm">What a bot is</span>
+    <svg class="cv" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+  </button>
+  <span class="line" id="chline"></span>
+</div>
+<nav class="tocp" id="tocp" aria-label="Chapters"><ol id="tocp2"></ol></nav>
+<div class="scrim" id="scrim"></div>
+
+<section id="what" data-ch="01" data-nav="What a bot is">
+  <div class="in">
+    <div class="eyebrow">01 &middot; The idea</div>
+    <h2>So what is it, really</h2>
+    <p>Think of the thermostat in a house. You do not stand there holding a thermometer. You tell it once: <b>keep this room at 21 degrees</b>. From then on it switches the heating on when the room is cold and off when it is warm &mdash; including at three in the morning, while you sleep.</p>
+
+    <div class="fig">
+      <div class="lab">Same machine, different dial</div>
+      <svg viewBox="0 0 640 176" role="img" aria-label="A thermostat holding 21 degrees next to a bot holding a position between two prices">
+        <text x="0" y="12" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.6">THERMOSTAT</text>
+        <rect x="0" y="26" width="290" height="132" rx="14" fill="#0F1528" stroke="#1E2747"/>
+        <path d="M36 126 A62 62 0 0 1 160 126" fill="none" stroke="#1E2747" stroke-width="10" stroke-linecap="round"/>
+        <path d="M36 126 A62 62 0 0 1 120 67" fill="none" stroke="#F87171" stroke-width="10" stroke-linecap="round" opacity=".85"/>
+        <circle cx="98" cy="126" r="5" fill="#E9EEF8"/>
+        <text x="98" y="108" fill="#E9EEF8" font-family="Space Grotesk, sans-serif" font-size="28" font-weight="700" text-anchor="middle">21&#176;</text>
+        <circle cx="192" cy="72" r="4" fill="#4ADE80"/><text x="204" y="76" fill="#9AA7BD" font-family="Inter, sans-serif" font-size="13">cold &rarr; heat on</text>
+        <circle cx="192" cy="104" r="4" fill="#F87171"/><text x="204" y="108" fill="#9AA7BD" font-family="Inter, sans-serif" font-size="13">warm &rarr; heat off</text>
+        <text x="350" y="12" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.6">TRADING BOT</text>
+        <rect x="350" y="26" width="290" height="132" rx="14" fill="#0F1528" stroke="#1E2747"/>
+        <line x1="374" y1="62" x2="616" y2="62" stroke="#E84FE0" stroke-width="1.5" stroke-dasharray="4 4" opacity=".75"/>
+        <line x1="374" y1="124" x2="616" y2="124" stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="4 4" opacity=".75"/>
+        <polyline points="374,100 396,118 418,124 440,106 462,80 484,62 506,76 528,100 550,124 572,108 594,82 616,62"
+                  fill="none" stroke="#E9EEF8" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="418" cy="124" r="5" fill="#4ADE80"/><circle cx="550" cy="124" r="5" fill="#4ADE80"/>
+        <circle cx="484" cy="62" r="5" fill="#E84FE0"/><circle cx="616" cy="62" r="5" fill="#E84FE0"/>
+        <text x="380" y="56" fill="#E84FE0" font-family="Inter, sans-serif" font-size="12.5">high &rarr; sell</text>
+        <text x="380" y="144" fill="#4ADE80" font-family="Inter, sans-serif" font-size="12.5">low &rarr; buy</text>
+      </svg>
+      <p class="cap">On the left you set a temperature and walk away. On the right you set two prices and walk away. The machine does the rest, the same way, forever.</p>
+    </div>
+
+    <p class="punch">You write the rule once. The machine obeys it forever, without getting tired, distracted or scared.</p>
+    <p>The demo at the top is a real strategy called a <b>grid</b>, one of nine you can start on The Desk today. Notice what it never did: guess. It had no idea whether the price would rise or fall. It just did what the rule said, every time.</p>
+  </div>
+</section>
+
+<section class="band" id="why" data-ch="02" data-nav="Why bother">
+  <div class="in">
+    <div class="eyebrow">02 &middot; The point</div>
+    <h2>Why bother at all</h2>
+    <div class="why">
+      <div>
+        <svg viewBox="0 0 170 66" aria-hidden="true">
+          <defs><linearGradient id="w1" x1="0" x2="1"><stop offset="0" stop-color="#8B7CF6"/><stop offset="1" stop-color="#E84FE0"/></linearGradient></defs>
+          <rect x="0" y="0" width="170" height="66" rx="10" fill="#070B18"/>
+          <text x="12" y="17" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1.2">YOU</text>
+          <text x="96" y="17" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="8" letter-spacing="1.2">THE BOT</text>
+          <line x1="86" y1="8" x2="86" y2="58" stroke="#1E2747" stroke-dasharray="3 3"/>
+          <rect x="12" y="26" width="26" height="9" rx="4.5" fill="#4ADE80" opacity=".8"/>
+          <rect x="41" y="26" width="33" height="9" rx="4.5" fill="#141B33"/>
+          <rect x="12" y="41" width="12" height="9" rx="4.5" fill="#4ADE80" opacity=".45"/>
+          <rect x="27" y="41" width="47" height="9" rx="4.5" fill="#141B33"/>
+          <rect x="96" y="26" width="62" height="9" rx="4.5" fill="url(#w1)"/>
+          <rect x="96" y="41" width="62" height="9" rx="4.5" fill="url(#w1)"/>
+          <text x="12" y="61" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="7">awake</text>
+          <text x="96" y="61" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="7">24 / 7</text>
+        </svg>
+        <div class="t">You sleep. The market does not.</div>
+        <div class="s">This chain trades around the clock. Most of what a grid earns happens while your phone is face down on a table.</div>
+      </div>
+      <div>
+        <svg viewBox="0 0 170 66" aria-hidden="true">
+          <rect x="0" y="0" width="170" height="66" rx="10" fill="#070B18"/>
+          <polyline points="10,24 30,34 50,20 70,46 90,54 110,42 130,50 160,26" fill="none" stroke="#F87171" stroke-width="2" stroke-linejoin="round"/>
+          <circle cx="90" cy="54" r="11" fill="none" stroke="#F87171" stroke-width="1" opacity=".5"/>
+          <rect x="58" y="4" width="64" height="15" rx="7.5" fill="#141B33" stroke="#1E2747"/>
+          <text x="90" y="14.5" fill="#9AA7BD" font-family="JetBrains Mono, monospace" font-size="7.5" text-anchor="middle" letter-spacing=".8">PANIC SELL</text>
+          <line x1="62" y1="11.5" x2="118" y2="11.5" stroke="#4ADE80" stroke-width="1.8"/>
+        </svg>
+        <div class="t">You get scared. A rule does not.</div>
+        <div class="s">The hard part of trading is doing the boring thing when the screen is red. A bot has no opinion about the screen.</div>
+      </div>
+      <div>
+        <svg viewBox="0 0 170 66" aria-hidden="true">
+          <rect x="0" y="0" width="170" height="66" rx="10" fill="#070B18"/>
+          <g fill="#141B33">
+            <rect x="10" y="10" width="17" height="17" rx="4.5"/><rect x="31" y="10" width="17" height="17" rx="4.5"/>
+            <rect x="52" y="10" width="17" height="17" rx="4.5"/><rect x="73" y="10" width="17" height="17" rx="4.5"/>
+            <rect x="94" y="10" width="17" height="17" rx="4.5"/><rect x="115" y="10" width="17" height="17" rx="4.5"/>
+            <rect x="136" y="10" width="17" height="17" rx="4.5"/>
+            <rect x="10" y="31" width="17" height="17" rx="4.5"/><rect x="31" y="31" width="17" height="17" rx="4.5"/>
+            <rect x="52" y="31" width="17" height="17" rx="4.5"/><rect x="73" y="31" width="17" height="17" rx="4.5"/>
+            <rect x="94" y="31" width="17" height="17" rx="4.5"/><rect x="115" y="31" width="17" height="17" rx="4.5"/>
+            <rect x="136" y="31" width="17" height="17" rx="4.5"/>
+          </g>
+          <rect x="52" y="31" width="17" height="17" rx="4.5" fill="#4ADE80" opacity=".9"/>
+          <rect x="115" y="10" width="17" height="17" rx="4.5" fill="#4ADE80" opacity=".9"/>
+          <rect x="10" y="10" width="17" height="17" rx="4.5" fill="#8B7CF6" opacity=".6"/>
+          <text x="10" y="61" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="7">one pair of eyes vs all of them</text>
+        </svg>
+        <div class="t">You watch one chart. It watches all of them.</div>
+        <div class="s">Ten new tokens launch every minute here. Nobody checks them all in the first three seconds. A machine can.</div>
+      </div>
+    </div>
+    <p>None of that makes money on its own. A bad rule followed perfectly still loses. What a bot buys you is <b>consistency</b>, not correctness.</p>
+  </div>
+</section>
+
+<section id="isnot" data-ch="03" data-nav="What it is not">
+  <div class="in">
+    <div class="eyebrow">03 &middot; The warning</div>
+    <h2>What it is <em>not</em></h2>
+    <p>The most important section on this page. Almost everything people get wrong about bots is here.</p>
+
+    <div class="fig">
+      <div class="lab">A bot's view of the future</div>
+      <svg viewBox="0 0 640 196" role="img" aria-label="A price chart, solid in the past and three diverging dashed guesses after now">
+        <rect x="0" y="0" width="640" height="196" rx="12" fill="#070B18"/>
+        <rect x="341" y="14" width="285" height="168" rx="10" fill="#0F1528" opacity=".6"/>
+        <polyline points="20,124 60,108 100,136 140,100 180,114 220,76 260,94 300,68 340,84"
+                  fill="none" stroke="#E9EEF8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        <path d="M340 84 C400 44 470 38 620 26" fill="none" stroke="#4ADE80" stroke-width="2" stroke-dasharray="5 6" opacity=".65"/>
+        <path d="M340 84 C400 88 470 96 620 92" fill="none" stroke="#9AA7BD" stroke-width="2" stroke-dasharray="5 6" opacity=".55"/>
+        <path d="M340 84 C400 126 470 144 620 164" fill="none" stroke="#F87171" stroke-width="2" stroke-dasharray="5 6" opacity=".65"/>
+        <line x1="340" y1="18" x2="340" y2="178" stroke="#8B7CF6" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="350" y="32" fill="#8B7CF6" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.4">NOW</text>
+        <circle cx="340" cy="84" r="5.5" fill="#E9EEF8"/>
+        <text x="487" y="126" fill="#78859F" font-family="Space Grotesk, sans-serif" font-size="46" font-weight="700" text-anchor="middle" opacity=".45">?</text>
+        <text x="20" y="176" fill="#78859F" font-family="JetBrains Mono, monospace" font-size="10" letter-spacing="1.1">ALL IT CAN SEE</text>
+      </svg>
+      <p class="cap">Everything left of the line is data. Everything right of it is anybody's guess, and the bot's guess is no better than yours. It was never trying to guess &mdash; it reacts, that is all.</p>
+    </div>
+
+    <div class="rows">
+      <div class="row bad"><div class="k">Not this</div><div class="v"><b>It does not predict anything.</b> It has no idea what happens next. Nothing does.</div></div>
+      <div class="row bad"><div class="k">Not this</div><div class="v"><b>It is not free money.</b> Bots lose. Ours lose sometimes, and we publish those numbers next to the good ones.</div></div>
+      <div class="row bad"><div class="k">Not this</div><div class="v"><b>It is not us managing your funds.</b> Nobody here can move your money, change your strategy or block a withdrawal.</div></div>
+      <div class="row bad"><div class="k">Not this</div><div class="v"><b>It is not fire-and-forget genius.</b> You choose the rule. A bad rule gets executed with perfect discipline, all the way down.</div></div>
+    </div>
+    <div class="note big"><div class="t">Remember this one line</div><p>If anyone shows you a bot with guaranteed returns, they are lying to you.</p></div>
+  </div>
+</section>
+
+<section class="band" id="money" data-ch="04" data-nav="Where your money sits">
+  <div class="in">
+    <div class="eyebrow">04 &middot; Custody</div>
+    <h2>Where your money actually sits</h2>
+    <p>Everyone should ask this first, so here it is before anything else. When you start a bot, your ETH leaves your wallet and goes into <b>a contract that belongs to you</b>. It is called the <b>escrow</b>, and its only owner is the wallet that made the bot.</p>
+
+    <div class="flow">
+      <div class="bx">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="6" width="19" height="13" rx="3"/><path d="M2.5 10h19M17 14.5h.01"/></svg></div>
+        <div><div class="n">01</div><div class="t">Your wallet</div><div class="s">You sign once, from your own wallet. That is the only signature there is.</div></div>
+      </div>
+      <div class="pipe"><span class="pl">your deposit moves, once</span></div>
+      <div class="bx mine">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10.5" rx="3"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5M12 14.5v3"/></svg></div>
+        <div><div class="n">02</div><div class="t">Your escrow</div><div class="s">A contract on chain. Only your wallet can ever empty it &mdash; not us, not the keeper, nobody.</div></div>
+      </div>
+      <div class="pipe sig"><span class="pl">the keeper only watches it</span></div>
+      <div class="bx">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="8" width="15" height="11" rx="3"/><path d="M12 8V4.5M9.5 13h.01M14.5 13h.01M2.5 12.5h2M19.5 12.5h2"/></svg></div>
+        <div><div class="n">03</div><div class="t">The NLYRA keeper</div><div class="s">Our machine. It watches prices every second and presses the button when your rule says so &mdash; inside your limits.</div></div>
+      </div>
+      <div class="pipe two"><span class="pl">it sends the trade, your escrow pays</span></div>
+      <div class="bx">
+        <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3.5L21 5"/><path d="M15.5 5H21v5.5"/></svg></div>
+        <div><div class="n">04</div><div class="t">The DEX</div><div class="s">Buys and sells happen straight from the escrow, inside the limits you set.</div></div>
+      </div>
+    </div>
+    <p class="cap">The money never touches an NLYRA account at any point. No deposit address, no custody, no withdrawal to approve. The keeper is a trigger, not a stop on the way: it decides <i>when</i>, your escrow is what pays.</p>
+
+    <div class="perm">
+      <div class="pm can">
+        <div class="ph"><span class="ic" aria-hidden="true">&check;</span>What the keeper can do</div>
+        <ul>
+          <li>Watch prices every second and send your bot&rsquo;s transactions</li>
+          <li>Pay the gas for each fill out of your gas reserve</li>
+          <li>Buy and sell only inside the limits your contract stores: size per trade, positions at once, stop loss, take profit, allowed sources</li>
+        </ul>
+      </div>
+      <div class="pm cannot">
+        <div class="ph"><span class="ic" aria-hidden="true">&times;</span>What it cannot do</div>
+        <ul>
+          <li>Move your money out of the escrow &mdash; the contract has no function that would let us</li>
+          <li>Change your strategy</li>
+          <li>Block or delay a withdrawal</li>
+          <li>Trade bigger than your size, sell below your stop loss, or buy a token you never allowed &mdash; the transaction simply fails</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="rows">
+      <div class="row good"><div class="k">So</div><div class="v"><b>We cannot run off with it.</b> Not because we promise, but because the contract has no function that would let us. The code is public and every address is in the <a href="/docs">docs</a>.</div></div>
+      <div class="row good"><div class="k">And</div><div class="v"><b>You can always get it out.</b> Normally you press Stop and it all comes back in one transaction. If this website vanished tomorrow you could still call the contract from a block explorer &mdash; <a href="/desk/help/bots">the guide is written</a>.</div></div>
+    </div>
+    <div class="note ok"><div class="t">The short version</div><p>It is your money in your contract the whole time. The worst thing we can do to you is run your strategy badly.</p></div>
+  </div>
+</section>
+
+<section id="pieces" data-ch="05" data-nav="The three moving parts">
+  <div class="in">
+    <div class="eyebrow">05 &middot; The machine</div>
+    <h2>The three moving parts</h2>
+    <p>Every bot on The Desk is made of the same three things. Once you can name them, every screen makes sense.</p>
+    <div class="rows">
+      <div class="row"><div class="k">The escrow</div><div class="v">The contract holding your ETH and whatever tokens the bot bought. It also stores your hard limits: size per trade, positions at once, stop loss, take profit.<span class="tag you">Controlled by you, only</span></div></div>
+      <div class="row"><div class="k">The strategy</div><div class="v">Your rules. When to buy, when to sell, what to skip entirely. On the Sniper it lives off-chain, so changing it is instant and free.<span class="tag you">Controlled by you, only</span></div></div>
+      <div class="row"><div class="k">The keeper</div><div class="v">Our machine. It watches prices every second and presses the button when your rule says so, paying gas from your reserve.<span class="tag us">Us &mdash; inside your limits</span></div></div>
+    </div>
+    <p>That last line is what matters. The keeper is the only part we control, and <b>the contract checks it every single time</b>. If it tried to trade bigger than your size, sell below your stop loss or buy a token you never allowed, the transaction simply fails. Not a policy we could change our minds about. Code.</p>
+    <div class="note warn"><div class="t">The honest downside</div><p>If our keeper goes offline your bot stops trading until it is back. Nothing is lost, your money stays yours and you can stop the bot whenever you want &mdash; but fills pause. That is the real trade-off of a non-custodial bot with an off-chain engine, and we would rather say it than bury it.</p></div>
+  </div>
+</section>
+
+<section class="band" id="cost" data-ch="06" data-nav="What it costs">
+  <div class="in">
+    <div class="eyebrow">06 &middot; The bill</div>
+    <h2>What it costs</h2>
+    <div class="stats">
+      <div><div class="n">1%</div><div class="l">per buy and per sell</div></div>
+      <div><div class="n">$0.06</div><div class="l">gas per fill</div></div>
+      <div><div class="n z">0</div><div class="l">subscription</div></div>
+      <div><div class="n z">0</div><div class="l">cut of your profit</div></div>
+    </div>
+    <p>The <b>gas reserve</b> is a small amount of ETH you set aside when you create the bot, in the same transaction. Every buy and sell takes its gas from there instead of interrupting you. What is left comes back when you stop.</p>
+
+    <div class="fig">
+      <div class="lab">Why ticket size decides everything</div>
+      <div class="gas">
+        <div class="ok">
+          <div class="lbl"><span class="l">$26 per trade</span><span class="r">0.5% eaten by gas</span></div>
+          <div class="bar"><i class="keep" style="width:99.5%"></i><i class="burn" style="width:4px"></i></div>
+        </div>
+        <div class="no">
+          <div class="lbl"><span class="l">$3 per trade</span><span class="r">4% eaten by gas</span></div>
+          <div class="bar"><i class="keep" style="width:96%"></i><i class="burn" style="width:4%"></i></div>
+        </div>
+      </div>
+      <div class="lg"><span><i style="background:linear-gradient(90deg,#8B7CF6,#E84FE0)"></i>your money working</span><span><i style="background:#F87171"></i>gas, a fixed cost per trade</span></div>
+      <p class="cap">Same bot, same gas, very different outcome. Gas does not care how small your trade is, so it punishes tiny tickets. The preview screen shows you this exact percentage <b>before</b> you commit &mdash; if the red stripe looks fat, trade bigger or trade less often.</p>
+    </div>
+  </div>
+</section>
+
+<section id="exits" data-ch="07" data-nav="Take profit &amp; stop loss">
+  <div class="in">
+    <div class="eyebrow">07 &middot; The two words</div>
+    <h2>Take profit and stop loss</h2>
+    <p>You will meet these two on every screen, so here they are in one picture. Both are checked <b>by the contract</b>, not by us: if the keeper tried to sell outside them, the transaction would fail.</p>
+    <div class="fig">
+      <div class="lab">The only two ways a position ends</div>
+      <svg viewBox="0 0 640 224" role="img" aria-label="A chart with a green take profit band above the entry price and a red stop loss band below it">
+        <rect x="0" y="0" width="640" height="224" rx="12" fill="#070B18"/>
+        <rect x="14" y="14" width="612" height="54" rx="8" fill="#4ADE80" opacity=".07"/>
+        <rect x="14" y="156" width="612" height="54" rx="8" fill="#F87171" opacity=".07"/>
+        <line x1="14" y1="68" x2="626" y2="68" stroke="#4ADE80" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <line x1="14" y1="112" x2="626" y2="112" stroke="#9AA7BD" stroke-width="1.5" stroke-dasharray="3 5" opacity=".6"/>
+        <line x1="14" y1="156" x2="626" y2="156" stroke="#F87171" stroke-width="1.5" stroke-dasharray="5 4"/>
+        <text x="24" y="40" fill="#4ADE80" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.2">TAKE PROFIT &mdash; SELL, YOU WON</text>
+        <text x="616" y="106" fill="#9AA7BD" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.2" text-anchor="end">WHAT YOU PAID</text>
+        <text x="24" y="186" fill="#F87171" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="1.2">STOP LOSS &mdash; SELL, STOP THE BLEEDING</text>
+        <polyline points="70,112 110,126 150,102 190,130 230,98 270,114 310,86 350,98 390,72 424,62"
+                  fill="none" stroke="#E9EEF8" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+        <polyline points="70,112 110,122 150,134 190,128 230,146 270,142 310,158" fill="none" stroke="#9AA7BD" stroke-width="2"
+                  stroke-linejoin="round" stroke-linecap="round" opacity=".4" stroke-dasharray="4 4"/>
+        <circle cx="70" cy="112" r="6" fill="#8B7CF6"/>
+        <text x="70" y="90" fill="#8B7CF6" font-family="Inter, sans-serif" font-size="12.5" text-anchor="middle">you buy</text>
+        <circle cx="424" cy="62" r="6.5" fill="#4ADE80"/>
+        <text x="440" y="50" fill="#4ADE80" font-family="Inter, sans-serif" font-size="12.5">it sells, in profit</text>
+        <circle cx="310" cy="158" r="6.5" fill="#F87171" opacity=".85"/>
+        <text x="326" y="178" fill="#F87171" font-family="Inter, sans-serif" font-size="12.5" opacity=".9">or it sells, cutting the loss</text>
+      </svg>
+      <p class="cap">Two exits, decided the moment you create the bot. The solid line is the happy path, the faded one is the other half of reality. A bot without a stop loss is not braver &mdash; it just has no floor.</p>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="steps" data-ch="08" data-nav="Step by step">
+  <div class="in">
+    <div class="eyebrow">08 &middot; The walkthrough</div>
+    <h2>Running one, step by step</h2>
+    <p>The whole thing, with a picture of every screen. Two minutes once you know where to tap. We use the <b>Sniper</b> because it is the one you can also try for free.</p>
+
+    <div class="steps">
+      <div class="st">
+        <div class="h"><h3>Open the Desk, go to Bots</h3></div>
+        <p>Head to <a href="/desk/bots">nlyra.xyz/desk/bots</a>. Even without a wallet you see everything: nine strategies on one side, the public bots other people run on the other.</p>
+        <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m41-mine.webp" width="1146" height="1036"><img src="img/41-mine.webp" alt="The Desk bots page with a connect wallet button" loading="lazy" width="1100" height="543"></picture></div>
+        <figcaption>Nothing about you is stored on our side. Your bots are found by reading the chain for your address.</figcaption></figure>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Pick a strategy</h3></div>
+        <p>Nine cards, one line each. Read <b>best for</b> first &mdash; it tells you what kind of market that bot needs. Not sure? <a href="#which">The picker is further down</a>.</p>
+        <figure class="phone"><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m02-gallery.webp" width="1146" height="2339"><img src="img/02-gallery.webp" alt="The list of nine bot strategies" loading="lazy" width="600" height="1696"></picture></div></figure>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Fill in four numbers</h3></div>
+        <p>Every bot asks roughly the same four things. Do not agonise &mdash; most can be changed later without a transaction.</p>
+        <div class="rows">
+          <div class="row"><div class="k">You deposit</div><div class="v">The total the bot may work with. It sits in your escrow. <b>Start with 0.1 to 0.2 ETH.</b></div></div>
+          <div class="row"><div class="k">Per trade</div><div class="v">How much it spends on one single entry. <b>A tenth of the deposit is a sane start.</b></div></div>
+          <div class="row"><div class="k">Max open positions</div><div class="v">How many tokens it may hold at once. <b>Three to five.</b></div></div>
+          <div class="row"><div class="k">Gas reserve</div><div class="v">The pot that pays the network fee on every fill. <b>Leave it empty and take the suggestion.</b></div></div>
+        </div>
+        <p>Per trade times max positions is the most this bot can ever have at risk at one moment. Worth knowing before you sign.</p>
+        <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m21-fields.webp" width="1086" height="243"><img src="img/21-pertrade-maxpos.webp" alt="The per trade and max open positions fields" loading="lazy" width="880" height="132"></picture></div></figure>
+        <figure class="phone"><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m23-form.webp" width="1122" height="2335"><img src="img/23-strategy-blocks.webp" alt="The full Sniper form" loading="lazy" width="880" height="1770"></picture></div>
+        <figcaption>Under the numbers sit the <b>presets</b>. Start with one. <i>Measured</i> is the strategy we run with our own money. The grey bars open the advanced rules &mdash; ignore them on your first bot.</figcaption></figure>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Read the preview</h3></div>
+        <p>The step everyone skips, and the one that decides whether your bot makes sense. Before you sign, the screen tells you what you are about to create, in plain numbers.</p>
+        <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m05-preview.webp" width="1086" height="2109"><img src="img/05-preview.webp" alt="The preview panel with entries per hour, size per trade, max exposure and gas per fill" loading="lazy" width="1100" height="683"></picture></div>
+        <figcaption><b>Gas / round trip</b> is the number to judge: 0.5% is healthy, 5% means the bot works for the network instead of for you.</figcaption></figure>
+        <p>Underneath, your strategy is written out as an English sentence. If that sentence is not what you meant, change the form until it is.</p>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Sign once</h3></div>
+        <p>One transaction moves your deposit and your gas reserve into your escrow and starts the bot. No second signature, no approval dance, no standing permission.</p>
+        <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m28-create.webp" width="1086" height="153"><img src="img/28-create-button.webp" alt="The create bot button showing the deposit amount" loading="lazy" width="880" height="102"></picture></div></figure>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Watch it work</h3></div>
+        <p>Your bot gets its own page: what it holds, every fill with the reason it happened, profit booked, profit floating, gas burnt, reserve left. You can also look at other people's bots without connecting anything.</p>
+        <figure class="phone"><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m40-public.webp" width="1146" height="1918"><img src="img/40-public.webp" alt="A ranked list of public bots with their profit since creation" loading="lazy" width="760" height="1302"></picture></div>
+        <figcaption><b>Real bots, live from creation.</b> Read it honestly: this is a leaderboard, so it shows the winners. Plenty here lose money and plenty sit flat. The point is that these numbers are checkable on chain instead of being a screenshot in a group chat.</figcaption></figure>
+      </div>
+
+      <div class="st">
+        <div class="h"><h3>Stop it whenever</h3></div>
+        <p>One button, one transaction. Back come the ETH left in the escrow, whatever remains of the gas reserve, and your open positions.</p>
+        <p>How they return depends on the bot. Grids sell and give you ETH. The Sniper and Shadow hand back <b>the tokens themselves, unsold</b>, because dumping a thin new token just to close a bot costs more than it saves.</p>
+        <div class="note ok"><div class="t">The part nobody else writes down</div><p>If our website is down you do not need us to stop your bot. Every contract has a plain <code>stop(id)</code> you can call from a block explorer with nothing but your bot id. The <a href="/desk/help/bots">withdraw guide</a> lists the exact function for every type.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="paper" data-ch="09" data-nav="Paper mode">
+  <div class="in">
+    <div class="eyebrow">09 &middot; Free practice</div>
+    <h2>Try one with no money at all</h2>
+    <p><b>Paper mode is on the Sniper only for now</b>, and it is honestly the best way to learn how any bot behaves. It runs your exact strategy against real, live launches and books simulated fills. No contract, no deposit, no gas. Nothing leaves your wallet because nothing ever enters one.</p>
+    <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m26-paper.webp" width="1070" height="225"><img src="img/26-paper-check.webp" alt="The paper mode checkbox on the Sniper form" loading="lazy" width="880" height="128"></picture></div></figure>
+    <figure><div class="shot"><picture><source media="(max-width:759px)" srcset="img/m27-paperbtn.webp" width="1086" height="153"><img src="img/27-paper-button.webp" alt="The start paper sniper button" loading="lazy" width="880" height="102"></picture></div>
+    <figcaption>One tick box, one signature to prove the wallet is yours, and no transaction at all.</figcaption></figure>
+    <p>You can trust its numbers because we went out of our way to make them unflattering:</p>
+    <div class="rows">
+      <div class="row"><div class="k">Real delay</div><div class="v">Every decision books <b>two seconds later</b>, at the price on chain at that moment &mdash; the delay we measured between a live bot deciding and its transaction landing.</div></div>
+      <div class="row"><div class="k">Real costs</div><div class="v">It pays the <b>same 1% fee</b> and the <b>same gas</b> as a live bot, at the current gas price.</div></div>
+      <div class="row"><div class="k">Real failures</div><div class="v">Same slippage and profit checks the contract enforces. If a real transaction would have failed, this one fails too &mdash; and still pays the gas.</div></div>
+    </div>
+    <p>A paper bot sits in your list like any other, wearing an amber <b>PAPER</b> tag, never mixed into your real totals. Three at a time. When you like what you see, <b>Go live with this strategy</b> opens the real Sniper with every setting filled in.</p>
+    <div class="note info"><div class="t">How we suggest you start</div><p>Run a paper bot for a day. Look at what it entered and what it refused. Change one thing. Run it another day. Only then put money in, and only an amount you would not mind losing entirely.</p></div>
+    <div class="btns pcta"><a class="p" href="/desk/bots/new/sniper">Start a paper bot</a></div>
+    <p class="pcn">No deposit &middot; no gas &middot; one signature to prove the wallet is yours</p>
+  </div>
+</section>
+
+<section class="band" id="which" data-ch="10" data-nav="Which one is for me">
+  <div class="in">
+    <div class="eyebrow">10 &middot; The picker</div>
+    <h2>Which one is for me</h2>
+    <p>Each bot wants a different shape of market. The little chart on the left of each row is the shape it needs &mdash; match it to what you think the token will do.</p>
+    <div class="pick">
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><line x1="2" y1="9" x2="64" y2="9" stroke="#1E2747" stroke-dasharray="2 3"/><line x1="2" y1="25" x2="64" y2="25" stroke="#1E2747" stroke-dasharray="2 3"/><polyline points="3,17 12,25 21,9 30,25 39,9 48,25 57,11 64,17" fill="none" stroke="#E84FE0" stroke-width="2" stroke-linejoin="round"/></svg>
+        <div><div class="w">Earn from a coin that keeps bouncing</div><div class="n" style="color:#E84FE0">Spot Grid v3</div><div class="s">Needs a sideways market and a range you choose. This is the one in the demo at the top.</div></div>
+      </a>
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><polyline points="3,30 12,24 21,27 30,18 39,21 48,11 57,14 64,5" fill="none" stroke="#8B7CF6" stroke-width="2" stroke-linejoin="round"/><circle cx="12" cy="24" r="2.4" fill="#8B7CF6"/><circle cx="30" cy="18" r="2.4" fill="#8B7CF6"/><circle cx="48" cy="11" r="2.4" fill="#8B7CF6"/></svg>
+        <div><div class="w">Keep buying the dips of something I believe in</div><div class="n" style="color:#8B7CF6">Infinity Grid v3</div><div class="s">Needs an uptrend and patience. No ceiling, so it never stops climbing with the price.</div></div>
+      </a>
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><polyline points="3,14 12,20 21,11 30,24 39,16 48,22 57,13 64,19" fill="none" stroke="#1E2747" stroke-width="1.6"/><g fill="#4FB3E8"><rect x="6" y="27" width="4" height="5" rx="1"/><rect x="18" y="27" width="4" height="5" rx="1"/><rect x="30" y="27" width="4" height="5" rx="1"/><rect x="42" y="27" width="4" height="5" rx="1"/><rect x="54" y="27" width="4" height="5" rx="1"/></g></svg>
+        <div><div class="w">Buy a fixed amount on a schedule, no thinking</div><div class="n" style="color:#4FB3E8">DCA</div><div class="s">Needs time and conviction. The simplest bot here by a distance.</div></div>
+      </a>
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><polyline points="3,24 14,12 25,18 36,7 47,14 58,5" fill="none" stroke="#9AA7BD" stroke-width="2" stroke-linejoin="round" opacity=".5"/><polyline points="8,30 19,18 30,24 41,13 52,20 63,11" fill="none" stroke="#F97316" stroke-width="2" stroke-linejoin="round" stroke-dasharray="3 3"/></svg>
+        <div><div class="w">Copy a wallet that already trades well</div><div class="n" style="color:#F97316">Shadow</div><div class="s">Needs a good wallet to follow, the genuinely hard part. Every swap it makes is mirrored at your size.</div></div>
+      </a>
+      <a href="/desk/bots/new/sniper">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><line x1="24" y1="2" x2="24" y2="32" stroke="#4ADE80" stroke-width="1" stroke-dasharray="2 3" opacity=".45"/><polyline points="3,28 16,28 24,27 30,6 36,14 44,10 52,20 64,24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linejoin="round"/><circle cx="24" cy="27" r="3" fill="#4ADE80"/></svg>
+        <div><div class="w">Catch brand new launches in their first seconds</div><div class="n" style="color:#4ADE80">Sniper</div><div class="s">Needs a strong stomach: most launches fade. The one with paper mode, so try it free first.</div></div>
+      </a>
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><rect x="3" y="6" width="9" height="22" rx="2" fill="#C3CCDF" opacity=".3"/><path d="M14 17h4" stroke="#C3CCDF" stroke-width="1.5"/><g fill="#C3CCDF"><rect x="20" y="20" width="6" height="8" rx="1.5"/><rect x="30" y="20" width="6" height="8" rx="1.5"/><rect x="40" y="20" width="6" height="8" rx="1.5"/><rect x="50" y="20" width="6" height="8" rx="1.5"/></g></svg>
+        <div><div class="w">Buy or sell something big without moving the price</div><div class="n" style="color:#C3CCDF">TWAP</div><div class="s">Needs a large order and some time. Slices it small so nobody sees you coming.</div></div>
+      </a>
+      <a href="/desk/bots">
+        <svg class="shape" viewBox="0 0 66 34" aria-hidden="true"><polyline points="3,7 15,15 27,23 39,29 51,18 64,8" fill="none" stroke="#FBBF24" stroke-width="2" stroke-linejoin="round"/><circle cx="15" cy="15" r="2.2" fill="#FBBF24"/><circle cx="27" cy="23" r="2.8" fill="#FBBF24"/><circle cx="39" cy="29" r="3.4" fill="#FBBF24"/></svg>
+        <div><div class="w">Add more as it drops, exit on the bounce</div><div class="n" style="color:#FBBF24">Martingale</div><div class="s">Needs a real reversal. The riskiest of the set by some margin &mdash; treat it with respect.</div></div>
+      </a>
+    </div>
+    <p class="sm">Each of these gets its own page here soon, with every field explained. Until then the <a href="/docs">docs</a> hold every contract address and function.</p>
+  </div>
+</section>
+
+<section id="words" data-ch="11" data-nav="Dictionary">
+  <div class="in">
+    <div class="eyebrow">11 &middot; The dictionary</div>
+    <h2>Words you will bump into</h2>
+    <div class="gl">
+      <details><summary>Escrow</summary><div class="c">The contract holding your bot's money. Yours, on chain, emptied only by your wallet.</div></details>
+      <details><summary>Keeper</summary><div class="c">Our machine that watches the market and sends your bot's transactions. It can only act inside the limits your contract stores.</div></details>
+      <details><summary>Fill</summary><div class="c">One completed buy or sell. Bots are measured in fills.</div></details>
+      <details><summary>Per trade</summary><div class="c">How much the bot spends on a single entry. Not the total you deposited.</div></details>
+      <details><summary>Gas reserve</summary><div class="c">A small pot of ETH inside your bot that pays the network fee on each fill. The remainder comes back when you stop.</div></details>
+      <details><summary>Take profit &middot; TP</summary><div class="c">Sell once the position is up by this much versus what it cost. The contract verifies it before letting the sale through.</div></details>
+      <details><summary>Stop loss &middot; SL</summary><div class="c">Sell once the position is down by this much, to stop the bleeding. Also verified by the contract.</div></details>
+      <details><summary>Slippage</summary><div class="c">The gap between the price you were quoted and the price you got, because somebody traded in between. Every bot sets a floor below which it refuses to trade at all.</div></details>
+      <details><summary>Realized and floating</summary><div class="c">Realized is profit already locked in by a completed sale. Floating only exists on paper, because you still hold the token.</div></details>
+      <details><summary>Expiry</summary><div class="c">A date after which the bot stops by itself. After it, anyone can trigger the refund &mdash; but it always pays you, never them.</div></details>
+    </div>
+  </div>
+</section>
+
+<section class="dark" id="honest" data-ch="12" data-nav="The honest part">
+  <div class="in">
+    <div class="eyebrow">12 &middot; No spin</div>
+    <h2>The honest part</h2>
+    <p>Every bot on The Desk carries a risk note. We do not bury it there and we will not bury it here.</p>
+    <div class="rows">
+      <div class="row bad"><div class="k">Risk</div><div class="v"><b>You can lose money.</b> Any of these can end below where it started. The Sniper in particular is built around the fact that most launches fade.</div></div>
+      <div class="row bad"><div class="k">Risk</div><div class="v"><b>The contract guarantees the limits, not the outcome.</b> It enforces your sizes, caps, stop loss and minimum output. It cannot make a strategy profitable.</div></div>
+      <div class="row bad"><div class="k">Risk</div><div class="v"><b>If the keeper is offline, fills pause.</b> Your money stays safe and withdrawable the whole time, but the bot is not trading.</div></div>
+      <div class="row bad"><div class="k">Risk</div><div class="v"><b>New tokens bite.</b> On a fresh curve your own buy moves the price against you, and some tokens cannot be sold at all. The Sniper hands stuck tokens back instead of letting them lock your ETH, but it cannot make them worth anything.</div></div>
+    </div>
+    <p>None of that is a reason to stay away. It is a reason to start small, start in paper, and only scale what you have watched work with your own eyes.</p>
+
+    <div class="cta">
+      <h3>Ready? Start with the free one.</h3>
+      <p>A paper Sniper costs nothing, risks nothing, and teaches you more in a day than this page did in ten minutes.</p>
+      <div class="btns">
+        <a class="p" href="/desk/bots/new/sniper">Start a paper bot</a>
+        <a class="s" href="/desk/bots">Browse all nine</a>
+      </div>
+    </div>
+    <div class="end">
+      <a href="/docs"><div class="t">Full documentation</div><div class="s">Every product, every contract address, the weekly changelog</div></a>
+      <a href="/desk/help/bots"><div class="t">Withdraw without us</div><div class="s">The exact function to call if this site ever disappears</div></a>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  NLYRA Wiki &middot; Bots &middot; last reviewed 20 September 2026. Screenshots come from the live Desk and may drift as the product changes.
+  Nothing here is financial advice. You choose the strategy and you own the outcome.
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var bar = document.getElementById('prog');
+  function prog() {
+    var h = document.documentElement, max = h.scrollHeight - h.clientHeight;
+    bar.style.width = (max > 0 ? Math.min(100, h.scrollTop / max * 100) : 0) + '%';
+  }
+  addEventListener('scroll', prog, { passive: true }); addEventListener('resize', prog); prog();
+
+  /* the live grid bot: a fake price walk, a real grid */
+  var cv = document.getElementById('cv');
+  if (!cv || !cv.getContext) return;
+  var ctx = cv.getContext('2d');
+  var still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var LEVELS = 7, STEP = 0.02, SIZE = 40, P0 = 1;
+  var lo = P0 * (1 - STEP * 3.5), hi = P0 * (1 + STEP * 3.5), levels = [];
+  for (var i = 0; i < LEVELS; i++) levels.push(lo + (hi - lo) * i / (LEVELS - 1));
+  var pts = [], marks = [], held = {}, buys = 0, sells = 0, booked = 0, price = P0, drift = 0, MAXPTS = 260;
+  var eNb = document.getElementById('nb'), eNs = document.getElementById('ns'), ePf = document.getElementById('pf');
+
+  function stepPrice() {
+    drift = drift * 0.86 + (Math.random() - 0.5) * 0.0062;
+    price = price * (1 + drift) + (P0 - price) * 0.018;   // vuelve al centro: recorre la grilla en vez de clavarse en el borde
+    price = Math.max(lo * 0.965, Math.min(hi * 1.035, price));
+    var prev = pts.length ? pts[pts.length - 1] : price;
+    pts.push(price);
+    var shifted = pts.length > MAXPTS;
+    if (shifted) pts.shift();
+    for (var i = 0; i < LEVELS; i++) {
+      var L = levels[i];
+      if (prev > L && price <= L && !held[i]) { held[i] = 1; buys++; marks.push({ x: pts.length - 1, y: price, s: 0, a: 1 }); }
+      if (i > 0 && prev < L && price >= L && held[i - 1]) { booked += SIZE * STEP; sells++; delete held[i - 1]; marks.push({ x: pts.length - 1, y: price, s: 1, a: 1 }); }
+    }
+    for (var m = marks.length - 1; m >= 0; m--) { if (shifted) marks[m].x--; if (marks[m].x < 0) marks.splice(m, 1); }
+    eNb.textContent = buys; eNs.textContent = sells; ePf.textContent = '$' + booked.toFixed(2);
+  }
+
+  var W = 0, H = 0;
+  function size() {
+    var dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth; H = cv.clientHeight;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  var PAD = 14, TOP = 18, BOT = 18;
+  function yOf(p) { var a = lo * 0.965, b = hi * 1.035; return TOP + (H - TOP - BOT) * (1 - (p - a) / (b - a)); }
+  function xOf(i) { return PAD + (W - PAD * 2) * (i / (MAXPTS - 1)); }
+
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1;
+    for (var i = 0; i < LEVELS; i++) {
+      var y = yOf(levels[i]);
+      ctx.strokeStyle = held[i] ? 'rgba(74,222,128,.34)' : 'rgba(233,238,248,.10)';
+      ctx.setLineDash(held[i] ? [] : [3, 4]);
+      ctx.beginPath(); ctx.moveTo(PAD, y); ctx.lineTo(W - PAD, y); ctx.stroke();
+    }
+    ctx.setLineDash([]);
+    if (pts.length < 2) return;
+    var g = ctx.createLinearGradient(0, 0, W, 0);
+    g.addColorStop(0, 'rgba(139,124,246,.22)'); g.addColorStop(1, '#E9EEF8');
+    ctx.strokeStyle = g; ctx.lineWidth = 2.2; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.beginPath();
+    for (var k = 0; k < pts.length; k++) { var x = xOf(k), yy = yOf(pts[k]); k ? ctx.lineTo(x, yy) : ctx.moveTo(x, yy); }
+    ctx.stroke();
+    var lx = xOf(pts.length - 1), ly = yOf(pts[pts.length - 1]);
+    ctx.fillStyle = '#E9EEF8'; ctx.beginPath(); ctx.arc(lx, ly, 3.6, 0, 6.2832); ctx.fill();
+    ctx.strokeStyle = 'rgba(233,238,248,.22)'; ctx.beginPath(); ctx.arc(lx, ly, 8, 0, 6.2832); ctx.stroke();
+    for (var m = 0; m < marks.length; m++) {
+      var mk = marks[m], mx = xOf(mk.x), my = yOf(mk.y), col = mk.s ? '232,79,224' : '74,222,128';
+      ctx.fillStyle = 'rgba(' + col + ',' + (0.2 * mk.a) + ')';
+      ctx.beginPath(); ctx.arc(mx, my, 10 - 5 * mk.a, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = 'rgba(' + col + ',' + Math.max(.4, mk.a) + ')';
+      ctx.beginPath(); ctx.arc(mx, my, 3.3, 0, 6.2832); ctx.fill();
+      if (mk.a > 0.34) mk.a -= 0.012;
+    }
+  }
+
+  addEventListener('resize', function () { size(); draw(); });
+  size();
+  for (var w = 0; w < 120; w++) stepPrice();
+  draw();
+  if (!still) {
+    var acc = 0, last = 0, running = true;
+    new IntersectionObserver(function (e) { running = e[0].isIntersecting; }, { threshold: 0 }).observe(cv);
+    (function loop(now) {
+      requestAnimationFrame(loop);
+      if (!running) { last = now; return; }
+      if (!last) last = now;
+      acc += now - last; last = now;
+      if (acc < 90) return;
+      acc = 0; stepPrice(); draw();
+    })(0);
+  }
+})();
+</script>
+
+<script>
+/* MOBILE (2026-09-20): barra de capitulo, indice plegable, anterior/siguiente
+   y aparicion suave. Sin dependencias. Si el JS no corre, la pagina queda como
+   estaba: nada se esconde con CSS solo. */
+(function () {
+  'use strict';
+  var secs = [].slice.call(document.querySelectorAll('section[data-ch]'));
+  if (!secs.length) return;
+  var N = secs.length;
+  var $ = function (id) { return document.getElementById(id); };
+  var chbar = $('chbar'), chbtn = $('chbtn'), chix = $('chix'), chnm = $('chnm'), chline = $('chline');
+  var tocp = $('tocp'), scrim = $('scrim'), toc = $('toc');
+  var nTot = $('tocn'); if (nTot) nTot.textContent = String(N);
+  var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function navOf(s) { return s.getAttribute('data-nav') || ''; }
+  function chOf(s) { return s.getAttribute('data-ch') || ''; }
+
+  /* ── los dos indices salen de las mismas secciones ── */
+  function buildList(ol) {
+    if (!ol) return [];
+    var out = [];
+    secs.forEach(function (s) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.href = '#' + s.id;
+      a.innerHTML = '<span class="i">' + chOf(s) + '</span><span class="t"></span>';
+      a.querySelector('.t').innerHTML = navOf(s);
+      li.appendChild(a); ol.appendChild(li); out.push(a);
+    });
+    return out;
+  }
+  var heroLinks = buildList($('tocol'));
+  var panelLinks = buildList($('tocp2'));
+
+  /* ── anterior / siguiente al pie de cada capitulo ── */
+  secs.forEach(function (s, i) {
+    var box = s.querySelector('.in');
+    if (!box) return;
+    var nav = document.createElement('nav');
+    nav.className = 'chnav';
+    nav.setAttribute('aria-label', 'Chapter navigation');
+    [[-1, 'pv', 'Previous'], [1, 'nx', 'Next']].forEach(function (d) {
+      var j = i + d[0], el;
+      if (j >= 0 && j < N) {
+        el = document.createElement('a');
+        el.href = '#' + secs[j].id;
+        el.className = d[1];
+        el.innerHTML = '<span class="d"></span><span class="t"></span>';
+        el.querySelector('.d').textContent = (d[0] < 0 ? '\u2190 ' : '') + chOf(secs[j]) + (d[0] > 0 ? ' \u2192' : '');
+        el.querySelector('.t').innerHTML = navOf(secs[j]);
+      } else {
+        el = document.createElement('span');
+        el.className = 'ph2';
+      }
+      nav.appendChild(el);
+    });
+    box.appendChild(nav);
+  });
+
+  /* ── panel: abrir, cerrar, y no dejar scrollear el fondo ── */
+  function setOpen(v) {
+    if (!chbar) return;
+    chbar.classList.toggle('open', v);
+    tocp.classList.toggle('on', v);
+    scrim.classList.toggle('on', v);
+    chbtn.setAttribute('aria-expanded', v ? 'true' : 'false');
+  }
+  if (chbtn) chbtn.addEventListener('click', function () { setOpen(!chbar.classList.contains('open')); });
+  if (scrim) scrim.addEventListener('click', function () { setOpen(false); });
+  panelLinks.forEach(function (a) { a.addEventListener('click', function () { setOpen(false); }); });
+  addEventListener('keydown', function (e) { if (e.key === 'Escape') setOpen(false); });
+  if (toc) heroLinks.forEach(function (a) { a.addEventListener('click', function () { toc.open = false; }); });
+
+  /* ── capitulo actual + progreso, en un solo handler ── */
+  var cur = -1, ticking = false;
+  function paint() {
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var pct = max > 0 ? Math.min(100, Math.max(0, h.scrollTop / max * 100)) : 0;
+    if (chline) chline.style.width = pct + '%';
+    /* el borde es donde termina la barra pegajosa, con la misma holgura que el
+       scroll-margin de las secciones; medir por rect evita desfases de 4 px y
+       aguanta que las capturas carguen tarde y corran todo hacia abajo */
+    var edge = (chbar && getComputedStyle(chbar).display !== 'none' ? chbar.getBoundingClientRect().bottom : 60) + 14;
+    var i = 0;
+    for (var k = 0; k < N; k++) if (secs[k].getBoundingClientRect().top <= edge) i = k;
+    if (i !== cur) {
+      cur = i;
+      if (chix) chix.textContent = chOf(secs[i]);
+      if (chnm) chnm.innerHTML = navOf(secs[i]);
+      panelLinks.concat(heroLinks).forEach(function (a, n) { a.classList.toggle('on', (n % N) === i); });
+    }
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { ticking = false; paint(); });
+  }
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', paint);
+  addEventListener('load', paint);
+  paint();
+
+  /* ── aparicion suave: la clase la pone el JS, asi que sin JS no se esconde nada ── */
+  if (!reduced && 'IntersectionObserver' in window) {
+    var els = [].slice.call(document.querySelectorAll(
+      'section .fig, section .rows > .row, section .why > div, section .flow > .bx, section .pick > a, section .perm > .pm, section figure, section .stats > div'));
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('sh'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.01 });
+    els.forEach(function (el) { el.classList.add('rv'); io.observe(el); });
+    setTimeout(function () { els.forEach(function (el) { el.classList.add('sh'); }); }, 2600);   // red de seguridad
+  }
+})();
+</script>
+</body>
+</html>

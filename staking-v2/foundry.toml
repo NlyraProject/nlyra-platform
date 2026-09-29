@@ -1,0 +1,37 @@
+[profile.default]
+src = "src"
+test = "test"
+out = "out"
+libs = ["lib"]
+# same toolchain as the v4 bots (compile-v4.js): solc 0.8.24, optimizer 200, viaIR, cancun
+solc_version = "0.8.24"
+optimizer = true
+optimizer_runs = 200
+via_ir = true
+evm_version = "cancun"
+bytecode_hash = "ipfs"
+remappings = [
+  "oz/=lib/oz/",
+  "forge-std/=lib/forge-std/src/",
+]
+# fork tests: set RH_RPC to a Robinhood Chain RPC, e.g. RH_RPC=https://rpc.mainnet.chain.robinhood.com
+# (reproducing the pinned block ForkPin.BLOCK needs an archive RPC; otherwise pass FORK_BLOCK=<recent block>)
+[rpc_endpoints]
+robin = "${RH_RPC}"
+
+[fuzz]
+runs = 48
+seed = "0x4e4c595241"
+
+[profile.default.fmt]
+line_length = 120
+
+[lint]
+lint_on_build = false
+
+# fast test iteration (no viaIR; inherits everything else from default). Final figures (gas,
+# sizes) always come from the default profile. Usage: FOUNDRY_PROFILE=dev forge test ...
+[profile.dev]
+via_ir = false
+out = "out-dev"
+cache_path = "cache-dev"

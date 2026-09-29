@@ -1,0 +1,49 @@
+{
+  "compiler": "v0.8.28+commit.7893614a",
+  "language": "solidity",
+  "contractName": "WithdrawalVerifier",
+  "mainFile": "lib/privacy-pools-core/packages/contracts/src/contracts/verifiers/WithdrawalVerifier.sol",
+  "settings": {
+    "evmVersion": "cancun",
+    "libraries": {},
+    "metadata": {
+      "appendCBOR": false,
+      "bytecodeHash": "none",
+      "useLiteralContent": false
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 10000
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "remappings": [
+      "@account-abstraction/=node_modules/@account-abstraction/",
+      "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+      "@oz-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/",
+      "@oz/=lib/openzeppelin-contracts/contracts/",
+      "lean-imt/=node_modules/@zk-kit/lean-imt.sol/",
+      "poseidon-solidity/=node_modules/poseidon-solidity/",
+      "poseidon/=node_modules/poseidon-solidity/",
+      "interfaces/=lib/privacy-pools-core/packages/contracts/src/interfaces/",
+      "contracts/=lib/privacy-pools-core/packages/contracts/src/contracts/",
+      "forge-std/=lib/forge-std/src/",
+      "oif/=lib/oif/solidity/src/",
+      "oif-contracts/=lib/oif-contracts/src/",
+      "openzeppelin/=lib/oif-contracts/lib/openzeppelin-contracts/contracts/",
+      "permit2/=lib/oif-contracts/lib/permit2/",
+      "the-compact/=lib/oif-contracts/lib/the-compact/"
+    ],
+    "viaIR": true
+  },
+  "license": "none",
+  "constructorArgs": null
+}

@@ -1,0 +1,1237 @@
+[
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "router",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "weth",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "keeper",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "constructor"
+ },
+ {
+  "inputs": [],
+  "name": "BadFee",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadGrid",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadLevel",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadParams",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadRouteHash",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BadValue",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "BelowFloor",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "Expired",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InsufficientBudget",
+  "type": "error"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "got",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "want",
+    "type": "uint256"
+   }
+  ],
+  "name": "InsufficientOutput",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "IsPaused",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotExpired",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotKeeper",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotMaker",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotOpen",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotOwner",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NothingToRefund",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NothingToSell",
+  "type": "error"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "got",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "want",
+    "type": "uint256"
+   }
+  ],
+  "name": "PriceNotReached",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "TransferFailed",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "ZeroAddress",
+  "type": "error"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "EthPending",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "name": "EthWithdrawn",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "maker",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "keeper",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "int256",
+    "name": "level",
+    "type": "int256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint8",
+    "name": "side",
+    "type": "uint8"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amountIn",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "profit",
+    "type": "uint256"
+   }
+  ],
+  "name": "GridFilled",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "maker",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "quoteIn",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "baseIn",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint16",
+    "name": "nLevels",
+    "type": "uint16"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint16",
+    "name": "nSeed",
+    "type": "uint16"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint16",
+    "name": "gBps",
+    "type": "uint16"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint64",
+    "name": "expiry",
+    "type": "uint64"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint16",
+    "name": "feeBps",
+    "type": "uint16"
+   },
+   {
+    "indexed": false,
+    "internalType": "address",
+    "name": "referrer",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bytes32",
+    "name": "routeHash",
+    "type": "bytes32"
+   }
+  ],
+  "name": "GridOpened",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "maker",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint8",
+    "name": "kind",
+    "type": "uint8"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "baseSold",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "proceeds",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "baseReturned",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "quoteReturned",
+    "type": "uint256"
+   }
+  ],
+  "name": "GridStopped",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "address",
+    "name": "keeper",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "KeeperSet",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferStarted",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "from",
+    "type": "address"
+   },
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "OwnershipTransferred",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "bool",
+    "name": "paused",
+    "type": "bool"
+   }
+  ],
+  "name": "PausedSet",
+  "type": "event"
+ },
+ {
+  "inputs": [],
+  "name": "MAX_LEVELS",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "MIN_G_BPS",
+  "outputs": [
+   {
+    "internalType": "uint16",
+    "name": "",
+    "type": "uint16"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "ROUTER",
+  "outputs": [
+   {
+    "internalType": "contract IArchitectRouter",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "WETH",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "acceptOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "uint256",
+    "name": "i",
+    "type": "uint256"
+   }
+  ],
+  "name": "buyMinOut",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "count",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "escrowed",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "uint256",
+    "name": "i",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "fillBuy",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "uint256",
+    "name": "i",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "fillSell",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amountOut",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   }
+  ],
+  "name": "grid",
+  "outputs": [
+   {
+    "components": [
+     {
+      "internalType": "address",
+      "name": "maker",
+      "type": "address"
+     },
+     {
+      "internalType": "address",
+      "name": "token",
+      "type": "address"
+     },
+     {
+      "internalType": "address",
+      "name": "referrer",
+      "type": "address"
+     },
+     {
+      "internalType": "bytes32",
+      "name": "routeHash",
+      "type": "bytes32"
+     },
+     {
+      "internalType": "uint128",
+      "name": "perLevel",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "quoteHeld",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "baseHeld",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "profit",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "slPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "tpPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint64",
+      "name": "expiry",
+      "type": "uint64"
+     },
+     {
+      "internalType": "uint16",
+      "name": "feeBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint16",
+      "name": "gBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint16",
+      "name": "nLevels",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint16",
+      "name": "nSeed",
+      "type": "uint16"
+     },
+     {
+      "internalType": "enum ArchitectBotBase.Status",
+      "name": "status",
+      "type": "uint8"
+     }
+    ],
+    "internalType": "struct ArchitectSpotGrid.Grid",
+    "name": "",
+    "type": "tuple"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "isKeeper",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   }
+  ],
+  "name": "isOpen",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   }
+  ],
+  "name": "levels",
+  "outputs": [
+   {
+    "components": [
+     {
+      "internalType": "uint128",
+      "name": "buyPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "sellPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "base",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "cost",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint8",
+      "name": "state",
+      "type": "uint8"
+     }
+    ],
+    "internalType": "struct ArchitectSpotGrid.Level[]",
+    "name": "",
+    "type": "tuple[]"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   },
+   {
+    "components": [
+     {
+      "internalType": "uint128",
+      "name": "perLevel",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint16",
+      "name": "gBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint16",
+      "name": "nSeed",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint128",
+      "name": "slPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "tpPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint64",
+      "name": "expiry",
+      "type": "uint64"
+     },
+     {
+      "internalType": "uint16",
+      "name": "feeBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "address",
+      "name": "referrer",
+      "type": "address"
+     }
+    ],
+    "internalType": "struct ArchitectSpotGrid.Params",
+    "name": "p",
+    "type": "tuple"
+   },
+   {
+    "internalType": "uint128[]",
+    "name": "buyPrice",
+    "type": "uint128[]"
+   },
+   {
+    "internalType": "uint128[]",
+    "name": "sellPrice",
+    "type": "uint128[]"
+   },
+   {
+    "internalType": "uint256",
+    "name": "baseAmount",
+    "type": "uint256"
+   }
+  ],
+  "name": "openWithBase",
+  "outputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   }
+  ],
+  "stateMutability": "payable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   },
+   {
+    "components": [
+     {
+      "internalType": "uint128",
+      "name": "perLevel",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint16",
+      "name": "gBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint16",
+      "name": "nSeed",
+      "type": "uint16"
+     },
+     {
+      "internalType": "uint128",
+      "name": "slPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint128",
+      "name": "tpPrice",
+      "type": "uint128"
+     },
+     {
+      "internalType": "uint64",
+      "name": "expiry",
+      "type": "uint64"
+     },
+     {
+      "internalType": "uint16",
+      "name": "feeBps",
+      "type": "uint16"
+     },
+     {
+      "internalType": "address",
+      "name": "referrer",
+      "type": "address"
+     }
+    ],
+    "internalType": "struct ArchitectSpotGrid.Params",
+    "name": "p",
+    "type": "tuple"
+   },
+   {
+    "internalType": "uint128[]",
+    "name": "buyPrice",
+    "type": "uint128[]"
+   },
+   {
+    "internalType": "uint128[]",
+    "name": "sellPrice",
+    "type": "uint128[]"
+   },
+   {
+    "internalType": "uint256",
+    "name": "seedMinOut",
+    "type": "uint256"
+   }
+  ],
+  "name": "openWithEth",
+  "outputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   }
+  ],
+  "stateMutability": "payable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "owner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "paused",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "name": "pendingEth",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "pendingOwner",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "refundExpired",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "to",
+    "type": "address"
+   }
+  ],
+  "name": "rescue",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "uint256",
+    "name": "i",
+    "type": "uint256"
+   }
+  ],
+  "name": "sellMinOut",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "k",
+    "type": "address"
+   },
+   {
+    "internalType": "bool",
+    "name": "allowed",
+    "type": "bool"
+   }
+  ],
+  "name": "setKeeper",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bool",
+    "name": "v",
+    "type": "bool"
+   }
+  ],
+  "name": "setPaused",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minOut",
+    "type": "uint256"
+   },
+   {
+    "internalType": "bool",
+    "name": "sellAll",
+    "type": "bool"
+   }
+  ],
+  "name": "stop",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "proceeds",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   },
+   {
+    "internalType": "uint256",
+    "name": "minOut",
+    "type": "uint256"
+   }
+  ],
+  "name": "stopLoss",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "proceeds",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "bytes32",
+    "name": "id",
+    "type": "bytes32"
+   },
+   {
+    "internalType": "bytes",
+    "name": "route",
+    "type": "bytes"
+   }
+  ],
+  "name": "takeProfit",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "proceeds",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "n",
+    "type": "address"
+   }
+  ],
+  "name": "transferOwnership",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "withdrawEth",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "amount",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "stateMutability": "payable",
+  "type": "receive"
+ }
+]

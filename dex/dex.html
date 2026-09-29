@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Swap — the NERON &amp; LYRA DEX · Robinhood Chain</title>
+<meta name="description" content="Swap on Robinhood Chain through Architect Swap — the DEX by NERON & LYRA. Verbatim Uniswap V2 + V3 contracts with a smart router that always executes at the best price. Guarded by the only AI scanner on the chain.">
+<!--OG-->
+<meta property="og:title" content="Architect Swap — the NERON & LYRA DEX">
+<meta property="og:description" content="Uniswap V2 + V3 verbatim on Robinhood Chain. Smart router: every swap executes at the best price of both. Guarded by the AI that reads the code.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://nlyra.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<!--/OG-->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2338e1ff'/%3E%3Cstop offset='1' stop-color='%23ff5ad1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23070b18'/%3E%3Ccircle cx='40' cy='24' r='12' fill='url(%23g)'/%3E%3Ccircle cx='36' cy='21' r='10' fill='%23070b18'/%3E%3Ctext x='14' y='52' font-family='Arial' font-size='22' font-weight='900' fill='url(%23g)'%3EAS%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #070b18; --card: rgba(15, 21, 40, .72); --card-solid: #0f1528;
+    --line: rgba(140, 160, 200, .14); --line-2: rgba(140, 160, 200, .22);
+    --ink: #e9eef8; --ink-2: #9aa7bd; --ink-3: #5d6a82;
+    --cyan: #38e1ff; --magenta: #ff5ad1; --safe: #34d399; --warn: #fbbf24; --bad: #f87171;
+    --grad: linear-gradient(100deg, var(--cyan), var(--magenta));
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; overflow-x: hidden; }
+  h1, h2, .num { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+
+  .aurora { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .aurora::before, .aurora::after { content: ''; position: absolute; width: 62vmax; height: 62vmax; border-radius: 50%; filter: blur(95px); opacity: .17; animation: drift 17s ease-in-out infinite alternate; }
+  .aurora::before { background: var(--cyan); top: -26vmax; left: -18vmax; }
+  .aurora::after { background: var(--magenta); bottom: -30vmax; right: -18vmax; animation-delay: -8s; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(6vmax, 4vmax) scale(1.18); } }
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: radial-gradient(1.5px 1.5px at 20% 30%, rgba(233,238,248,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 70% 18%, rgba(233,238,248,.3) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 86% 62%, rgba(233,238,248,.24) 50%, transparent 51%),
+      radial-gradient(1px 1px at 38% 82%, rgba(233,238,248,.26) 50%, transparent 51%),
+      radial-gradient(1px 1px at 8% 64%, rgba(233,238,248,.2) 50%, transparent 51%),
+      radial-gradient(1px 1px at 55% 45%, rgba(233,238,248,.2) 50%, transparent 51%); }
+  .stars::before { content: ''; position: absolute; inset: 0; background: inherit; animation: twinkle 4.5s ease-in-out infinite alternate; }
+  @keyframes twinkle { from { opacity: .2; } to { opacity: .9; } }
+  .shoot { position: fixed; top: 12%; left: -6%; width: 110px; height: 1.5px; z-index: 0; pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(233,238,248,.9)); transform: rotate(16deg);
+    animation: shoot 9s cubic-bezier(.2,.6,.4,1) infinite; opacity: 0; }
+  .shoot.s2 { top: 55%; animation-delay: 4.7s; animation-duration: 11s; }
+  @keyframes shoot { 0% { transform: translateX(0) rotate(16deg); opacity: 0; } 3% { opacity: .9; } 9% { transform: translateX(70vw) rotate(16deg); opacity: 0; } 100% { opacity: 0; } }
+  .moon { position: fixed; top: 74px; right: 6vw; width: 92px; height: 92px; z-index: 0; pointer-events: none; opacity: .85; filter: drop-shadow(0 0 22px rgba(255,90,209,.35)); animation: moonfloat 7s ease-in-out infinite alternate; }
+  @keyframes moonfloat { from { transform: translateY(0); } to { transform: translateY(-10px); } }
+
+  .shell { position: relative; z-index: 1; min-height: 100%; display: flex; flex-direction: column; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 16px clamp(16px, 4vw, 40px); }
+  .brand .ms { font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .brand .by { font-size: 10.5px; color: var(--ink-3); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-top: 2px; }
+  .nav-r { display: flex; align-items: center; gap: 14px; }
+  .nav-r a.plain { color: var(--ink-2); font-size: 13.5px; font-weight: 600; text-decoration: none; }
+  .nav-r a.plain:hover { color: var(--cyan); }
+  .connect { padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line-2); background: var(--card); color: var(--ink); font-weight: 700; font-size: 13.5px; cursor: pointer; backdrop-filter: blur(8px); transition: all .15s; font-family: 'Inter'; }
+  .connect:hover { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 18px rgba(56,225,255,.25); }
+  .connect.on { border-color: transparent; background: var(--grad); color: #06101f; }
+
+  main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: clamp(12px, 3.5vh, 34px) 16px 40px; }
+  .ticker { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+  .tk { display: flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); backdrop-filter: blur(10px); font-size: 12.5px; color: var(--ink-2); font-weight: 600; }
+  .tk b { color: var(--ink); font-family: 'Space Grotesk'; }
+  .tk .up { color: var(--safe); } .tk .down { color: var(--bad); }
+  .tk .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--safe); animation: pulse 1.8s ease-in-out infinite; }
+  .tk .tk-g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  #chart { border-bottom: 1px solid var(--line); }
+  @keyframes pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52,211,153,.5); } 50% { opacity: .6; box-shadow: 0 0 0 6px rgba(52,211,153,0); } }
+
+  .swap-wrap { width: 100%; max-width: 448px; position: relative; }
+  .glowbox { position: relative; border-radius: 24px; background: var(--card); backdrop-filter: blur(18px); box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+  .glowbox::before { content: ''; position: absolute; inset: 0; border-radius: 24px; padding: 1.6px;
+    background: linear-gradient(140deg, rgba(56,225,255,.85), rgba(56,225,255,.06) 30%, rgba(255,90,209,.06) 70%, rgba(255,90,209,.85));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+    pointer-events: none; animation: hue 9s linear infinite; }
+  @keyframes hue { from { filter: hue-rotate(0deg); } to { filter: hue-rotate(360deg); } }
+  .pad { padding: 18px; }
+  .tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+  .tab { flex: 1; text-align: center; padding: 9px; border-radius: 12px; font-weight: 700; font-size: 13.5px; color: var(--ink-2); cursor: pointer; border: 1px solid transparent; }
+  .tab.on { color: var(--ink); background: rgba(56,225,255,.07); border-color: var(--line-2); }
+
+  .box { background: rgba(7, 11, 24, .55); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; transition: border-color .2s; }
+  .box:focus-within { border-color: rgba(56,225,255,.45); }
+  .box + .box { margin-top: 6px; }
+  .box .lab { display: flex; justify-content: space-between; font-size: 12px; color: var(--ink-3); font-weight: 600; margin-bottom: 6px; }
+  .box .lab .max { color: var(--cyan); cursor: pointer; font-weight: 700; }
+  .row { display: flex; align-items: center; gap: 10px; }
+  .amt { flex: 1; min-width: 0; background: none; border: none; outline: none; color: var(--ink); font-family: 'Space Grotesk'; font-size: 27px; font-weight: 600; }
+  .amt::placeholder { color: var(--ink-3); }
+  .usd { font-size: 12px; color: var(--ink-3); font-weight: 600; padding-top: 4px; min-height: 16px; }
+  .chip { display: flex; align-items: center; gap: 8px; padding: 7px 12px; border-radius: 999px; background: var(--card-solid); border: 1px solid var(--line-2); font-weight: 800; font-size: 14.5px; white-space: nowrap; }
+  .chip.pick { cursor: pointer; transition: border-color .15s; }
+  .chip.pick:hover { border-color: var(--cyan); }
+  .chip.pick::after { content: '▾'; color: var(--ink-3); font-size: 11px; }
+  .chip img, .chip .dot { width: 24px; height: 24px; border-radius: 50%; }
+  .chip .dot { background: var(--grad); display: flex; align-items: center; justify-content: center; font-size: 12.5px; }
+
+  .flip { display: flex; justify-content: center; margin: -4px 0; position: relative; z-index: 2; }
+  .flip button { width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--line-2); background: var(--card-solid); color: var(--cyan); font-size: 18px; cursor: pointer; transition: transform .3s, border-color .15s, box-shadow .2s; }
+  .flip button:hover { border-color: var(--cyan); transform: rotate(180deg); box-shadow: 0 0 16px rgba(56,225,255,.3); }
+
+  .info { font-size: 12.5px; color: var(--ink-2); padding: 10px 6px 2px; display: grid; gap: 4px; }
+  .info .l { display: flex; justify-content: space-between; }
+  .info b { color: var(--ink); }
+  .info .ok { color: var(--safe); } .info .mid { color: var(--warn); } .info .hot { color: var(--bad); }
+  .info .gear { cursor: pointer; color: var(--ink-3); } .info .gear:hover { color: var(--cyan); }
+
+  .cta { display: block; width: 100%; margin-top: 12px; padding: 15px; border: none; border-radius: 16px; background: var(--grad); color: #06101f; font-family: 'Space Grotesk'; font-weight: 700; font-size: 17px; cursor: pointer; box-shadow: 0 10px 34px rgba(56,225,255,.22), 0 10px 34px rgba(255,90,209,.18); transition: transform .12s, opacity .15s; position: relative; overflow: hidden; }
+  .cta::after { content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg); transition: left .5s; }
+  .cta:hover::after { left: 130%; }
+  .cta:hover { transform: translateY(-1px); }
+  .cta:disabled { opacity: .35; cursor: default; transform: none; box-shadow: none; }
+  .cta:disabled::after { display: none; }
+
+  #status { margin-top: 12px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: var(--ink-2); background: rgba(7,11,24,.5); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; min-height: 38px; white-space: pre-wrap; word-break: break-all; }
+  #status.ok { border-color: rgba(52,211,153,.4); color: var(--safe); }
+  #status.err { border-color: rgba(248,113,113,.4); color: var(--bad); }
+
+  /* modal picker */
+  .overlay { position: fixed; inset: 0; z-index: 40; background: rgba(4,7,15,.7); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 20px; }
+  .overlay.on { display: flex; }
+  .picker { width: 100%; max-width: 400px; max-height: 76vh; overflow-y: auto; background: var(--card-solid); border: 1px solid var(--line-2); border-radius: 20px; padding: 16px; }
+  .picker h3 { font-family: 'Space Grotesk'; font-size: 16px; margin-bottom: 12px; }
+  .paste { width: 100%; padding: 12px 14px; font-size: 13px; font-family: ui-monospace, Menlo, monospace; background: rgba(7,11,24,.6); border: 1px solid var(--line-2); border-radius: 12px; color: var(--ink); outline: none; margin-bottom: 12px; }
+  .paste:focus { border-color: var(--cyan); }
+  .tok-row { display: flex; align-items: center; gap: 12px; padding: 10px 8px; border-radius: 12px; cursor: pointer; }
+  .tok-row:hover { background: rgba(56,225,255,.06); }
+  .tok-row img, .tok-row .dot { width: 32px; height: 32px; border-radius: 50%; }
+  .tok-row .dot { background: var(--grad); display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .tok-row .ti b { display: block; font-size: 14.5px; }
+  .tok-row .ti span { font-size: 12px; color: var(--ink-3); }
+  .tok-row .tb { margin-left: auto; font-size: 13px; color: var(--ink-2); font-family: 'Space Grotesk'; }
+  .picker .note { font-size: 11.5px; color: var(--ink-3); text-align: center; padding-top: 10px; }
+
+  /* trades + opportunities + positions */
+  .trades { margin-top: 20px; border-radius: 18px; background: var(--card); backdrop-filter: blur(14px); border: 1px solid var(--line); overflow: hidden; }
+  .trades .th { display: flex; align-items: center; gap: 8px; padding: 11px 16px; font-size: 11.5px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: var(--ink-3); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  .trades .th .pulse { background: var(--magenta); }
+  .th-sub { font-weight: 600; letter-spacing: 0; text-transform: none; color: var(--ink-3); font-size: 11px; }
+  .tr-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 16px; font-size: 13px; border-bottom: 1px solid rgba(140,160,200,.06); animation: fadein .4s; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }
+  .tr-row:last-child { border-bottom: none; }
+  .tr-row .side { font-weight: 800; font-size: 12px; }
+  .tr-row .buy { color: var(--safe); } .tr-row .sell { color: var(--bad); }
+  .tr-row .amts { color: var(--ink); font-weight: 600; font-family: 'Space Grotesk'; }
+  .tr-row .sub { color: var(--ink-3); font-size: 11.5px; }
+  .tr-empty { padding: 16px; text-align: center; font-size: 12.5px; color: var(--ink-3); }
+  .opp-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 11px 16px; border-bottom: 1px solid rgba(140,160,200,.06); cursor: pointer; transition: background .12s; }
+  .opp-row:hover { background: rgba(56,225,255,.05); }
+  .opp-row:last-child { border-bottom: none; }
+  .opp-l b { font-family: 'Space Grotesk'; font-size: 14px; }
+  .opp-l .nm { display: block; font-size: 11px; color: var(--ink-3); }
+  .opp-m { text-align: right; font-size: 12px; color: var(--ink-2); }
+  .opp-m .fee { display: block; font-family: 'Space Grotesk'; font-weight: 700; font-size: 14px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .opp-badge { font-size: 10px; font-weight: 800; letter-spacing: .08em; padding: 4px 9px; border-radius: 999px; white-space: nowrap; }
+  .opp-badge.open { background: rgba(255,90,209,.12); color: var(--magenta); border: 1px solid rgba(255,90,209,.4); }
+  .opp-badge.live { background: rgba(52,211,153,.1); color: var(--safe); border: 1px solid rgba(52,211,153,.35); }
+
+  .pos { border: 1px solid var(--line); border-radius: 14px; padding: 13px 14px; margin-top: 8px; background: rgba(7,11,24,.4); }
+  .pos .ph { display: flex; justify-content: space-between; align-items: center; font-size: 14px; font-weight: 800; font-family: 'Space Grotesk'; }
+  .pos .ph .share { font-size: 12px; color: var(--cyan); }
+  .pos .pu { font-size: 12.5px; color: var(--ink-2); margin-top: 3px; }
+  .harvest { display: flex; gap: 8px; margin-top: 9px; }
+  .harvest button { flex: 1; padding: 8px; border-radius: 10px; background: none; border: 1px solid var(--line-2); color: var(--ink-2); font-weight: 700; font-size: 11.5px; cursor: pointer; }
+  .harvest button:hover { border-color: var(--cyan); color: var(--cyan); }
+  .pos-title { font-size: 11.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-3); padding: 14px 4px 2px; }
+  /* V3 concentrated-liquidity mode */
+  .amt.sm { font-size: 16px; }
+  .fees, .range-opts { display: flex; gap: 8px; margin: 8px 0 2px; }
+  .fee-opt, .range-opt { flex: 1; text-align: center; padding: 8px 4px; border-radius: 10px; border: 1px solid var(--line-2); font-size: 12px; font-weight: 700; color: var(--ink-2); cursor: pointer; }
+  .fee-opt.on { border-color: var(--magenta); color: var(--magenta); background: rgba(255,90,209,.07); }
+  .range-opt.on { border-color: var(--cyan); color: var(--cyan); background: rgba(56,225,255,.07); }
+  .fee-opt span { display: block; font-size: 9.5px; font-weight: 600; color: var(--ink-3); }
+  .range-inputs { display: none; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .range-inputs.on { display: grid; }
+  .inrange { font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 999px; }
+  .inrange.in { background: rgba(52,211,153,.1); color: var(--safe); border: 1px solid rgba(52,211,153,.35); }
+  .inrange.out { background: rgba(251,191,36,.1); color: var(--warn); border: 1px solid rgba(251,191,36,.35); }
+  .liq-note { font-size: 12px; color: var(--ink-3); padding: 8px 4px 0; text-align: center; }
+  #panel-liq { display: none; }
+
+  footer { position: relative; z-index: 1; text-align: center; padding: 18px 16px 30px; font-size: 11.5px; color: var(--ink-3); line-height: 1.9; }
+  footer a { color: var(--ink-2); text-decoration: none; font-weight: 600; }
+  footer a:hover { color: var(--cyan); }
+  footer code { font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; }
+  .guard { display: inline-flex; align-items: center; gap: 7px; margin-top: 4px; padding: 6px 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--card); font-size: 11.5px; color: var(--ink-2); }
+  @media (max-width: 520px) { .moon { display: none; } }
+</style>
+</head>
+<body>
+<div class="aurora"></div><div class="stars"></div>
+<div class="shoot"></div><div class="shoot s2"></div>
+<svg class="moon" viewBox="0 0 100 100"><defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38e1ff"/><stop offset="1" stop-color="#ff5ad1"/></linearGradient></defs><circle cx="58" cy="42" r="30" fill="url(#mg)" opacity=".9"/><circle cx="48" cy="36" r="26" fill="#070b18"/></svg>
+
+<div class="shell">
+<nav>
+  <div class="brand"><div><span class="ms">ARCHITECT SWAP</span><div class="by">by NERON &amp; LYRA</div></div></div>
+  <div class="nav-r">
+    <a class="plain" href="/">Scanner</a>
+    <a class="plain" href="/staking">Staking</a>
+    <a class="plain" href="/launch">Launchpad</a>
+    <a class="plain" href="/shield">Shield</a>
+    <a class="plain" href="/faq">FAQ</a>
+    <button class="connect" id="connect">Connect Wallet</button>
+  </div>
+</nav>
+
+<main>
+  <div class="ticker">
+    <span class="tk"><span class="pulse"></span> <b>ROBINHOOD CHAIN</b></span>
+    <span class="tk">🌙 NLYRA <b id="tk-usd">—</b></span>
+    <span class="tk">Pool <b id="tk-pool">—</b></span>
+    <span class="tk">DEX TVL <b id="tk-tvl">—</b></span>
+    <span class="tk">24h vol <b id="tk-vol">—</b></span>
+    <span class="tk">24h fees <b class="tk-g" id="tk-fees">—</b></span>
+  </div>
+
+  <div class="swap-wrap">
+    <div class="glowbox"><div class="pad">
+      <div class="tabs">
+        <div class="tab on" id="tab-swap">Swap</div>
+        <div class="tab" id="tab-liq">Liquidity</div>
+      </div>
+
+      <div id="panel-swap">
+        <div class="box">
+          <div class="lab"><span>You pay</span><span>bal: <span id="bal-in">—</span> <span class="max" id="max-in">MAX</span></span></div>
+          <div class="row">
+            <input class="amt" id="amt-in" type="number" min="0" placeholder="0.0">
+            <div class="chip pick" id="chip-in"></div>
+          </div>
+          <div class="usd" id="usd-in"></div>
+        </div>
+        <div class="flip"><button id="flip">↓</button></div>
+        <div class="box">
+          <div class="lab"><span>You receive (est.)</span><span>bal: <span id="bal-out">—</span></span></div>
+          <div class="row">
+            <input class="amt" id="amt-out" type="number" placeholder="0.0" readonly>
+            <div class="chip pick" id="chip-out"></div>
+          </div>
+          <div class="usd" id="usd-out"></div>
+        </div>
+        <div class="info">
+          <div class="l"><span id="rate">—</span><span class="gear" id="slip-gear">⚙ <b id="slip-v">1.0</b>%</span></div>
+          <div class="l"><span id="route-line" style="font-size:12px;"></span></div>
+          <div class="l"><span>Price impact</span><b id="impact">—</b></div>
+          <div class="l"><span>Swap fee — 0.25% to LPs · 0.05% protocol</span><b>0.3%</b></div>
+        </div>
+        <button class="cta" id="do-swap" disabled>SWAP</button>
+      </div>
+
+      <div id="panel-liq">
+        <div class="fees" style="margin:0 0 10px;">
+          <div class="fee-opt lmode on" data-m="v2">V2 CLASSIC<span>simple pool · set &amp; forget</span></div>
+          <div class="fee-opt lmode" data-m="v3">V3 CONCENTRATED<span>price range · NFT · more fees/$</span></div>
+        </div>
+        <div class="box">
+          <div class="lab"><span id="liq-sym">Token</span><span>bal: <span id="lbal-t">—</span> <span class="max" id="lmax-t">MAX</span></span></div>
+          <div class="row"><input class="amt" id="lamt-t" type="number" min="0" placeholder="0.0"><div class="chip pick" id="liq-chip"></div></div>
+        </div>
+        <div class="box">
+          <div class="lab"><span id="liq-sym-b">ETH</span><span>bal: <span id="lbal-e">—</span> <span class="max" id="lmax-e">MAX</span></span></div>
+          <div class="row"><input class="amt" id="lamt-e" type="number" min="0" placeholder="0.0"><div class="chip pick" id="eth-chip"></div></div>
+        </div>
+        <div id="v3-controls" style="display:none;">
+          <div class="box" style="margin-top:6px;">
+            <div class="lab"><span>V3 fee tier</span><span id="v3-pool-state"></span></div>
+            <div class="fees" style="margin:2px 0 2px;">
+              <div class="fee-opt v3f" data-fee="500">0.05%<span>stables</span></div>
+              <div class="fee-opt v3f on" data-fee="3000">0.3%<span>standard</span></div>
+              <div class="fee-opt v3f" data-fee="10000">1%<span>exotic</span></div>
+            </div>
+          </div>
+          <div class="box" id="v3-init-box" style="display:none;margin-top:6px;">
+            <div class="lab"><span>Starting price — new pool</span><span class="max" id="v3-init-suggest">USE MARKET PRICE</span></div>
+            <div class="row"><input class="amt sm" id="v3-init-price" type="number" min="0" placeholder="price"></div>
+            <div class="usd">no V3 pool at this fee tier yet — the first LP sets the opening price</div>
+          </div>
+          <div class="box" style="margin-top:6px;">
+            <div class="lab"><span>Price range <b id="v3-cur-price" style="color:var(--cyan)"></b></span><span class="max" id="v3-inv-toggle">⇄ invert</span></div>
+            <canvas id="v3-range-chart" style="display:none;width:100%;height:130px;touch-action:none;cursor:crosshair;border-radius:10px;"></canvas>
+            <div id="v3-range-lab" style="display:none;justify-content:space-between;font-size:11px;color:var(--ink-3);font-weight:600;padding-top:4px;"><span id="v3-rl-min"></span><span id="v3-rl-cur" style="color:var(--cyan)"></span><span id="v3-rl-max"></span></div>
+            <div class="range-opts">
+              <div class="range-opt on" data-r="full">FULL</div>
+              <div class="range-opt" data-r="50">±50%</div>
+              <div class="range-opt" data-r="20">±20%</div>
+              <div class="range-opt" data-r="custom">CUSTOM</div>
+            </div>
+            <div class="range-inputs" id="v3-range-custom">
+              <input class="amt sm" id="v3-pmin" type="number" placeholder="min price">
+              <input class="amt sm" id="v3-pmax" type="number" placeholder="max price">
+            </div>
+          </div>
+        </div>
+        <div class="usd" id="liq-rate" style="padding:6px 4px 0;"></div>
+        <button class="cta" id="do-add" disabled>ADD LIQUIDITY</button>
+        <div class="pos-title" id="pos-title">MY POSITIONS</div>
+        <div id="pos-list"><div class="tr-empty" id="pos-empty">connect your wallet to see your LP positions</div></div>
+        <div id="v3-pos-list" style="display:none;"><div class="tr-empty">connect your wallet to see your V3 positions</div></div>
+        <p class="liq-note">LP fees (0.25% of every swap) auto-compound inside your position — harvesting realizes principal + fees together. First LP sets the price. Protocol keeps 0.05%, on-chain and verifiable.</p>
+      </div>
+
+      <div id="status">ready 🌙</div>
+    </div></div>
+
+    <div class="trades">
+      <div class="th"><span class="pulse"></span> LIVE TRADES <span class="th-sub" id="tr-pair"></span><span class="th-sub" id="chart-chg" style="margin-left:auto;font-weight:800;"></span></div>
+      <canvas id="chart" style="display:none;width:100%;height:92px;"></canvas>
+      <div id="tr-list"><div class="tr-empty">waiting for the first swap under this moon 🌙</div></div>
+    </div>
+
+    <div class="trades">
+      <div class="th"><span style="font-size:13px;">💎</span> LIQUIDITY OPPORTUNITIES <span class="th-sub">real chain volume · click to seed the pool · first LP eats the fees</span></div>
+      <div id="opp-list"><div class="tr-empty">scanning the chain…</div></div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span class="guard">🛡️ Uniswap V2 + V3 verbatim · smart router picks the best price · guarded by the AI that reads the code</span><br>
+  Router <a id="f-router" target="_blank" rel="noopener"><code></code></a> ·
+  Factory <a id="f-factory" target="_blank" rel="noopener"><code></code></a> ·
+  <a href="/" style="font-weight:700;">nlyra.xyz</a>
+</footer>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="picker">
+    <h3>Select a token</h3>
+    <input class="paste" id="paste" placeholder="paste any token contract: 0x…" spellcheck="false">
+    <div id="tok-list"></div>
+    <div class="note">Any ERC-20 on Robinhood Chain works — paste its contract above. DYOR: scan it first at <a href="/" style="color:var(--cyan)">nlyra.xyz</a> 🛡️</div>
+  </div>
+</div>
+
+<script>
+const CFG = "__DEX_CONFIG__";
+const cfg = (typeof CFG === 'object') ? CFG : {};
+const ROUTER = cfg.router, FACTORY = cfg.factory, WETH = cfg.weth, NLYRA = cfg.token;
+const USDE = '0x5d3a1Ff2b6BAb83b63cd9AD0787074081a52ef34';
+const CHAIN = { chainId: '0x1237', chainName: 'Robinhood Chain', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+  rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'], blockExplorerUrls: ['https://robinhoodchain.blockscout.com'] };
+const RABI = ['function getAmountsOut(uint256,address[]) view returns (uint256[])',
+  'function swapExactETHForTokens(uint256,address[],address,uint256) payable returns (uint256[])',
+  'function swapExactTokensForETH(uint256,uint256,address[],address,uint256) returns (uint256[])',
+  'function swapExactTokensForTokens(uint256,uint256,address[],address,uint256) returns (uint256[])',
+  'function addLiquidityETH(address,uint256,uint256,uint256,address,uint256) payable returns (uint256,uint256,uint256)',
+  'function removeLiquidityETH(address,uint256,uint256,uint256,address,uint256) returns (uint256,uint256)',
+  'function addLiquidity(address,address,uint256,uint256,uint256,uint256,address,uint256) returns (uint256,uint256,uint256)',
+  'function removeLiquidity(address,address,uint256,uint256,uint256,address,uint256) returns (uint256,uint256)'];
+const FABI = ['function getPair(address,address) view returns (address)','function allPairsLength() view returns (uint256)','function allPairs(uint256) view returns (address)'];
+// V3 (auto-router): quoter para cotizar, router para ejecutar si V3 da mejor precio
+const V3R = cfg.v3router, V3Q = cfg.v3quoter;
+const Q3ABI = ['function quoteExactInputSingle((address tokenIn,address tokenOut,uint256 amountIn,uint24 fee,uint160 sqrtPriceLimitX96)) returns (uint256 amountOut,uint160,uint32,uint256)'];
+const R3ABI = ['function exactInputSingle((address tokenIn,address tokenOut,uint24 fee,address recipient,uint256 deadline,uint256 amountIn,uint256 amountOutMinimum,uint160 sqrtPriceLimitX96)) payable returns (uint256)',
+  'function unwrapWETH9(uint256,address) payable', 'function multicall(bytes[]) payable returns (bytes[])'];
+const V3_FEES = [500, 3000, 10000];
+const EABI = ['function balanceOf(address) view returns (uint256)','function allowance(address,address) view returns (uint256)','function approve(address,uint256) returns (bool)','function getReserves() view returns (uint112,uint112,uint32)','function token0() view returns (address)','function token1() view returns (address)','function totalSupply() view returns (uint256)','function decimals() view returns (uint8)','function symbol() view returns (string)',
+  'event Swap(address indexed sender, uint256 amount0In, uint256 amount1In, uint256 amount0Out, uint256 amount1Out, address indexed to)'];
+
+const $ = (id) => document.getElementById(id);
+document.querySelector('#f-router code').textContent = ROUTER.slice(0,10)+'…'+ROUTER.slice(-6);
+document.querySelector('#f-factory code').textContent = FACTORY.slice(0,10)+'…'+FACTORY.slice(-6);
+$('f-router').href = 'https://robinhoodchain.blockscout.com/address/' + ROUTER + '?tab=contract';
+$('f-factory').href = 'https://robinhoodchain.blockscout.com/address/' + FACTORY + '?tab=contract';
+
+const ro = new ethers.JsonRpcProvider(CHAIN.rpcUrls[0]);
+const roR = new ethers.Contract(ROUTER, RABI, ro);
+const roF = new ethers.Contract(FACTORY, FABI, ro);
+
+// ── token registry ───────────────────────────────
+const KNOWN = [
+  { address: NLYRA, symbol: 'NLYRA', name: 'NERON & LYRA', emoji: '🌙', decimals: 18 },
+  { address: USDE, symbol: 'USDe', name: 'Ethena USDe', emoji: '💵', decimals: 18,
+    logo: 'https://coin-images.coingecko.com/coins/images/33613/large/usde.png?1733810059' },
+  { address: '0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168', symbol: 'USDG', name: 'Global Dollar', emoji: '🌐', decimals: 6,
+    logo: 'https://coin-images.coingecko.com/coins/images/51281/large/GDN_USDG_Token_200x200.png?1730484111' },
+];
+const ETH_T = { address: 'eth', symbol: 'ETH', emoji: 'Ξ', decimals: 18,
+  logo: 'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png?1696501628' };
+let customs = [];
+try { customs = JSON.parse(localStorage.getItem('as-tokens') || '[]'); } catch (_) {}
+let pooledTokens = []; // tokens con pool en la Factory — auto-listados
+const allTokens = () => {
+  const seen = new Set(KNOWN.map((k) => k.address.toLowerCase()));
+  const out = [...KNOWN];
+  for (const t of [...pooledTokens, ...customs]) {
+    const a = t.address.toLowerCase();
+    if (!seen.has(a)) { seen.add(a); out.push(t); }
+  }
+  return out;
+};
+// Todo token que ya tenga pool aparece solo en el selector (via /api/dex/stats)
+async function loadPooledTokens() {
+  try {
+    const d = await (await fetch('/api/dex/stats')).json();
+    if (!d.ok || !d.pools) return;
+    const out = [];
+    for (const p of d.pools) {
+      for (const t of (p.tokens || [])) {
+        if (t.isWeth || !/^0x/i.test(t.address)) continue;
+        out.push({ address: t.address, symbol: t.symbol, name: (p.name || '') + ' · pool live', emoji: (t.symbol || '?')[0], decimals: Number(t.decimals) || 18 });
+      }
+    }
+    pooledTokens = out;
+  } catch (_) {}
+}
+const findTok = (a) => allTokens().find((t) => t.address.toLowerCase() === String(a).toLowerCase());
+// Ícono: SIEMPRE arranca como emoji/dot y solo se convierte en imagen si la
+// imagen real carga OK (preload verificado — nada de onerror frágil).
+const iconOk = {}; // key -> url | false
+function iconCandidates(t) {
+  const c = [];
+  if (t.logo) c.push(t.logo);
+  if (/^0x/i.test(t.address)) c.push('https://dd.dexscreener.com/ds-data/tokens/robinhood/' + t.address.toLowerCase() + '.png?size=lg');
+  return c;
+}
+function iconHtml(t, size = 24) {
+  const a = t.address.toLowerCase();
+  const url = iconOk[a];
+  if (url) return '<img src="' + url + '" style="width:' + size + 'px;height:' + size + 'px;border-radius:50%">';
+  return '<span class="dot tok-ico" data-addr="' + a + '" data-cands="' + iconCandidates(t).join('|') + '" style="width:' + size + 'px;height:' + size + 'px;font-size:' + Math.round(size/2) + 'px">' + (t.emoji || (t.symbol || '?')[0]) + '</span>';
+}
+const iconTrying = {};
+function hydrateIcons() {
+  const swap = (el, url) => {
+    const size = el.style.width || '24px';
+    const i = document.createElement('img');
+    i.src = url; i.style.cssText = 'width:' + size + ';height:' + size + ';border-radius:50%';
+    el.replaceWith(i);
+  };
+  document.querySelectorAll('.tok-ico[data-addr]').forEach((el) => {
+    const a = el.dataset.addr;
+    if (iconOk[a] === false) return;
+    if (iconOk[a]) { swap(el, iconOk[a]); return; }
+    if (iconTrying[a]) return;
+    const cands = (el.dataset.cands || '').split('|').filter(Boolean);
+    if (!cands.length) { iconOk[a] = false; return; }
+    iconTrying[a] = true;
+    let i = 0;
+    const tryNext = () => {
+      if (i >= cands.length) { iconOk[a] = false; iconTrying[a] = false; return; }
+      const url = cands[i++];
+      const img = new Image();
+      img.onload = () => { iconOk[a] = url; iconTrying[a] = false; document.querySelectorAll('.tok-ico[data-addr="' + a + '"]').forEach((e) => swap(e, url)); };
+      img.onerror = tryNext;
+      img.src = url;
+    };
+    tryNext();
+  });
+}
+async function loadCustom(address) {
+  const c = new ethers.Contract(address, EABI, ro);
+  const [sym, dec] = await Promise.all([c.symbol(), c.decimals()]);
+  const t = { address, symbol: sym, name: sym, emoji: sym[0], decimals: Number(dec) };
+  if (!findTok(address)) { customs.push(t); try { localStorage.setItem('as-tokens', JSON.stringify(customs)); } catch (_) {} }
+  return findTok(address) || t;
+}
+
+// ── state ────────────────────────────────────────
+let provider, signer, me;
+let slippage = 1.0;
+let swapA = ETH_T;          // lado que PAGÁS (puede ser ETH o cualquier token)
+let swapB = KNOWN[0];       // lado que RECIBÍS
+let route = { path: [], kind: 'none', hop: false }; // ruta resuelta del swap
+const dispTok = () => !isEth(swapB) ? swapB : (!isEth(swapA) ? swapA : KNOWN[0]);
+let liqToken = KNOWN[0];    // lado A del par de liquidez
+let liqTokenB = null;       // lado B (null = ETH; se setea tras definir ETH_T… ver abajo)
+let pool = { addr: null, has: false, resT: 0n, resE: 0n };
+let pickCtx = 'swap';
+const isEth = (t) => t && t.address === 'eth';
+
+const fmtN = (n, dp = 4) => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(2)+'K' : n.toFixed(dp);
+const fmtU = (v, dec, dp = 4) => fmtN(Number(ethers.formatUnits(v, dec)), dp);
+const fmt = (v, dp = 4) => fmtU(v, 18, dp);
+
+// ── precios USD (cache 60s) ──────────────────────
+// Los precios los sirve NUESTRO servidor (/api/prices) — sin CORS ni rate
+// limits de terceros desde el browser. Cache 60s también acá.
+const priceCache = {};
+async function usdPrice(key) {
+  const k = String(key).toLowerCase();
+  const c = priceCache[k];
+  if (c && Date.now() - c.at < 60000) return c.usd;
+  try {
+    const j = await (await fetch('/api/prices?k=' + encodeURIComponent(k))).json();
+    const usd = (j && j[k] != null) ? Number(j[k]) : null;
+    priceCache[k] = { usd, at: Date.now() };
+    return usd;
+  } catch (_) { return c ? c.usd : null; }
+}
+const usdFmt = (n) => n == null ? '' : '≈ $' + (n >= 1000 ? n.toLocaleString('en-US', { maximumFractionDigits: 0 }) : n >= 1 ? n.toFixed(2) : n.toFixed(4));
+async function updateSwapUsd(inV, outF) {
+  const key = (t) => isEth(t) ? 'eth' : t.address;
+  const [pi, po] = await Promise.all([usdPrice(key(swapA)), usdPrice(key(swapB))]);
+  $('usd-in').textContent = (pi != null && inV) ? usdFmt(pi * Number(inV)) : '';
+  $('usd-out').textContent = (po != null && outF) ? usdFmt(po * outF) : '';
+}
+
+const MOONS = ['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘'];
+let moonTimer = null, moonI = 0, stBase = '';
+function stopMoon() { if (moonTimer) { clearInterval(moonTimer); moonTimer = null; } }
+function st(m, cls) { stopMoon(); const el = $('status'); el.textContent = m; el.className = cls || ''; }
+function stPending(m) { stopMoon(); stBase = m; const el = $('status'); el.className = '';
+  moonTimer = setInterval(() => { el.textContent = MOONS[moonI = (moonI + 1) % 8] + ' ' + stBase; }, 140); }
+
+function renderChips() {
+  if (!liqTokenB) liqTokenB = ETH_T;
+  $('chip-in').innerHTML = iconHtml(swapA) + '<span>' + swapA.symbol + '</span>';
+  $('chip-out').innerHTML = iconHtml(swapB) + '<span>' + swapB.symbol + '</span>';
+  $('eth-chip').innerHTML = iconHtml(liqTokenB) + '<span>' + liqTokenB.symbol + '</span>';
+  $('liq-chip').innerHTML = iconHtml(liqToken) + '<span>' + liqToken.symbol + '</span>';
+  $('liq-sym').textContent = isEth(liqToken) ? 'ETH' : '$' + liqToken.symbol;
+  $('liq-sym-b').textContent = isEth(liqTokenB) ? 'ETH' : '$' + liqTokenB.symbol;
+  hydrateIcons();
+}
+renderChips();
+
+// ── ruta del swap (auto-route vía ETH si no hay par directo) ──
+async function hasLiquidPair(a, b) {
+  const pa = await roF.getPair(a, b);
+  if (!pa || pa === ethers.ZeroAddress) return false;
+  const [r0, r1] = await new ethers.Contract(pa, EABI, ro).getReserves();
+  return r0 > 0n && r1 > 0n;
+}
+async function resolveRoute() {
+  route = { path: [], kind: 'none', hop: false };
+  $('route-line') && ($('route-line').textContent = '');
+  if (isEth(swapA) && isEth(swapB)) return;
+  if (isEth(swapA)) { route = { path: [WETH, swapB.address], kind: 'ethIn', hop: false }; }
+  else if (isEth(swapB)) { route = { path: [swapA.address, WETH], kind: 'ethOut', hop: false }; }
+  else if (await hasLiquidPair(swapA.address, swapB.address)) {
+    route = { path: [swapA.address, swapB.address], kind: 'tokens', hop: false };
+  } else {
+    route = { path: [swapA.address, WETH, swapB.address], kind: 'tokens', hop: true };
+  }
+  const rl = $('route-line');
+  if (rl) rl.innerHTML = route.hop
+    ? 'route: ' + swapA.symbol + ' → <b style="color:var(--cyan)">ETH</b> → ' + swapB.symbol + ' <span style="color:var(--magenta)">· auto-routed (no direct pool)</span>'
+    : (route.kind === 'tokens' ? 'route: direct ' + swapA.symbol + '/' + swapB.symbol + ' pool' : '');
+}
+
+// ── pool + ticker (muestra el pool del token principal en juego) ──
+async function findPool() {
+  try {
+    await resolveRoute();
+    const tok = dispTok();
+    const pa = await roF.getPair(tok.address, WETH);
+    pool.addr = pa; pool.has = pa && pa !== ethers.ZeroAddress;
+    if (!pool.has) { $('tk-pool').textContent = '$' + tok.symbol + ': not seeded'; $('tr-pair').textContent = ''; $('tr-list').innerHTML = '<div class="tr-empty">no pool for $' + tok.symbol + ' yet — seed it in the Liquidity tab 🌙</div>'; return; }
+    const pair = new ethers.Contract(pa, EABI, ro);
+    const [r0, r1] = await pair.getReserves();
+    const t0 = (await pair.token0()).toLowerCase();
+    const t0isTok = t0 === tok.address.toLowerCase();
+    pool.resT = t0isTok ? r0 : r1; pool.resE = t0isTok ? r1 : r0;
+    $('tk-pool').textContent = fmtU(pool.resT, tok.decimals, 0) + ' $' + tok.symbol + ' + ' + fmt(pool.resE) + ' Ξ';
+    $('tr-pair').textContent = '$' + tok.symbol + '/ETH';
+    loadTrades(pair, t0isTok);
+    loadChart(pa, t0isTok);
+  } catch (_) {}
+}
+async function loadUsd() {
+  try {
+    const r = await fetch('https://api.dexscreener.com/latest/dex/tokens/' + NLYRA);
+    const d = await r.json();
+    const p = (d.pairs || []).filter((x) => x.priceUsd).sort((a, b) => ((b.liquidity||{}).usd||0) - ((a.liquidity||{}).usd||0))[0];
+    if (p) { const ch = Number((p.priceChange || {}).h24 || 0);
+      $('tk-usd').innerHTML = '$' + Number(p.priceUsd).toPrecision(3) + ' <span class="' + (ch >= 0 ? 'up' : 'down') + '">' + (ch >= 0 ? '▲' : '▼') + Math.abs(ch).toFixed(1) + '%</span>'; }
+  } catch (_) {}
+}
+findPool(); loadUsd(); setInterval(findPool, 20000); setInterval(loadUsd, 60000); setTimeout(loadLiqPool, 800);
+
+let lastTradeKey = '';
+async function loadTrades(pair, t0isTok) {
+  try {
+    const now = Number(await ro.getBlockNumber());
+    const logs = await pair.queryFilter(pair.filters.Swap(), Math.max(0, now - 9000), now);
+    const last = logs.slice(-6).reverse();
+    if (!last.length) { $('tr-list').innerHTML = '<div class="tr-empty">waiting for the first swap under this moon 🌙</div>'; lastTradeKey = 'e' + pair.target; return; }
+    const key = pair.target + last[0].transactionHash + last.length;
+    if (key === lastTradeKey) return;
+    lastTradeKey = key;
+    $('tr-list').innerHTML = last.map((l) => {
+      const a = l.args;
+      const tokOut = t0isTok ? a[3] : a[4], tokIn = t0isTok ? a[1] : a[2];
+      const ethOutV = t0isTok ? a[4] : a[3], ethInV = t0isTok ? a[2] : a[1];
+      const isBuy = tokOut > 0n;
+      return '<div class="tr-row"><span class="side ' + (isBuy ? 'buy">▲ BUY' : 'sell">▼ SELL') + '</span><span class="amts">' + fmtU(isBuy ? tokOut : tokIn, dispTok().decimals, 0) + ' $' + dispTok().symbol + '</span><span class="sub">' + fmt(isBuy ? ethInV : ethOutV, 5) + ' Ξ · <a style="color:inherit" target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/tx/' + l.transactionHash + '">tx↗</a></span></div>';
+    }).join('');
+  } catch (_) {}
+}
+
+// ── balances ─────────────────────────────────────
+async function refreshBalances() {
+  if (!me) return;
+  try {
+    const eb = await ro.getBalance(me);
+    const bOf = async (t) => isEth(t) ? { v: eb, d: 18 } : { v: await new ethers.Contract(t.address, EABI, ro).balanceOf(me), d: t.decimals };
+    const [ba, bb] = [await bOf(swapA), await bOf(swapB)];
+    $('bal-in').textContent = fmtU(ba.v, ba.d, 2);
+    $('bal-out').textContent = fmtU(bb.v, bb.d, 2);
+    const balOf = async (t) => isEth(t) ? { v: eb, d: 18 } : { v: await new ethers.Contract(t.address, EABI, ro).balanceOf(me), d: t.decimals };
+    const [la, lb] = [await balOf(liqToken), await balOf(liqTokenB || ETH_T)];
+    $('lbal-t').textContent = fmtU(la.v, la.d, 2);
+    $('lbal-e').textContent = fmtU(lb.v, lb.d, 2);
+  } catch (_) {}
+}
+
+// ── my positions (discovered from the factory) ───
+async function loadPositions() {
+  if (!me) { $('pos-list').innerHTML = '<div class="tr-empty">connect your wallet to see your LP positions</div>'; return; }
+  try {
+    const n = Number(await roF.allPairsLength());
+    const rows = [];
+    for (let i = 0; i < Math.min(n, 60); i++) {
+      const pa = await roF.allPairs(i);
+      const pair = new ethers.Contract(pa, EABI, ro);
+      const lp = await pair.balanceOf(me);
+      if (lp <= 0n) continue;
+      const [t0, t1, ts, res] = await Promise.all([pair.token0(), pair.token1(), pair.totalSupply(), pair.getReserves()]);
+      const symOf = async (a) => a.toLowerCase() === WETH.toLowerCase() ? { s: 'ETH', d: 18 } :
+        (findTok(a) ? { s: findTok(a).symbol, d: findTok(a).decimals } :
+          await (async () => { const c = new ethers.Contract(a, EABI, ro); return { s: await c.symbol().catch(() => '?'), d: Number(await c.decimals().catch(() => 18)) }; })());
+      const [s0, s1] = [await symOf(t0), await symOf(t1)];
+      // valor USD de la posición: precio de cada lado × lo redimible
+      let usdTotal = null;
+      try {
+        const p0 = await usdPrice(t0.toLowerCase() === WETH.toLowerCase() ? 'eth' : t0);
+        const p1 = await usdPrice(t1.toLowerCase() === WETH.toLowerCase() ? 'eth' : t1);
+        const a0 = Number(ethers.formatUnits(res[0] * lp / ts, s0.d));
+        const a1 = Number(ethers.formatUnits(res[1] * lp / ts, s1.d));
+        if (p0 != null && p1 != null) usdTotal = p0 * a0 + p1 * a1;
+        else if (p0 != null) usdTotal = p0 * a0 * 2;
+        else if (p1 != null) usdTotal = p1 * a1 * 2;
+      } catch (_) {}
+      rows.push({ pa, t0, t1, s0, s1, lp, ts, r0: res[0], r1: res[1], usdTotal });
+    }
+    if (!rows.length) { $('pos-list').innerHTML = '<div class="tr-empty">no LP positions yet — add liquidity above 🌙</div>'; return; }
+    $('pos-list').innerHTML = rows.map((r, i) => {
+      const share = Number(r.lp * 100000n / r.ts) / 1000;
+      const u0 = fmtU(r.r0 * r.lp / r.ts, r.s0.d, r.s0.s === 'ETH' ? 5 : 1);
+      const u1 = fmtU(r.r1 * r.lp / r.ts, r.s1.d, r.s1.s === 'ETH' ? 5 : 1);
+      const name = r.s0.s === 'ETH' ? r.s1.s + '/ETH' : r.s1.s === 'ETH' ? r.s0.s + '/ETH' : r.s0.s + '/' + r.s1.s;
+      return '<div class="pos" data-i="' + i + '"><div class="ph"><span>' + name + '</span><span class="share">' + share.toFixed(share < 1 ? 3 : 1) + '% of pool</span></div>' +
+        '<div class="pu">' + u0 + ' ' + r.s0.s + ' + ' + u1 + ' ' + r.s1.s + ' redeemable' + (r.usdTotal != null ? ' · <b style="color:var(--ink)">' + usdFmt(r.usdTotal) + '</b>' : '') + '</div>' +
+        '<div class="harvest"><button data-pct="25">WITHDRAW 25%</button><button data-pct="50">WITHDRAW 50%</button><button data-pct="100">EXIT ALL</button></div></div>';
+    }).join('');
+    document.querySelectorAll('.pos').forEach((el) => {
+      const r = rows[Number(el.dataset.i)];
+      el.querySelectorAll('.harvest button').forEach((b) => {
+        b.onclick = async () => {
+          const amount = r.lp * BigInt(b.dataset.pct) / 100n;
+          if (amount <= 0n || !signer) return;
+          const pair = new ethers.Contract(r.pa, EABI, signer);
+          if ((await new ethers.Contract(r.pa, EABI, ro).allowance(me, ROUTER)) < amount) { if (!(await run('approve LP', () => pair.approve(ROUTER, r.lp)))) return; }
+          const rt = new ethers.Contract(ROUTER, RABI, signer);
+          const hasWeth = r.t0.toLowerCase() === WETH.toLowerCase() || r.t1.toLowerCase() === WETH.toLowerCase();
+          if (hasWeth) {
+            const tokenSide = r.t0.toLowerCase() === WETH.toLowerCase() ? r.t1 : r.t0;
+            await run('withdraw ' + b.dataset.pct + '%', () => rt.removeLiquidityETH(tokenSide, amount, 0, 0, me, deadline()));
+          } else {
+            await run('withdraw ' + b.dataset.pct + '%', () => rt.removeLiquidity(r.t0, r.t1, amount, 0, 0, me, deadline()));
+          }
+          loadPositions();
+        };
+      });
+    });
+  } catch (e) { $('pos-list').innerHTML = '<div class="tr-empty">could not load positions</div>'; }
+}
+
+// ── quotes + impact (AUTO-ROUTER: cotiza V2 y V3, ejecuta por el mejor) ──
+let quoteTimer = null, lastQuote = null;
+const v3Addr = (t) => isEth(t) ? WETH : t.address;
+// cotiza el par directo en V3 en los 3 fee tiers; null si no hay pool/liquidez
+async function v3BestQuote(amt) {
+  const q = new ethers.Contract(V3Q, Q3ABI, ro);
+  const tin = v3Addr(swapA), tout = v3Addr(swapB);
+  if (tin.toLowerCase() === tout.toLowerCase()) return null;
+  const tries = await Promise.all(V3_FEES.map(async (f) => {
+    try { const r = await q.quoteExactInputSingle.staticCall([tin, tout, amt, f, 0]); return { fee: f, out: r[0] }; }
+    catch (_) { return null; }
+  }));
+  return tries.filter(Boolean).sort((a, b) => (b.out > a.out ? 1 : -1))[0] || null;
+}
+async function quote() {
+  lastQuote = null; $('amt-out').value = ''; $('rate').textContent = '—'; $('impact').textContent = '—'; $('do-swap').disabled = true;
+  $('usd-in').textContent = ''; $('usd-out').textContent = '';
+  const v = $('amt-in').value;
+  if (!v || Number(v) <= 0) return;
+  if (route.kind === 'none') { await resolveRoute(); if (route.kind === 'none') return st('pick two different assets', 'err'); }
+  try {
+    const dIn = swapA.decimals, dOut = swapB.decimals;
+    const amt = ethers.parseUnits(v, dIn);
+    // V2 y V3 en paralelo — gana el que devuelve más
+    const [v2out, v3q] = await Promise.all([
+      roR.getAmountsOut(amt, route.path).then((o) => o[o.length - 1]).catch(() => null),
+      V3Q ? v3BestQuote(amt) : null,
+    ]);
+    if (v2out == null && !v3q) throw new Error('no liquidity');
+    const useV3 = v3q && (v2out == null || v3q.out > v2out);
+    const out = useV3 ? v3q.out : v2out;
+    lastQuote = { amt, out, venue: useV3 ? 'v3' : 'v2', fee: useV3 ? v3q.fee : null };
+    const outF = Number(ethers.formatUnits(out, dOut));
+    $('amt-out').value = outF.toFixed(outF >= 100 ? 2 : 6);
+    $('rate').textContent = '1 ' + swapA.symbol + ' ≈ ' + (outF / Number(v)).toLocaleString('en-US', { maximumFractionDigits: outF / Number(v) >= 100 ? 0 : 8 }) + ' ' + swapB.symbol;
+    // badge de la ruta ganadora + cuánto le gana a la otra
+    const rl = $('route-line');
+    if (rl) {
+      const edge = (a, b) => b > 0n ? ((Number(a - b) / Number(b)) * 100) : null;
+      if (useV3) {
+        const e = v2out != null ? edge(v3q.out, v2out) : null;
+        rl.innerHTML = 'best route: <b style="color:var(--magenta)">V3 · ' + (v3q.fee/10000) + '% pool</b>' +
+          (e != null && e > 0.005 ? ' <span style="color:var(--safe)">+' + (e >= 1 ? e.toFixed(1) : e.toFixed(2)) + '% vs V2</span>' : '');
+      } else {
+        const e = v3q ? edge(v2out, v3q.out) : null;
+        rl.innerHTML = 'best route: <b style="color:var(--cyan)">V2' + (route.hop ? ' via ETH' : '') + '</b>' +
+          (e != null && e > 0.005 ? ' <span style="color:var(--safe)">+' + (e >= 1 ? e.toFixed(1) : e.toFixed(2)) + '% vs V3</span>' : '');
+      }
+    }
+    // impacto: tasa spot (monto diminuto) vs tasa ejecutada, en la ruta ganadora
+    try {
+      const tiny = amt / 10000n > 0n ? amt / 10000n : 1n;
+      let tinyOut;
+      if (useV3) { const q3 = new ethers.Contract(V3Q, Q3ABI, ro);
+        tinyOut = (await q3.quoteExactInputSingle.staticCall([v3Addr(swapA), v3Addr(swapB), tiny, v3q.fee, 0]))[0]; }
+      else { const tinyOuts = await roR.getAmountsOut(tiny, route.path); tinyOut = tinyOuts[tinyOuts.length - 1]; }
+      const spotRate = Number(ethers.formatUnits(tinyOut, dOut)) / Number(ethers.formatUnits(tiny, dIn));
+      const execRate = outF / Number(v);
+      const imp = Math.max(0, (1 - execRate / spotRate) * 100);
+      const el = $('impact');
+      el.textContent = imp < 0.01 ? '<0.01%' : imp.toFixed(2) + '%';
+      el.className = imp < 1 ? 'ok' : imp < 4 ? 'mid' : 'hot';
+    } catch (_) {}
+    if (me) $('do-swap').disabled = false;
+    st('quote live · slippage ' + slippage + '% · best of V2+V3');
+    updateSwapUsd(v, outF);
+  } catch (e) { st('quote failed — probably no liquidity on this route yet', 'err'); }
+}
+$('amt-in').addEventListener('input', () => { clearTimeout(quoteTimer); quoteTimer = setTimeout(quote, 350); });
+
+// ── token picker ─────────────────────────────────
+function openPicker(ctx) {
+  pickCtx = ctx;
+  $('overlay').classList.add('on');
+  $('paste').value = '';
+  // en los lados de liquidez, ETH es una opción más (para armar pares token-token o token-ETH)
+  const list = [ETH_T, ...allTokens()];
+  $('tok-list').innerHTML = list.map((t, i) => '<div class="tok-row" data-i="' + i + '">' + iconHtml(t, 32) + '<div class="ti"><b>$' + t.symbol + '</b><span>' + (t.name || '') + '</span></div><span class="tb" data-bal="' + t.address + '">—</span></div>').join('');
+  document.querySelectorAll('.tok-row').forEach((row) => { row.onclick = () => pickToken(list[Number(row.dataset.i)]); });
+  hydrateIcons();
+  if (me) list.forEach(async (t) => {
+    try { const b = isEth(t) ? await ro.getBalance(me) : await new ethers.Contract(t.address, EABI, ro).balanceOf(me);
+      const el = document.querySelector('[data-bal="' + t.address + '"]'); if (el) el.textContent = fmtU(b, t.decimals, 2); } catch (_) {}
+  });
+}
+function pickToken(t) {
+  $('overlay').classList.remove('on');
+  const same = (x, y) => liqAddr(x).toLowerCase() === liqAddr(y).toLowerCase();
+  if (pickCtx === 'liqA') {
+    if (same(t, liqTokenB || ETH_T)) liqTokenB = isEth(t) ? KNOWN[0] : ETH_T;
+    liqToken = t; loadLiqPool();
+  } else if (pickCtx === 'liqB') {
+    if (same(t, liqToken)) liqToken = isEth(t) ? KNOWN[0] : ETH_T;
+    liqTokenB = t; loadLiqPool();
+  } else if (pickCtx === 'swapA') {
+    if (same(t, swapB)) swapB = swapA;
+    swapA = t;
+  } else {
+    if (same(t, swapA)) swapA = swapB;
+    swapB = t;
+  }
+  renderChips(); $('amt-in').value = ''; $('amt-out').value = ''; $('lamt-t').value = ''; $('lamt-e').value = '';
+  findPool(); refreshBalances();
+  if ((pickCtx === 'liqA' || pickCtx === 'liqB') && liqMode === 'v3') v3PairChanged();
+  if (pickCtx === 'swapA' || pickCtx === 'swapB') updateDeepLink();
+  st('selected $' + t.symbol + ((pickCtx === 'liqA' || pickCtx === 'liqB') ? ' — set amounts to add liquidity' : ''));
+}
+$('overlay').onclick = (e) => { if (e.target === $('overlay')) $('overlay').classList.remove('on'); };
+$('paste').addEventListener('input', async () => {
+  const v = $('paste').value.trim();
+  if (!/^0x[a-fA-F0-9]{40}$/.test(v)) return;
+  st('loading token…');
+  try { pickToken(await loadCustom(v)); } catch (e) { st('not a valid ERC-20: ' + (e.shortMessage || e.message).slice(0, 60), 'err'); }
+});
+$('chip-in').onclick = () => openPicker('swapA');
+$('chip-out').onclick = () => openPicker('swapB');
+$('liq-chip').onclick = () => openPicker('liqA');
+$('eth-chip').onclick = () => openPicker('liqB');
+
+$('flip').onclick = () => { const t = swapA; swapA = swapB; swapB = t; renderChips(); $('amt-in').value = ''; $('amt-out').value = ''; refreshBalances(); findPool().then(quote); };
+$('slip-gear').onclick = () => { const v = prompt('Slippage tolerance (%)', String(slippage)); const n = Number(v); if (n > 0 && n <= 50) { slippage = n; $('slip-v').textContent = n.toFixed(1); quote(); } };
+$('max-in').onclick = async () => {
+  if (!me) return;
+  $('amt-in').value = await maxOf(swapA);
+  quote();
+};
+
+$('connect').onclick = async () => {
+  try {
+    if (!window.ethereum) return st('no wallet found — open in MetaMask/Rabby browser', 'err');
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    try { await provider.send('wallet_switchEthereumChain', [{ chainId: CHAIN.chainId }]); }
+    catch (_) { await provider.send('wallet_addEthereumChain', [CHAIN]); }
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner(); me = await signer.getAddress();
+    const b = $('connect'); b.textContent = me.slice(0, 6) + '…' + me.slice(-4); b.classList.add('on');
+    st('connected 🌙', 'ok'); refreshBalances(); loadPositions(); v3LoadPositions(); if (lastQuote) $('do-swap').disabled = false;
+    $('do-add').disabled = false;
+  } catch (e) { st('connect failed: ' + (e.shortMessage || e.message).slice(0, 90), 'err'); }
+};
+
+async function run(name, fn) {
+  try { stPending(name + '…'); const tx = await fn(); stPending(name + ' · ' + tx.hash.slice(0, 16) + '… confirming'); await tx.wait(); st(name + ' ✅', 'ok'); findPool(); refreshBalances(); return true; }
+  catch (e) { st(name + ' ✕ ' + (e.shortMessage || e.message).slice(0, 120), 'err'); return false; }
+}
+const deadline = () => Math.floor(Date.now() / 1000) + 1200;
+const minOut = (out) => out - (out * BigInt(Math.round(slippage * 100)) / 10000n);
+
+$('do-swap').onclick = async () => {
+  if (!lastQuote || !signer || route.kind === 'none') return;
+  if (lastQuote.venue === 'v3') {
+    // la mejor ruta fue V3: ejecutar en el SwapRouter V3
+    const r3 = new ethers.Contract(V3R, R3ABI, signer);
+    const r3I = new ethers.Interface(R3ABI);
+    const mo = minOut(lastQuote.out);
+    const label = 'swap (V3 ' + (lastQuote.fee/10000) + '%)';
+    if (isEth(swapA)) {
+      await run(label, () => r3.exactInputSingle([WETH, swapB.address, lastQuote.fee, me, deadline(), lastQuote.amt, mo, 0], { value: lastQuote.amt }));
+    } else {
+      const t = new ethers.Contract(swapA.address, EABI, signer);
+      if ((await new ethers.Contract(swapA.address, EABI, ro).allowance(me, V3R)) < lastQuote.amt) { if (!(await run('approve $' + swapA.symbol, () => t.approve(V3R, lastQuote.amt)))) return; }
+      if (isEth(swapB)) {
+        const c1 = r3I.encodeFunctionData('exactInputSingle', [[swapA.address, WETH, lastQuote.fee, V3R, deadline(), lastQuote.amt, mo, 0]]);
+        const c2 = r3I.encodeFunctionData('unwrapWETH9', [mo, me]);
+        await run(label, () => r3.multicall([c1, c2]));
+      } else {
+        await run(label, () => r3.exactInputSingle([swapA.address, swapB.address, lastQuote.fee, me, deadline(), lastQuote.amt, mo, 0]));
+      }
+    }
+    $('amt-in').value = ''; $('amt-out').value = '';
+    return;
+  }
+  const r = new ethers.Contract(ROUTER, RABI, signer);
+  const label = 'swap (V2' + (route.hop ? ' via ETH' : '') + ')';
+  if (route.kind === 'ethIn') {
+    await run(label, () => r.swapExactETHForTokens(minOut(lastQuote.out), route.path, me, deadline(), { value: lastQuote.amt }));
+  } else {
+    const t = new ethers.Contract(swapA.address, EABI, signer);
+    if ((await new ethers.Contract(swapA.address, EABI, ro).allowance(me, ROUTER)) < lastQuote.amt) { if (!(await run('approve $' + swapA.symbol, () => t.approve(ROUTER, lastQuote.amt)))) return; }
+    if (route.kind === 'ethOut') {
+      await run(label, () => r.swapExactTokensForETH(lastQuote.amt, minOut(lastQuote.out), route.path, me, deadline()));
+    } else {
+      await run(label, () => r.swapExactTokensForTokens(lastQuote.amt, minOut(lastQuote.out), route.path, me, deadline()));
+    }
+  }
+  $('amt-in').value = ''; $('amt-out').value = '';
+};
+
+// ── ratio del pool en el tab Liquidity ───────────
+// Cualquier par A/B (token-token o token-ETH). Si el pool existe la proporción
+// está FIJADA por las reservas: tocás un lado y el otro se calcula solo.
+let liqPool = { has: false, resA: 0n, resB: 0n };
+const liqAddr = (t) => isEth(t) ? WETH : t.address;
+async function loadLiqPool() {
+  try {
+    if (!liqTokenB) liqTokenB = ETH_T;
+    if (liqAddr(liqToken).toLowerCase() === liqAddr(liqTokenB).toLowerCase()) { liqPool = { has: false, resA: 0n, resB: 0n }; $('liq-rate').textContent = 'pick two different tokens'; return; }
+    const pa = await roF.getPair(liqAddr(liqToken), liqAddr(liqTokenB));
+    if (!pa || pa === ethers.ZeroAddress) { liqPool = { has: false, resA: 0n, resB: 0n }; $('liq-rate').textContent = 'no pool yet — you set the starting price (check the market rate first)'; return; }
+    const pair = new ethers.Contract(pa, EABI, ro);
+    const [r0, r1] = await pair.getReserves();
+    const t0isA = (await pair.token0()).toLowerCase() === liqAddr(liqToken).toLowerCase();
+    liqPool = { has: true, resA: t0isA ? r0 : r1, resB: t0isA ? r1 : r0 };
+    const rate = Number(ethers.formatUnits(liqPool.resA, liqToken.decimals)) / Number(ethers.formatUnits(liqPool.resB, liqTokenB.decimals));
+    const rateTxt = '1 ' + liqTokenB.symbol + ' = ' + rate.toLocaleString('en-US', { maximumFractionDigits: rate >= 100 ? 0 : 4 }) + ' ' + liqToken.symbol;
+    $('liq-rate').textContent = 'pool ratio locked · ' + rateTxt + ' — amounts sync automatically';
+    // pool casi vacío (polvillo post-exit) = ratio probablemente RANCIO: avisar
+    try {
+      const pb = await usdPrice(isEth(liqTokenB) ? 'eth' : liqTokenB.address);
+      if (pb != null) {
+        const tvlEst = Number(ethers.formatUnits(liqPool.resB, liqTokenB.decimals)) * pb * 2;
+        if (tvlEst < 0.5) {
+          $('liq-rate').textContent = '⚠️ this pool is nearly EMPTY and its ratio (' + rateTxt + ') is likely STALE — adding at a wrong ratio gets arbitraged instantly. Check the market rate before adding.';
+        }
+      }
+    } catch (_) {}
+  } catch (_) { liqPool = { has: false, resA: 0n, resB: 0n }; }
+}
+let liqSyncing = false;
+function syncFromToken() {
+  if (!liqPool.has || liqSyncing) return;
+  const v = Number($('lamt-t').value);
+  if (!v || v <= 0) { return; }
+  liqSyncing = true;
+  const b = v * Number(ethers.formatUnits(liqPool.resB, liqTokenB.decimals)) / Number(ethers.formatUnits(liqPool.resA, liqToken.decimals));
+  $('lamt-e').value = b.toFixed(Math.min(6, liqTokenB.decimals));
+  liqSyncing = false;
+}
+function syncFromEth() {
+  if (!liqPool.has || liqSyncing) return;
+  const v = Number($('lamt-e').value);
+  if (!v || v <= 0) { return; }
+  liqSyncing = true;
+  const a = v * Number(ethers.formatUnits(liqPool.resA, liqToken.decimals)) / Number(ethers.formatUnits(liqPool.resB, liqTokenB.decimals));
+  $('lamt-t').value = a.toFixed(Math.min(6, liqToken.decimals));
+  liqSyncing = false;
+}
+$('lamt-t').addEventListener('input', () => { if (liqMode === 'v3') v3CalcFrom('t'); else syncFromToken(); });
+$('lamt-e').addEventListener('input', () => { if (liqMode === 'v3') v3CalcFrom('e'); else syncFromEth(); });
+
+async function maxOf(t) {
+  if (isEth(t)) { const b = await ro.getBalance(me); const keep = ethers.parseEther('0.00005'); return ethers.formatEther(b > keep ? b - keep : 0n); }
+  return ethers.formatUnits(await new ethers.Contract(t.address, EABI, ro).balanceOf(me), t.decimals);
+}
+$('lmax-t').onclick = async () => { if (!me) return; $('lamt-t').value = await maxOf(liqToken); if (liqMode === 'v3') v3CalcFrom('t'); else syncFromToken(); };
+$('lmax-e').onclick = async () => { if (!me) return; $('lamt-e').value = await maxOf(liqTokenB); if (liqMode === 'v3') v3CalcFrom('e'); else syncFromEth(); };
+
+$('do-add').onclick = async () => {
+  if (!signer) return;
+  if (!liqTokenB) liqTokenB = ETH_T;
+  if (liqMode === 'v3') return v3Add();
+  const vt = $('lamt-t').value, ve = $('lamt-e').value;
+  if (!vt || !ve || Number(vt) <= 0 || Number(ve) <= 0) return st('enter both amounts', 'err');
+  if (liqAddr(liqToken).toLowerCase() === liqAddr(liqTokenB).toLowerCase()) return st('pick two different tokens', 'err');
+  const at = ethers.parseUnits(vt, liqToken.decimals), ab = ethers.parseUnits(ve, liqTokenB.decimals);
+  // chequear saldos ANTES de firmar — un fondo insuficiente revienta sin mensaje claro
+  const balOf2 = async (t) => isEth(t) ? await ro.getBalance(me) : await new ethers.Contract(t.address, EABI, ro).balanceOf(me);
+  const [bA, bB] = [await balOf2(liqToken), await balOf2(liqTokenB)];
+  if (bA < at) return st('insufficient ' + liqToken.symbol + ' — you need ' + vt + ' but have ' + Number(ethers.formatUnits(bA, liqToken.decimals)).toFixed(4), 'err');
+  if (bB < ab) return st('insufficient ' + liqTokenB.symbol + ' — you need ' + ve + ' but have ' + Number(ethers.formatUnits(bB, liqTokenB.decimals)).toFixed(4) + '. Tip: put MAX on your smaller-balance side and let the other sync.', 'err');
+  const r = new ethers.Contract(ROUTER, RABI, signer);
+  const sl = (x) => x - (x * BigInt(Math.round(slippage * 100)) / 10000n);
+  const approveIfNeeded = async (t, amt) => {
+    if (isEth(t)) return true;
+    if ((await new ethers.Contract(t.address, EABI, ro).allowance(me, ROUTER)) >= amt) return true;
+    return run('approve $' + t.symbol, () => new ethers.Contract(t.address, EABI, signer).approve(ROUTER, amt));
+  };
+  if (!(await approveIfNeeded(liqToken, at))) return;
+  if (!(await approveIfNeeded(liqTokenB, ab))) return;
+  const label = 'add liquidity $' + liqToken.symbol + '/' + liqTokenB.symbol;
+  if (isEth(liqTokenB)) {
+    await run(label, () => r.addLiquidityETH(liqToken.address, at, sl(at), sl(ab), me, deadline(), { value: ab }));
+  } else if (isEth(liqToken)) {
+    await run(label, () => r.addLiquidityETH(liqTokenB.address, ab, sl(ab), sl(at), me, deadline(), { value: at }));
+  } else {
+    await run(label, () => r.addLiquidity(liqToken.address, liqTokenB.address, at, ab, sl(at), sl(ab), me, deadline()));
+  }
+  loadPositions(); loadLiqPool();
+};
+
+// ── opportunities ────────────────────────────────
+async function loadOpps() {
+  try {
+    const d = await (await fetch('/api/dex/opps')).json();
+    if (!d.items || !d.items.length) return;
+    const fUsd = (n) => n >= 1e6 ? '$' + (n/1e6).toFixed(1) + 'M' : n >= 1e3 ? '$' + (n/1e3).toFixed(0) + 'K' : '$' + Math.round(n);
+    $('opp-list').innerHTML = d.items.map((t) => {
+      const badge = t.hasPool ? '<span class="opp-badge live">POOL LIVE ✓</span>' : '<span class="opp-badge open">NO POOL — BE FIRST</span>';
+      return '<div class="opp-row" data-addr="' + t.address + '" data-sym="' + (t.symbol || '?') + '"><div class="opp-l"><b>$' + t.symbol + '</b><span class="nm">' + (t.name || '') + '</span></div>' +
+        '<div class="opp-m"><span class="fee">' + fUsd(t.feeDayUsd) + '/day in LP fees</span>' + fUsd(t.vol24) + ' vol 24h on-chain</div>' + badge + '</div>';
+    }).join('');
+    document.querySelectorAll('.opp-row').forEach((row) => {
+      row.onclick = async () => {
+        st('loading $' + row.dataset.sym + '…');
+        try {
+          const t = await loadCustom(row.dataset.addr);
+          liqToken = t; renderChips(); refreshBalances(); loadLiqPool();
+          $('tab-liq').click();
+          st('seeding $' + t.symbol + '/ETH — you would be the FIRST LP: your ratio sets the starting price. Check the market price first.');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        } catch (e) { st('token load failed', 'err'); }
+      };
+    });
+  } catch (_) {}
+}
+loadOpps(); setInterval(loadOpps, 5 * 60000);
+setInterval(() => { if (document.getElementById('panel-liq').style.display !== 'none') loadLiqPool(); }, 30000);
+
+// ── stats del DEX (TVL / vol / fees) ─────────────
+async function loadStats() {
+  try {
+    const d = await (await fetch('/api/dex/stats')).json();
+    if (!d.ok) return;
+    const f = (n) => n == null ? '—' : n >= 1e6 ? '$' + (n/1e6).toFixed(2) + 'M' : n >= 1e3 ? '$' + (n/1e3).toFixed(1) + 'K' : '$' + n.toFixed(n >= 10 ? 0 : 2);
+    $('tk-tvl').textContent = f(d.tvlUsd);
+    $('tk-vol').textContent = f(d.vol24Usd);
+    $('tk-fees').textContent = f(d.fees24Usd);
+  } catch (_) {}
+}
+loadStats(); setInterval(loadStats, 5 * 60000);
+loadPooledTokens(); setInterval(loadPooledTokens, 5 * 60000);
+
+// ── deep links: nlyra.xyz/dex?buy=0x…  (o ?sell=0x…) ──
+(async function deepLink() {
+  try {
+    const q = new URLSearchParams(location.search);
+    const buy = q.get('buy'), sell = q.get('sell');
+    const addr = buy || sell;
+    if (!addr || !/^0x[a-fA-F0-9]{40}$/.test(addr)) return;
+    let t = findTok(addr);
+    if (!t) { await loadPooledTokens(); t = findTok(addr); }
+    if (!t) t = await loadCustom(addr);
+    if (buy) { swapA = ETH_T; swapB = t; } else { swapA = t; swapB = ETH_T; }
+    renderChips(); findPool(); refreshBalances();
+    st((buy ? 'buying' : 'selling') + ' $' + t.symbol + ' — deep link loaded 🌙');
+  } catch (_) {}
+})();
+function updateDeepLink() {
+  try {
+    if (!isEth(swapB)) history.replaceState(null, '', '/dex?buy=' + swapB.address);
+    else if (!isEth(swapA)) history.replaceState(null, '', '/dex?sell=' + swapA.address);
+    else history.replaceState(null, '', '/dex');
+  } catch (_) {}
+}
+
+// ── mini-chart de precio (eventos Sync del par) ──
+const SYNC_T = '0x1c411e9a96e071241c2f21f7726b17ae89e3cab4c78be50e062b03a9fffbbad1';
+let chartFor = '';
+async function loadChart(pairAddr, t0isTok) {
+  try {
+    if (!pairAddr) { $('chart').style.display = 'none'; return; }
+    const now = Number(await ro.getBlockNumber());
+    let logs = [];
+    for (const span of [90000, 20000]) {
+      try { logs = await ro.getLogs({ address: pairAddr, topics: [SYNC_T], fromBlock: Math.max(0, now - span), toBlock: now }); break; }
+      catch (_) {}
+    }
+    if (logs.length < 2) { $('chart').style.display = 'none'; return; }
+    const coder = ethers.AbiCoder.defaultAbiCoder();
+    const tok = dispTok();
+    const pts = logs.map((l) => {
+      const [r0, r1] = coder.decode(['uint112', 'uint112'], l.data);
+      const rT = t0isTok ? r0 : r1, rE = t0isTok ? r1 : r0;
+      const t = Number(ethers.formatUnits(rT, tok.decimals));
+      return t > 0 ? Number(ethers.formatEther(rE)) / t : null;
+    }).filter((x) => x != null && isFinite(x) && x > 0);
+    if (pts.length < 2) { $('chart').style.display = 'none'; return; }
+    const key = pairAddr + pts.length + pts[pts.length - 1];
+    if (key === chartFor) return;
+    chartFor = key;
+    const chg = (pts[pts.length - 1] / pts[0] - 1) * 100;
+    const chgEl = $('chart-chg');
+    chgEl.textContent = (chg >= 0 ? '▲ +' : '▼ ') + chg.toFixed(2) + '%';
+    chgEl.style.color = chg >= 0 ? 'var(--safe)' : 'var(--bad)';
+    const c = $('chart'); c.style.display = 'block';
+    const W = c.clientWidth || 400, H = 92, dpr = window.devicePixelRatio || 1;
+    c.width = W * dpr; c.height = H * dpr;
+    const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+    const min = Math.min(...pts), max = Math.max(...pts), pad = 10;
+    const X = (i) => (i / (pts.length - 1)) * (W - 8) + 4;
+    const Y = (v) => max === min ? H / 2 : H - pad - ((v - min) / (max - min)) * (H - pad * 2);
+    const grad = ctx.createLinearGradient(0, 0, W, 0);
+    grad.addColorStop(0, '#38e1ff'); grad.addColorStop(1, '#ff5ad1');
+    const fill = ctx.createLinearGradient(0, 0, 0, H);
+    fill.addColorStop(0, 'rgba(56,225,255,.14)'); fill.addColorStop(1, 'rgba(255,90,209,0)');
+    ctx.beginPath();
+    pts.forEach((v, i) => { i === 0 ? ctx.moveTo(X(i), Y(v)) : ctx.lineTo(X(i), Y(v)); });
+    ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.lineJoin = 'round'; ctx.stroke();
+    ctx.lineTo(X(pts.length - 1), H); ctx.lineTo(X(0), H); ctx.closePath();
+    ctx.fillStyle = fill; ctx.fill();
+  } catch (_) { $('chart').style.display = 'none'; }
+}
+
+$('tab-swap').onclick = () => { $('tab-swap').classList.add('on'); $('tab-liq').classList.remove('on'); $('panel-swap').style.display = 'block'; $('panel-liq').style.display = 'none'; };
+$('tab-liq').onclick = () => { $('tab-liq').classList.add('on'); $('tab-swap').classList.remove('on'); $('panel-swap').style.display = 'none'; $('panel-liq').style.display = 'block';
+  if (liqMode === 'v3') { v3FindPool(); v3LoadPositions(); } else { loadPositions(); loadLiqPool(); } };
+
+// ═══ V3 CONCENTRATED LIQUIDITY (modo dentro del tab Liquidity) ═══
+// Usa el MISMO par elegido arriba (liqToken/liqTokenB). Si un lado es ETH,
+// ETH es la "base"; si no, liqTokenB es la base. Toda la matemática respeta
+// los decimales de ambos lados.
+const V3NPM = cfg.v3npm, V3F = cfg.v3factory;
+const N3ABI = ['function createAndInitializePoolIfNecessary(address,address,uint24,uint160) payable returns (address)',
+  'function mint((address token0,address token1,uint24 fee,int24 tickLower,int24 tickUpper,uint256 amount0Desired,uint256 amount1Desired,uint256 amount0Min,uint256 amount1Min,address recipient,uint256 deadline)) payable returns (uint256,uint128,uint256,uint256)',
+  'function positions(uint256) view returns (uint96,address,address token0,address token1,uint24 fee,int24 tickLower,int24 tickUpper,uint128 liquidity,uint256,uint256,uint128,uint128)',
+  'function balanceOf(address) view returns (uint256)', 'function tokenOfOwnerByIndex(address,uint256) view returns (uint256)',
+  'function decreaseLiquidity((uint256 tokenId,uint128 liquidity,uint256 amount0Min,uint256 amount1Min,uint256 deadline)) payable returns (uint256,uint256)',
+  'function collect((uint256 tokenId,address recipient,uint128 amount0Max,uint128 amount1Max)) payable returns (uint256,uint256)',
+  'function unwrapWETH9(uint256,address) payable', 'function sweepToken(address,uint256,address) payable', 'function refundETH() payable',
+  'function multicall(bytes[]) payable returns (bytes[])'];
+const P3ABI = ['function slot0() view returns (uint160 sqrtPriceX96,int24 tick,uint16,uint16,uint16,uint8,bool)', 'function liquidity() view returns (uint128)',
+  'function tickBitmap(int16) view returns (uint256)', 'function ticks(int24) view returns (uint128 liquidityGross,int128 liquidityNet,uint256,uint256,int56,uint160,uint32,bool)'];
+const F3ABI = ['function getPool(address,address,uint24) view returns (address)'];
+const n3I = new ethers.Interface(N3ABI);
+const roF3 = new ethers.Contract(V3F, F3ABI, ro);
+let liqMode = 'v2';
+let v3fee = 3000, v3rangeMode = 'full', v3inverted = false;
+let v3pool = { addr: null, has: false, sqrtP: 0n, tick: 0, price: 0 };
+let v3tickLiq = [], v3chartDomain = null, v3dragging = null, v3lastTickKey = '', v3lastTickAt = 0, v3syncing = false;
+const V3SPACING = { 500: 10, 3000: 60, 10000: 200 };
+const v3FmtN = (n, dp = 4) => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(2)+'K' : n.toFixed(dp);
+const v3FmtP = (n) => n >= 1000 ? v3FmtN(n, 2) : n >= 0.01 ? n.toFixed(4) : n.toExponential(3);
+const v3FmtPct = (p) => (p >= 0 ? '+' : '') + (Math.abs(p) >= 100 ? p.toFixed(0) : p.toFixed(1)) + '%';
+function v3Map() {
+  const b = liqTokenB || ETH_T;
+  if (isEth(liqToken)) return { tok: b, base: ETH_T, tokIn: 'lamt-e', baseIn: 'lamt-t' };
+  return { tok: liqToken, base: b, tokIn: 'lamt-t', baseIn: 'lamt-e' };
+}
+const v3BaseIsEth = () => isEth(v3Map().base);
+const v3BaseAddr = () => { const b = v3Map().base; return isEth(b) ? WETH : b.address; };
+const v3dExp = () => v3Map().base.decimals - v3Map().tok.decimals;
+function v3Order() {
+  const m = v3Map(); const bA = v3BaseAddr();
+  const t0b = bA.toLowerCase() < m.tok.address.toLowerCase();
+  return t0b ? { t0: bA, t1: m.tok.address, baseIs0: true } : { t0: m.tok.address, t1: bA, baseIs0: false };
+}
+const v3DispP = (hp) => v3inverted ? 1/hp : hp;
+const v3UnitStr = () => { const m = v3Map(); return v3inverted ? m.base.symbol + '/' + m.tok.symbol : m.tok.symbol + '/' + m.base.symbol; };
+function v3HumanFromSqrt(sq) {
+  const ratio = Math.pow(Number(sq) / Math.pow(2, 96), 2);
+  const o = v3Order();
+  return o.baseIs0 ? ratio * Math.pow(10, v3dExp()) : (1 / ratio) * Math.pow(10, v3dExp());
+}
+const v3HpOfTick = (t) => { const o = v3Order(); const r = Math.pow(1.0001, t);
+  return o.baseIs0 ? r * Math.pow(10, v3dExp()) : (1/r) * Math.pow(10, v3dExp()); };
+const v3BasePrice = () => v3pool.has ? v3pool.price : (Number($('v3-init-price').value) || 0);
+
+async function v3SuggestInitPrice() {
+  try {
+    const m = v3Map();
+    const kb = v3BaseIsEth() ? 'eth' : m.base.address.toLowerCase();
+    const j = await (await fetch('/api/prices?k=' + kb + ',' + m.tok.address.toLowerCase())).json();
+    const bU = j[kb], tokU = j[m.tok.address.toLowerCase()];
+    if (bU && tokU) { $('v3-init-price').value = (bU / tokU).toPrecision(6); v3NewPoolChart(); }
+  } catch (_) {}
+}
+function v3NewPoolChart() {
+  const b = v3BasePrice();
+  if (b > 0) { v3tickLiq = []; v3chartDomain = { hpA: b/8, hpB: b*8 }; v3DrawRange(); v3CalcOther(true); }
+  else { $('v3-range-chart').style.display = 'none'; $('v3-range-lab').style.display = 'none'; }
+}
+async function v3FindPool() {
+  try {
+    const m = v3Map();
+    if (isEth(m.tok) || v3BaseAddr().toLowerCase() === m.tok.address.toLowerCase()) return;
+    $('v3-init-price').placeholder = m.tok.symbol + ' per ' + m.base.symbol;
+    $('v3-pmin').placeholder = 'min (' + v3UnitStr() + ')'; $('v3-pmax').placeholder = 'max (' + v3UnitStr() + ')';
+    $('v3-inv-toggle').textContent = v3inverted ? '⇄ ' + m.tok.symbol + ' per ' + m.base.symbol : '⇄ ' + m.base.symbol + ' per ' + m.tok.symbol;
+    const pa = await roF3.getPool(m.tok.address, v3BaseAddr(), v3fee);
+    v3pool.addr = pa; v3pool.has = pa && pa !== ethers.ZeroAddress;
+    $('v3-init-box').style.display = v3pool.has ? 'none' : 'block';
+    if (!v3pool.has) {
+      $('v3-pool-state').textContent = 'not created — you set the price';
+      $('v3-cur-price').textContent = '(new pool)';
+      if (!$('v3-init-price').value) v3SuggestInitPrice(); else v3NewPoolChart();
+      return;
+    }
+    const pc = new ethers.Contract(pa, P3ABI, ro);
+    const s0 = await pc.slot0();
+    v3pool.sqrtP = s0[0]; v3pool.tick = Number(s0[1]);
+    v3pool.price = v3HumanFromSqrt(v3pool.sqrtP);
+    $('v3-pool-state').textContent = 'pool live ✓';
+    $('v3-cur-price').textContent = '· now: ' + v3FmtP(v3DispP(v3pool.price)) + ' ' + v3UnitStr();
+    const tkey = v3pool.addr + v3fee;
+    if (tkey !== v3lastTickKey || Date.now() - v3lastTickAt > 60000) { v3lastTickKey = tkey; v3lastTickAt = Date.now(); v3LoadTicks(); }
+    else v3DrawRange();
+  } catch (_) {}
+}
+function v3PairChanged() { $('v3-pmin').value = ''; $('v3-pmax').value = ''; $('v3-init-price').value = ''; v3pool = { addr: null, has: false, sqrtP: 0n, tick: 0, price: 0 }; v3FindPool(); }
+
+function v3TicksForRange() {
+  const sp = V3SPACING[v3fee];
+  if (v3rangeMode === 'full') return { lo: Math.ceil(-887272/sp)*sp, hi: Math.floor(887272/sp)*sp };
+  const cur = v3BasePrice() || 1;
+  let pLo, pHi;
+  if (v3rangeMode === 'custom') {
+    let a = Number($('v3-pmin').value), b = Number($('v3-pmax').value);
+    if (!a || !b || a <= 0 || b <= 0) return null;
+    if (v3inverted) { a = 1/a; b = 1/b; }
+    pLo = Math.min(a, b); pHi = Math.max(a, b);
+    if (pLo >= pHi) return null;
+  }
+  else { const pct = Number(v3rangeMode)/100; pLo = cur*(1-pct); pHi = cur*(1+pct); }
+  const o = v3Order();
+  const toRaw = (hp) => o.baseIs0 ? hp / Math.pow(10, v3dExp()) : 1/(hp / Math.pow(10, v3dExp()));
+  let rA = toRaw(pLo), rB = toRaw(pHi);
+  if (rA > rB) [rA, rB] = [rB, rA];
+  const t = (r) => Math.log(r)/Math.log(1.0001);
+  let lo = Math.floor(t(rA)/sp)*sp, hi = Math.ceil(t(rB)/sp)*sp;
+  lo = Math.max(lo, Math.ceil(-887272/sp)*sp); hi = Math.min(hi, Math.floor(887272/sp)*sp);
+  if (lo >= hi) return null;
+  return { lo, hi };
+}
+function v3CalcFrom(which) {
+  const m = v3Map();
+  v3CalcOther((which === 't' ? 'lamt-t' : 'lamt-e') === m.tokIn);
+}
+function v3CalcOther(fromToken) {
+  if (v3BasePrice() <= 0 || v3syncing) return;
+  const tk2 = v3TicksForRange(); if (!tk2) return;
+  const m = v3Map(); const o = v3Order(); const dec = m.tok.decimals;
+  const sqA = Math.pow(1.0001, tk2.lo/2), sqB = Math.pow(1.0001, tk2.hi/2);
+  const rawB = o.baseIs0 ? v3BasePrice()/Math.pow(10, v3dExp()) : 1/(v3BasePrice()/Math.pow(10, v3dExp()));
+  const sqNow = v3pool.has ? Number(v3pool.sqrtP)/Math.pow(2,96) : Math.sqrt(rawB);
+  const sqP = Math.min(Math.max(sqNow, sqA), sqB);
+  const v = Number($(fromToken ? m.tokIn : m.baseIn).value);
+  if (!v || v <= 0) return;
+  v3syncing = true;
+  try {
+    const isTok0 = !o.baseIs0;
+    const rawIn = fromToken ? v * Math.pow(10, dec) : v * Math.pow(10, m.base.decimals);
+    let L;
+    const inIs0 = fromToken ? isTok0 : o.baseIs0;
+    if (inIs0) L = rawIn * (sqP*sqB)/(sqB-sqP);
+    else L = rawIn / (sqP - sqA);
+    const rawOut = inIs0 ? L*(sqP-sqA) : L*(sqB-sqP)/(sqP*sqB);
+    const outV = (fromToken ? rawOut/Math.pow(10, m.base.decimals) : rawOut/Math.pow(10, dec));
+    if (isFinite(outV) && outV >= 0) $(fromToken ? m.baseIn : m.tokIn).value = outV.toFixed(6);
+  } catch (_) {}
+  v3syncing = false;
+}
+
+// gráfico de rango con distribución de liquidez real + handles arrastrables
+async function v3LoadTicks() {
+  v3tickLiq = [];
+  if (!v3pool.has) { $('v3-range-chart').style.display = 'none'; $('v3-range-lab').style.display = 'none'; return; }
+  try {
+    const pc = new ethers.Contract(v3pool.addr, P3ABI, ro);
+    const sp = V3SPACING[v3fee];
+    const span = 20800;
+    const tLo = v3pool.tick - span, tHi = v3pool.tick + span;
+    const wLo = Math.floor(tLo / sp / 256), wHi = Math.floor(tHi / sp / 256);
+    const inits = [];
+    for (let wi = wLo; wi <= wHi; wi++) {
+      const word = await pc.tickBitmap(wi);
+      if (word === 0n) continue;
+      for (let b = 0; b < 256; b++) {
+        if ((word >> BigInt(b)) & 1n) {
+          const t = (wi * 256 + b) * sp;
+          if (t >= tLo - sp && t <= tHi + sp) inits.push(t);
+        }
+      }
+    }
+    inits.sort((a, b) => a - b);
+    const nets = {};
+    for (const t of inits) { const info = await pc.ticks(t); nets[t] = info[1]; }
+    const Lnow = await pc.liquidity();
+    const segs = [];
+    let L = Lnow, prev = v3pool.tick;
+    for (const t of inits.filter((x) => x > v3pool.tick)) { segs.push({ from: prev, to: t, L }); L = L + nets[t]; prev = t; }
+    segs.push({ from: prev, to: tHi, L });
+    L = Lnow; prev = v3pool.tick;
+    for (const t of inits.filter((x) => x <= v3pool.tick).reverse()) { segs.push({ from: t, to: prev, L }); L = L - nets[t]; prev = t; }
+    segs.push({ from: tLo, to: prev, L });
+    v3tickLiq = segs.filter((s2) => s2.L > 0n);
+    v3chartDomain = { hpA: v3HpOfTick(tLo), hpB: v3HpOfTick(tHi) };
+    v3DrawRange();
+  } catch (_) { $('v3-range-chart').style.display = 'none'; }
+}
+function v3DrawRange() {
+  const c = $('v3-range-chart');
+  if (!v3chartDomain || v3BasePrice() <= 0 || liqMode !== 'v3') { c.style.display = 'none'; $('v3-range-lab').style.display = 'none'; return; }
+  c.style.display = 'block'; $('v3-range-lab').style.display = 'flex';
+  const W = c.clientWidth || 400, H = 130, dpr = window.devicePixelRatio || 1;
+  c.width = W * dpr; c.height = H * dpr;
+  const ctx = c.getContext('2d'); ctx.scale(dpr, dpr);
+  const lo = Math.min(v3chartDomain.hpA, v3chartDomain.hpB), hi = Math.max(v3chartDomain.hpA, v3chartDomain.hpB);
+  const X = (hp) => ((Math.log(hp) - Math.log(lo)) / (Math.log(hi) - Math.log(lo))) * (W - 8) + 4;
+  let maxL = 0n; v3tickLiq.forEach((s2) => { if (s2.L > maxL) maxL = s2.L; });
+  ctx.fillStyle = 'rgba(56,225,255,.25)';
+  if (maxL > 0n) {
+    for (const s2 of v3tickLiq) {
+      const x1 = X(Math.min(v3HpOfTick(s2.from), v3HpOfTick(s2.to))), x2 = X(Math.max(v3HpOfTick(s2.from), v3HpOfTick(s2.to)));
+      const h = Math.max(4, Number(s2.L * 100n / maxL) / 100 * (H - 26));
+      ctx.fillRect(Math.min(x1, x2), H - 18 - h, Math.max(2, Math.abs(x2 - x1)), h);
+    }
+  } else { ctx.fillRect(4, H - 30, W - 8, 12); }
+  const tk2 = v3TicksForRange();
+  if (tk2) {
+    const hpL = v3HpOfTick(tk2.lo), hpH = v3HpOfTick(tk2.hi);
+    const xa = X(Math.min(hpL, hpH)), xb = X(Math.max(hpL, hpH));
+    ctx.fillStyle = 'rgba(255,90,209,.14)';
+    ctx.fillRect(xa, 6, xb - xa, H - 24);
+    for (const x of [xa, xb]) {
+      ctx.strokeStyle = '#ff5ad1'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, 6); ctx.lineTo(x, H - 18); ctx.stroke();
+      ctx.fillStyle = '#ff5ad1'; ctx.fillRect(x - 4, (H - 18) / 2 - 8, 8, 16);
+    }
+    const dA = v3DispP(hpL), dB = v3DispP(hpH), dCur = v3DispP(v3BasePrice());
+    const dLo = Math.min(dA, dB), dHi = Math.max(dA, dB);
+    $('v3-rl-min').textContent = 'min ' + v3FmtP(dLo) + ' (' + v3FmtPct((dLo/dCur - 1) * 100) + ')';
+    $('v3-rl-max').textContent = 'max ' + v3FmtP(dHi) + ' (' + v3FmtPct((dHi/dCur - 1) * 100) + ')';
+  }
+  const xc = X(v3BasePrice());
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#38e1ff'); grad.addColorStop(1, '#ff5ad1');
+  ctx.strokeStyle = grad; ctx.lineWidth = 2; ctx.setLineDash([4, 3]);
+  ctx.beginPath(); ctx.moveTo(xc, 2); ctx.lineTo(xc, H - 14); ctx.stroke(); ctx.setLineDash([]);
+  $('v3-rl-cur').textContent = '● now ' + v3FmtP(v3DispP(v3BasePrice()));
+}
+(function () {
+  const c = $('v3-range-chart');
+  const hpAtX = (x) => {
+    const W = c.clientWidth || 400;
+    const lo = Math.min(v3chartDomain.hpA, v3chartDomain.hpB), hi = Math.max(v3chartDomain.hpA, v3chartDomain.hpB);
+    return Math.exp(Math.log(lo) + ((x - 4) / (W - 8)) * (Math.log(hi) - Math.log(lo)));
+  };
+  const bounds = () => { const tk2 = v3TicksForRange(); if (!tk2) return null;
+    const a = v3HpOfTick(tk2.lo), b = v3HpOfTick(tk2.hi); return { min: Math.min(a, b), max: Math.max(a, b) }; };
+  c.addEventListener('pointerdown', (e) => {
+    if (!v3chartDomain) return;
+    const r = c.getBoundingClientRect(); const x = e.clientX - r.left;
+    const b = bounds(); if (!b) return;
+    const W = c.clientWidth || 400;
+    const lo = Math.min(v3chartDomain.hpA, v3chartDomain.hpB), hi = Math.max(v3chartDomain.hpA, v3chartDomain.hpB);
+    const XX = (hp) => ((Math.log(hp) - Math.log(lo)) / (Math.log(hi) - Math.log(lo))) * (W - 8) + 4;
+    v3dragging = Math.abs(x - XX(b.min)) < Math.abs(x - XX(b.max)) ? 'min' : 'max';
+    document.querySelectorAll('.range-opt').forEach((o) => o.classList.remove('on'));
+    document.querySelector('.range-opt[data-r="custom"]').classList.add('on');
+    v3rangeMode = 'custom'; $('v3-range-custom').classList.add('on');
+    const dMn = Math.min(v3DispP(b.min), v3DispP(b.max)), dMx = Math.max(v3DispP(b.min), v3DispP(b.max));
+    $('v3-pmin').value = dMn.toPrecision(6); $('v3-pmax').value = dMx.toPrecision(6);
+    c.setPointerCapture(e.pointerId);
+  });
+  c.addEventListener('pointermove', (e) => {
+    if (!v3dragging || !v3chartDomain) return;
+    const r = c.getBoundingClientRect(); const x = Math.max(4, Math.min(e.clientX - r.left, (c.clientWidth || 400) - 4));
+    const hp = v3DispP(hpAtX(x));
+    if (v3dragging === 'min') $('v3-pmin').value = hp.toPrecision(6); else $('v3-pmax').value = hp.toPrecision(6);
+    if (Number($('v3-pmin').value) > Number($('v3-pmax').value)) { const t2 = $('v3-pmin').value; $('v3-pmin').value = $('v3-pmax').value; $('v3-pmax').value = t2; v3dragging = v3dragging === 'min' ? 'max' : 'min'; }
+    v3DrawRange(); v3CalcOther(true);
+  });
+  const up = () => { v3dragging = null; };
+  c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
+})();
+$('v3-pmin').addEventListener('input', () => { v3DrawRange(); v3CalcOther(true); });
+$('v3-pmax').addEventListener('input', () => { v3DrawRange(); v3CalcOther(true); });
+$('v3-init-price').addEventListener('input', v3NewPoolChart);
+$('v3-init-suggest').onclick = v3SuggestInitPrice;
+$('v3-inv-toggle').onclick = () => {
+  v3inverted = !v3inverted;
+  const a = Number($('v3-pmin').value), b = Number($('v3-pmax').value);
+  if (a > 0 && b > 0) { const na = 1/b, nb = 1/a; $('v3-pmin').value = na.toPrecision(6); $('v3-pmax').value = nb.toPrecision(6); }
+  v3FindPool();
+};
+document.querySelectorAll('.fee-opt.v3f').forEach((b) => { b.onclick = () => {
+  document.querySelectorAll('.fee-opt.v3f').forEach((x) => x.classList.remove('on')); b.classList.add('on');
+  v3fee = Number(b.dataset.fee); v3PairChanged();
+}; });
+document.querySelectorAll('.range-opt').forEach((b) => { b.onclick = () => {
+  document.querySelectorAll('.range-opt').forEach((x) => x.classList.remove('on')); b.classList.add('on');
+  v3rangeMode = b.dataset.r;
+  $('v3-range-custom').classList.toggle('on', v3rangeMode === 'custom');
+  if ($('lamt-t').value || $('lamt-e').value) v3CalcOther(true);
+  v3DrawRange();
+}; });
+document.querySelectorAll('.fee-opt.lmode').forEach((b) => { b.onclick = () => {
+  document.querySelectorAll('.fee-opt.lmode').forEach((x) => x.classList.remove('on')); b.classList.add('on');
+  liqMode = b.dataset.m;
+  const v3 = liqMode === 'v3';
+  $('v3-controls').style.display = v3 ? 'block' : 'none';
+  $('liq-rate').style.display = v3 ? 'none' : 'block';
+  $('do-add').textContent = v3 ? 'ADD CONCENTRATED LIQUIDITY (V3)' : 'ADD LIQUIDITY';
+  $('pos-title').textContent = v3 ? 'MY V3 POSITIONS (NFTs)' : 'MY POSITIONS';
+  $('pos-list').style.display = v3 ? 'none' : 'block';
+  $('v3-pos-list').style.display = v3 ? 'block' : 'none';
+  $('lamt-t').value = ''; $('lamt-e').value = '';
+  if (v3) { v3FindPool(); v3LoadPositions(); st('V3 mode 🌕 pick a fee tier + price range — tighter range = more fees while in range'); }
+  else { loadLiqPool(); loadPositions(); st('V2 mode 🌙 classic pool — amounts sync to the pool ratio'); }
+}; });
+setInterval(() => { if (liqMode === 'v3' && $('panel-liq').style.display !== 'none') v3FindPool(); }, 25000);
+
+async function v3Add() {
+  const m = v3Map();
+  if (isEth(m.tok)) return st('pick a token side (both sides can\'t be ETH)', 'err');
+  if (v3BaseAddr().toLowerCase() === m.tok.address.toLowerCase()) return st('pick two different tokens', 'err');
+  const vt = $(m.tokIn).value, ve = $(m.baseIn).value;
+  if (!vt || !ve || Number(vt) <= 0 || Number(ve) <= 0) return st('enter both amounts', 'err');
+  const tk2 = v3TicksForRange(); if (!tk2) return st('invalid price range', 'err');
+  const o = v3Order();
+  const amtT = ethers.parseUnits(Number(vt).toFixed(m.tok.decimals), m.tok.decimals);
+  const amtB = ethers.parseUnits(Number(ve).toFixed(m.base.decimals), m.base.decimals);
+  const amt0 = o.baseIs0 ? amtB : amtT, amt1 = o.baseIs0 ? amtT : amtB;
+  // saldos antes de firmar
+  const bT = await new ethers.Contract(m.tok.address, EABI, ro).balanceOf(me);
+  if (bT < amtT) return st('insufficient ' + m.tok.symbol, 'err');
+  const bB = v3BaseIsEth() ? await ro.getBalance(me) : await new ethers.Contract(m.base.address, EABI, ro).balanceOf(me);
+  if (bB < amtB) return st('insufficient ' + m.base.symbol, 'err');
+  try {
+    const tc = new ethers.Contract(m.tok.address, EABI, signer);
+    if ((await new ethers.Contract(m.tok.address, EABI, ro).allowance(me, V3NPM)) < amtT) {
+      stPending('approve $' + m.tok.symbol + '…'); const ta = await tc.approve(V3NPM, ethers.MaxUint256); await ta.wait();
+    }
+    if (!v3BaseIsEth()) {
+      const bc = new ethers.Contract(m.base.address, EABI, signer);
+      if ((await new ethers.Contract(m.base.address, EABI, ro).allowance(me, V3NPM)) < amtB) {
+        stPending('approve $' + m.base.symbol + '…'); const ba = await bc.approve(V3NPM, ethers.MaxUint256); await ba.wait();
+      }
+    }
+    const calls = [];
+    if (!v3pool.has) {
+      const hp = v3BasePrice();
+      if (!hp || hp <= 0) return st('set the starting price first', 'err');
+      const raw = o.baseIs0 ? hp/Math.pow(10, v3dExp()) : 1/(hp/Math.pow(10, v3dExp()));
+      const sq = BigInt(Math.floor(Math.sqrt(raw) * Math.pow(2, 48))) * (2n ** 48n);
+      calls.push(n3I.encodeFunctionData('createAndInitializePoolIfNecessary', [o.t0, o.t1, v3fee, sq]));
+    }
+    calls.push(n3I.encodeFunctionData('mint', [[o.t0, o.t1, v3fee, tk2.lo, tk2.hi, amt0, amt1, 0, 0, me, deadline()]]));
+    if (v3BaseIsEth()) calls.push(n3I.encodeFunctionData('refundETH', []));
+    const npmC = new ethers.Contract(V3NPM, N3ABI, signer);
+    stPending('minting V3 position…');
+    const tx = await npmC.multicall(calls, v3BaseIsEth() ? { value: amtB } : {});
+    stPending('confirming ' + tx.hash.slice(0, 14) + '…'); await tx.wait();
+    st('V3 position minted ✅ — you hold it as an NFT 🌕', 'ok');
+    $('lamt-t').value = ''; $('lamt-e').value = '';
+    v3FindPool(); refreshBalances(); v3LoadPositions();
+  } catch (e) { st('mint ✕ ' + (e.shortMessage || e.message).slice(0, 120), 'err'); }
+}
+
+async function v3LoadPositions() {
+  if (!me) { $('v3-pos-list').innerHTML = '<div class="tr-empty">connect your wallet to see your V3 positions</div>'; return; }
+  try {
+    const npmR = new ethers.Contract(V3NPM, N3ABI, ro);
+    const n = Number(await npmR.balanceOf(me));
+    if (!n) { $('v3-pos-list').innerHTML = '<div class="tr-empty">no V3 positions yet — mint one above 🌕</div>'; return; }
+    const MAX = (2n**128n) - 1n;
+    const rows = [];
+    for (let i = 0; i < Math.min(n, 20); i++) {
+      const id = await npmR.tokenOfOwnerByIndex(me, i);
+      const P = await npmR.positions(id);
+      const fees2 = await npmR.collect.staticCall([id, me, MAX, MAX]).catch(() => [0n, 0n]);
+      if (P[7] === 0n && fees2[0] === 0n && fees2[1] === 0n) continue;
+      const symOf = async (a) => a.toLowerCase() === WETH.toLowerCase() ? { s: 'ETH', d: 18 } :
+        await (async () => { const c = new ethers.Contract(a, EABI, ro); return { s: await c.symbol().catch(() => '?'), d: Number(await c.decimals().catch(() => 18)) }; })();
+      const [s0, s1] = [await symOf(P[2]), await symOf(P[3])];
+      const pa = await roF3.getPool(P[2], P[3], Number(P[4]));
+      let inR = null, sqrtNow = null, curHp = null;
+      try {
+        const s = await new ethers.Contract(pa, P3ABI, ro).slot0();
+        const curTick = Number(s[1]);
+        inR = curTick >= Number(P[5]) && curTick < Number(P[6]);
+        sqrtNow = Number(s[0]) / Math.pow(2, 96);
+        const q0 = P[2].toLowerCase() === WETH.toLowerCase();
+        const dQ = q0 ? s0.d : s1.d, dT = q0 ? s1.d : s0.d;
+        const raw = sqrtNow * sqrtNow;
+        curHp = q0 ? raw * Math.pow(10, dQ - dT) : (1/raw) * Math.pow(10, dQ - dT);
+      } catch (_) {}
+      rows.push({ id, P, s0, s1, inR, fees: fees2, sqrtNow, curHp });
+    }
+    if (!rows.length) { $('v3-pos-list').innerHTML = '<div class="tr-empty">no active V3 positions 🌕</div>'; return; }
+    const keyOf = (a) => a.toLowerCase() === WETH.toLowerCase() ? 'eth' : a.toLowerCase();
+    for (const r of rows) { r.u0 = await usdPrice(keyOf(r.P[2])); r.u1 = await usdPrice(keyOf(r.P[3])); }
+    $('v3-pos-list').innerHTML = rows.map((r, i) => {
+      const q0 = r.P[2].toLowerCase() === WETH.toLowerCase();
+      const tokIdx = q0 ? 1 : 0;
+      const tokSym = tokIdx === 0 ? r.s0.s : r.s1.s, tokDec = tokIdx === 0 ? r.s0.d : r.s1.d;
+      const qSym = q0 ? r.s0.s : r.s1.s, qDec = q0 ? r.s0.d : r.s1.d;
+      const feePct = (Number(r.P[4])/10000) + '%';
+      const full = Number(r.P[5]) <= -887200 && Number(r.P[6]) >= 887200;
+      const hpOf = (t) => { const raw = Math.pow(1.0001, Number(t)); return q0 ? raw * Math.pow(10, qDec-tokDec) : (1/raw) * Math.pow(10, qDec-tokDec); };
+      const pA = hpOf(r.P[5]), pB = hpOf(r.P[6]);
+      const pLo = Math.min(pA, pB), pHi = Math.max(pA, pB);
+      const shown = (hp) => v3inverted ? v3FmtP(1/hp) : v3FmtP(hp);
+      const unit = v3inverted ? qSym + '/' + tokSym : tokSym + '/' + qSym;
+      const rangeTxt = full ? '<b>FULL RANGE</b>' : '<b>' + (v3inverted ? shown(pHi) : shown(pLo)) + '</b> → <b>' + (v3inverted ? shown(pLo) : shown(pHi)) + '</b> ' + unit;
+      const sa = Math.pow(1.0001, Number(r.P[5])/2), sb = Math.pow(1.0001, Number(r.P[6])/2);
+      const sp = Math.min(Math.max(r.sqrtNow != null ? r.sqrtNow : sa, sa), sb);
+      const L = Number(r.P[7]);
+      const a0 = L > 0 ? L * (sb - sp) / (sp * sb) / Math.pow(10, r.s0.d) : 0;
+      const a1 = L > 0 ? L * (sp - sa) / Math.pow(10, r.s1.d) : 0;
+      const usdV = (r.u0||0)*a0 + (r.u1||0)*a1;
+      const f0 = Number(ethers.formatUnits(r.fees[0], r.s0.d)), f1 = Number(ethers.formatUnits(r.fees[1], r.s1.d));
+      const feesUsd = (r.u0||0)*f0 + (r.u1||0)*f1;
+      let barPos = 50;
+      if (!full && r.curHp != null && pHi > pLo) barPos = Math.max(2, Math.min(98, (Math.log(r.curHp) - Math.log(pLo)) / (Math.log(pHi) - Math.log(pLo)) * 100));
+      const icoOf = (idx, sz) => { const a = idx === 0 ? r.P[2] : r.P[3]; const s = idx === 0 ? r.s0 : r.s1;
+        return s.s === 'ETH' ? iconHtml(ETH_T, sz) : iconHtml({ address: a, symbol: s.s, emoji: s.s === 'NLYRA' ? '🌙' : s.s[0], decimals: s.d }, sz); };
+      const iconPair = icoOf(tokIdx, 26) + '<span style="margin-left:-9px;">' + icoOf(tokIdx === 0 ? 1 : 0, 26) + '</span>';
+      const amtStr = (x, s) => s === 'ETH' ? x.toFixed(5) + ' ETH' : v3FmtN(x, 2) + ' ' + s;
+      const feeStr = (x, s) => s === 'ETH' ? x.toFixed(6) + ' ETH' : (x >= 1000 ? v3FmtN(x, 2) : x.toFixed(x < 0.01 ? 6 : 2)) + ' ' + s;
+      return '<div class="pos" data-v3i="' + i + '">' +
+        '<div class="ph"><span style="display:flex;align-items:center;gap:8px;">' + iconPair + ' ' + tokSym + '/' + qSym + ' <span style="font-size:10.5px;color:var(--ink-3);border:1px solid var(--line-2);border-radius:999px;padding:1px 7px;">' + feePct + '</span><span style="font-size:10px;color:var(--ink-3);">#' + r.id + '</span></span>' +
+        (r.inR === null ? '' : '<span class="inrange ' + (r.inR ? 'in">● EARNING' : 'out">OUT OF RANGE') + '</span>') + '</div>' +
+        '<div class="pu" style="margin-top:8px;">' + rangeTxt + '</div>' +
+        (full ? '' : '<div style="position:relative;height:8px;border-radius:999px;background:rgba(140,160,200,.12);margin:7px 0 2px;">' +
+          '<div style="position:absolute;inset:0;border-radius:999px;background:linear-gradient(90deg,rgba(56,225,255,.35),rgba(255,90,209,.35));"></div>' +
+          '<div style="position:absolute;top:-3px;left:calc(' + barPos.toFixed(1) + '% - 4px);width:8px;height:14px;border-radius:4px;background:#fff;box-shadow:0 0 8px rgba(56,225,255,.8);"></div></div>') +
+        '<div class="pu">holds <b>' + amtStr(tokIdx === 0 ? a0 : a1, tokSym) + ' + ' + amtStr(tokIdx === 0 ? a1 : a0, qSym) + '</b>' + (usdV > 0 ? ' · <b style="background:linear-gradient(100deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent;">≈ $' + (usdV >= 100 ? usdV.toFixed(0) : usdV.toFixed(2)) + '</b>' : '') + '</div>' +
+        '<div class="pu">fees earned: <b>' + feeStr(f0, r.s0.s) + ' + ' + feeStr(f1, r.s1.s) + '</b>' + (feesUsd > 0.005 ? ' · <b style="color:var(--safe);">≈ $' + feesUsd.toFixed(2) + '</b>' : '') + '</div>' +
+        '<div class="harvest"><button data-a="collect">COLLECT FEES</button><button data-a="half">WITHDRAW 50%</button><button data-a="all">EXIT ALL</button></div></div>';
+    }).join('');
+    hydrateIcons();
+    document.querySelectorAll('[data-v3i]').forEach((el) => {
+      const r = rows[Number(el.dataset.v3i)];
+      el.querySelectorAll('.harvest button').forEach((b) => { b.onclick = () => v3PositionAction(r, b.dataset.a); });
+    });
+  } catch (e) { $('v3-pos-list').innerHTML = '<div class="tr-empty">could not load V3 positions</div>'; }
+}
+async function v3PositionAction(r, act) {
+  if (!signer) return;
+  try {
+    const npmC = new ethers.Contract(V3NPM, N3ABI, signer);
+    const MAX = (2n**128n) - 1n;
+    const calls = [];
+    if (act !== 'collect') {
+      const liq = act === 'all' ? r.P[7] : r.P[7]/2n;
+      if (liq > 0n) calls.push(n3I.encodeFunctionData('decreaseLiquidity', [[r.id, liq, 0, 0, deadline()]]));
+    }
+    calls.push(n3I.encodeFunctionData('collect', [[r.id, '0x0000000000000000000000000000000000000000', MAX, MAX]]));
+    for (const a of [r.P[2], r.P[3]]) {
+      if (a.toLowerCase() === WETH.toLowerCase()) calls.push(n3I.encodeFunctionData('unwrapWETH9', [0, me]));
+      else calls.push(n3I.encodeFunctionData('sweepToken', [a, 0, me]));
+    }
+    stPending(act + '…');
+    const tx = await npmC.multicall(calls);
+    stPending('confirming…'); await tx.wait();
+    st(act + ' ✅', 'ok'); v3LoadPositions(); refreshBalances();
+  } catch (e) { st(act + ' ✕ ' + (e.shortMessage || e.message).slice(0, 110), 'err'); }
+}
+</script>
+</body>
+</html>

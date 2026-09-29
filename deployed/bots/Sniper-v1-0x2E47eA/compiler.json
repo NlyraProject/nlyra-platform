@@ -1,0 +1,14 @@
+{
+  "compiler": "0.8.24+commit.e11b9ed9",
+  "language": "Solidity",
+  "contractName": "ArchitectSniper",
+  "mainFile": "ArchitectSniper.sol",
+  "settings": {
+    "viaIR": true,
+    "optimizer": {
+      "runs": 200,
+      "enabled": true
+    },
+    "evmVersion": "cancun"
+  }
+}

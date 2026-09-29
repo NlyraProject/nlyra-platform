@@ -1,0 +1,16 @@
+{
+ "chainId": 4663,
+ "deployer": "0x19e3Bd92889484BcABC1Df94f7eCb98C32CFea16",
+ "burner": "0xEb733465797c02146786F453DbC4aD1B701aA36e",
+ "factory": "0xd1E56b211191dABa8A715D861931173D967a4D0d",
+ "treasury": "0xe30647793192D15BFA6E53aE8651368d332fe04C",
+ "keepBps": 5000,
+ "floor": "mcap 0.5 ETH",
+ "consts": {
+  "sqrtWeth0": "3543191142285914205922034323214520",
+  "sqrtWeth1": "1771595571142957102961017",
+  "tickEdgeWeth0": 214000,
+  "tickEdgeWeth1": -214000
+ },
+ "at": "2026-07-30T13:40:27.622Z"
+}

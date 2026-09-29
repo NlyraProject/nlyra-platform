@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Architect Launch — the launchpad where rugs are impossible</title>
+<meta name="description" content="Create a token in 30 seconds. Trade it on a bonding curve that can never be drained. Graduate into Architect Swap or Uniswap V3 with liquidity locked for life — and keep 90% of the fees forever. Every token born scanned, on Robinhood Chain.">
+<!--OG-->
+<meta property="og:title" content="Architect Launch — rugs impossible by design">
+<meta property="og:description" content="Creators keep 90%, paid in ETH instantly. Liquidity locked for life. Every launch born scanned by AI. The protocol's cut buys & burns $NLYRA.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://nlyra.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<!--/OG-->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2338e1ff'/%3E%3Cstop offset='1' stop-color='%236a8dd8'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%23070b18'/%3E%3Cpath d='M32 10 L44 34 L32 28 L20 34 Z' fill='url(%23g)'/%3E%3Ctext x='32' y='52' text-anchor='middle' font-family='Arial' font-size='18' font-weight='900' fill='url(%23g)'%3EAL%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #070b18; --card: rgba(15, 21, 40, .72); --card-solid: #0f1528;
+    --line: rgba(140, 160, 200, .14); --line-2: rgba(140, 160, 200, .22);
+    --ink: #e9eef8; --ink-2: #9aa7bd; --ink-3: #5d6a82;
+    --cyan: #4cc9f0; --magenta: #5d7ba6; --safe: #34d399; --gold: #fbbf24; --red: #f87171;
+    --grad: linear-gradient(100deg, #4cc9f0, #6a8dd8);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--ink); font-family: 'Inter', system-ui, sans-serif; line-height: 1.55; overflow-x: hidden; }
+  h1, h2, h3, .num { font-family: 'Space Grotesk', 'Inter', sans-serif; }
+  a { color: var(--cyan); text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+  .aurora { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  .aurora::before, .aurora::after { content: ''; position: absolute; width: 62vmax; height: 62vmax; border-radius: 50%; filter: blur(95px); opacity: .16; animation: drift 17s ease-in-out infinite alternate; }
+  .aurora::before { background: var(--cyan); top: -26vmax; left: -18vmax; }
+  .aurora::after { background: #3457a0; bottom: -30vmax; right: -18vmax; animation-delay: -8s; opacity: .1; }
+  @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(6vmax, 4vmax) scale(1.18); } }
+  .stars { position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: radial-gradient(1.5px 1.5px at 20% 30%, rgba(233,238,248,.4) 50%, transparent 51%),
+      radial-gradient(1px 1px at 70% 18%, rgba(233,238,248,.3) 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 86% 62%, rgba(233,238,248,.24) 50%, transparent 51%),
+      radial-gradient(1px 1px at 38% 82%, rgba(233,238,248,.26) 50%, transparent 51%); }
+  .shell { position: relative; z-index: 1; }
+
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 16px clamp(16px, 4vw, 40px); gap: 10px; flex-wrap: wrap; }
+  .brand .ms { font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .brand .by { font-size: 10.5px; color: var(--ink-3); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; margin-top: 2px; }
+  .nav-r { display: flex; gap: 14px; align-items: center; font-size: 13.5px; font-weight: 600; flex-wrap: wrap; }
+  .nav-r a { color: var(--ink-2); }
+  .nav-r a:hover { color: var(--cyan); }
+  .wbtn { padding: 9px 18px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--card-solid); color: var(--ink); font-weight: 700; font-size: 13px; }
+  .wbtn.on { border-color: rgba(52,211,153,.5); color: var(--safe); }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { text-align: center; padding: 30px 0 10px; }
+  h1 { font-size: clamp(30px, 5.4vw, 52px); letter-spacing: -.02em; margin: 10px 0 8px; }
+  h1 .g { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .sub { color: var(--ink-2); font-size: clamp(14px, 2vw, 17px); max-width: 660px; margin: 0 auto; }
+  .sub b { color: var(--ink); }
+
+  .statsbar { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 24px 0 6px; }
+  .stat { background: var(--card); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 14px; padding: 10px 20px; text-align: center; min-width: 128px; }
+  .stat .num { font-size: 20px; font-weight: 700; }
+  .stat .num.fire { color: var(--gold); }
+  .stat span { font-size: 10.5px; color: var(--ink-3); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+
+  .cta-row { display: flex; gap: 12px; justify-content: center; margin: 20px 0 4px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 30px; border: 0; border-radius: 14px; background: var(--grad); color: #06101f; font-family: 'Space Grotesk'; font-weight: 700; font-size: 15.5px; text-decoration: none; box-shadow: 0 8px 26px rgba(76,201,240,.18); }
+  .btn.ghost { background: none; border: 1px solid var(--line-2); color: var(--ink-2); box-shadow: none; font-size: 13.5px; padding: 12px 22px; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+  section { padding: 24px 0; }
+  .sec-t { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+  h2 { font-size: 21px; }
+  .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--safe); display: inline-block; animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; box-shadow: 0 0 0 0 rgba(52,211,153,.5);} 50% { opacity: .6; box-shadow: 0 0 0 7px rgba(52,211,153,0);} }
+
+  .king { border-radius: 20px; padding: 1px; background: rgba(251,191,36,.4); margin-bottom: 18px; cursor: pointer; }
+  .king-in { border-radius: 18px; background: var(--card-solid); padding: 20px; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  .kava { width: 62px; height: 62px; border-radius: 16px; background: var(--grad); display: flex; align-items: center; justify-content: center; font-size: 30px; overflow: hidden; flex: 0 0 62px; }
+  .kava img { width: 100%; height: 100%; object-fit: cover; }
+  .king-meta { flex: 1; min-width: 220px; }
+  .king-meta .crown { font-size: 11px; font-weight: 800; letter-spacing: .12em; color: var(--gold); }
+  .king-meta b { font-family: 'Space Grotesk'; font-size: 19px; display: block; }
+  .king-meta span { font-size: 13px; color: var(--ink-2); }
+  .prog { height: 10px; border-radius: 999px; background: rgba(7,11,24,.7); overflow: hidden; margin-top: 10px; }
+  .prog i { display: block; height: 100%; border-radius: 999px; background: var(--grad); transition: width .6s ease; }
+  .prog-lab { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-3); font-weight: 600; margin-top: 5px; }
+
+  .tabs { display: inline-flex; border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden; }
+  .tabs button { padding: 8px 20px; background: none; border: 0; color: var(--ink-2); font-size: 13px; font-weight: 700; }
+  .tabs button.on { background: rgba(56,225,255,.1); color: var(--cyan); }
+
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 14px; }
+  .lcard { background: var(--card); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 18px; padding: 18px; cursor: pointer; transition: transform .15s ease, border-color .15s ease; }
+  .lcard:hover { transform: translateY(-2px); border-color: rgba(56,225,255,.35); }
+  .lhead { display: flex; gap: 12px; align-items: center; }
+  .lava { width: 44px; height: 44px; border-radius: 12px; background: var(--card-solid); border: 1px solid var(--line-2); display: flex; align-items: center; justify-content: center; font-size: 20px; font-family: 'Space Grotesk'; font-weight: 700; overflow: hidden; flex: 0 0 44px; }
+  .lava img { width: 100%; height: 100%; object-fit: cover; }
+  .lhead b { font-family: 'Space Grotesk'; font-size: 15.5px; display: block; }
+  .lhead span { font-size: 11.5px; color: var(--ink-3); }
+  .ldesc { font-size: 12.5px; color: var(--ink-2); margin: 10px 0 4px; min-height: 32px; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .lstats { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--ink-3); font-weight: 600; margin-top: 8px; }
+  .lstats b { color: var(--ink); }
+  .badges { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .badge { font-size: 9.5px; font-weight: 800; letter-spacing: .07em; padding: 3px 8px; border-radius: 999px; border: 1px solid; }
+  .b-safe { background: rgba(52,211,153,.08); color: var(--safe); border-color: rgba(52,211,153,.3); }
+  .b-venue { background: rgba(56,225,255,.07); color: var(--cyan); border-color: rgba(56,225,255,.3); }
+  .b-uni { background: rgba(140,160,200,.08); color: var(--ink-2); border-color: rgba(140,160,200,.3); }
+  .b-grad { background: rgba(251,191,36,.08); color: var(--gold); border-color: rgba(251,191,36,.35); }
+  .empty { text-align: center; color: var(--ink-3); padding: 40px 0; font-size: 14px; }
+  .skel { height: 150px; border-radius: 18px; background: linear-gradient(100deg, rgba(15,21,40,.7) 40%, rgba(30,40,70,.7) 50%, rgba(15,21,40,.7) 60%); background-size: 300% 100%; animation: sh 1.4s infinite; border: 1px solid var(--line); }
+  @keyframes sh { from { background-position: 100% 0; } to { background-position: 0 0; } }
+
+  .burnbox { border-radius: 20px; padding: 22px; background: var(--card-solid); border: 1px solid rgba(251,191,36,.35); position: relative; overflow: hidden; }
+  .burnbox::before { content: ''; position: absolute; inset: 0; background: radial-gradient(600px 220px at 85% 0%, rgba(251,191,36,.07), transparent 60%); pointer-events: none; }
+  .burnbox > * { position: relative; }
+  .flow { display: flex; gap: 8px; align-items: stretch; flex-wrap: wrap; margin-bottom: 14px; }
+  .fstep { flex: 1; min-width: 130px; background: rgba(7,11,24,.6); border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px; }
+  .fstep b { display: block; font-family: 'Space Grotesk'; font-size: 13.5px; }
+  .fstep span { font-size: 11px; color: var(--ink-3); }
+  .fstep.fire { border-color: rgba(251,191,36,.5); background: rgba(251,191,36,.07); }
+  .fstep.fire b { color: var(--gold); }
+  .farrow { align-self: center; color: var(--ink-3); font-weight: 800; }
+  .burntxt { font-size: 13.5px; color: var(--ink-2); margin-bottom: 14px; }
+  .burntxt b { color: var(--ink); }
+  .burnstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 14px; }
+  .bstat { background: rgba(7,11,24,.6); border: 1px solid var(--line); border-radius: 12px; padding: 12px; text-align: center; }
+  .bstat .num { font-size: 21px; font-weight: 700; }
+  .bstat .num.fire { color: var(--gold); }
+  .bstat span { font-size: 10px; color: var(--ink-3); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  @media (max-width: 640px) { .burnstats { grid-template-columns: 1fr; } .farrow { display: none; } }
+  .rules { background: var(--card); backdrop-filter: blur(14px); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+  .rules ul { list-style: none; display: grid; gap: 10px; }
+  .rules li { display: flex; gap: 10px; font-size: 13.5px; color: var(--ink-2); }
+  .rules li b { color: var(--ink); }
+  .rules .no { color: var(--red); font-weight: 800; }
+
+  /* ── modals ── */
+  .mask { position: fixed; inset: 0; background: rgba(4,7,16,.78); backdrop-filter: blur(6px); z-index: 50; display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 4vh 14px 8vh; }
+  .mask.on { display: flex; }
+  .modal { background: var(--card-solid); border: 1px solid var(--line-2); border-radius: 22px; width: 100%; max-width: 560px; padding: 24px; position: relative; }
+  .modal.wide { max-width: 700px; }
+  .mx { position: absolute; top: 14px; right: 16px; background: none; border: 0; color: var(--ink-3); font-size: 22px; line-height: 1; }
+  .mx:hover { color: var(--ink); }
+  .modal h3 { font-size: 20px; margin-bottom: 4px; }
+  .msub { color: var(--ink-2); font-size: 13px; margin-bottom: 16px; }
+  .f { margin-bottom: 12px; }
+  .f label { display: block; font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 5px; }
+  .f input, .f textarea { width: 100%; background: rgba(7,11,24,.7); border: 1px solid var(--line-2); border-radius: 12px; color: var(--ink); font-family: inherit; font-size: 14.5px; padding: 11px 13px; outline: none; }
+  .f input:focus, .f textarea:focus { border-color: rgba(56,225,255,.5); }
+  .f textarea { resize: vertical; min-height: 66px; }
+  .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .venues { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 6px 0 14px; }
+  .venue { border: 1px solid var(--line-2); border-radius: 14px; padding: 14px; cursor: pointer; background: rgba(7,11,24,.4); }
+  .venue.on { border-color: var(--cyan); background: rgba(56,225,255,.07); }
+  .venue.on.uni { border-color: rgba(140,160,200,.6); background: rgba(140,160,200,.08); }
+  .venue b { font-family: 'Space Grotesk'; display: block; font-size: 14px; }
+  .venue .pct { font-size: 22px; font-weight: 700; font-family: 'Space Grotesk'; color: var(--cyan); }
+  .venue.uni .pct { color: var(--ink-2); }
+  .venue p { font-size: 11px; color: var(--ink-3); margin-top: 3px; }
+  .hint { font-size: 11.5px; color: var(--ink-3); margin-top: 8px; }
+  .hint b { color: var(--ink-2); }
+
+  /* token detail */
+  .thead { display: flex; gap: 14px; align-items: center; margin-bottom: 4px; }
+  .thead .kava { width: 54px; height: 54px; flex: 0 0 54px; font-size: 26px; }
+  .thead h3 { margin: 0; }
+  .thead .sym { color: var(--ink-3); font-size: 13px; }
+  .tdesc { color: var(--ink-2); font-size: 13px; margin: 8px 0 2px; }
+  .trow { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 8px; margin: 14px 0; }
+  .tstat { background: rgba(7,11,24,.55); border: 1px solid var(--line); border-radius: 12px; padding: 9px 6px; text-align: center; }
+  .tstat .num { font-size: 14.5px; font-weight: 700; }
+  .tstat span { font-size: 9.5px; color: var(--ink-3); font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+  .bs { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line-2); border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+  .bs button { padding: 10px; border: 0; background: none; color: var(--ink-2); font-weight: 800; font-size: 14px; }
+  .bs button.buy.on { background: rgba(52,211,153,.12); color: var(--safe); }
+  .bs button.sell.on { background: rgba(248,113,113,.1); color: var(--red); }
+  .amt-quick { display: flex; gap: 6px; margin-top: 6px; }
+  .amt-quick button { flex: 1; padding: 6px; border-radius: 9px; border: 1px solid var(--line); background: none; color: var(--ink-3); font-size: 11.5px; font-weight: 700; }
+  .amt-quick button:hover { color: var(--cyan); border-color: rgba(56,225,255,.4); }
+  .quote { background: rgba(7,11,24,.55); border: 1px solid var(--line); border-radius: 12px; padding: 10px 13px; font-size: 12.5px; color: var(--ink-2); margin: 10px 0; }
+  .quote b { color: var(--ink); }
+  .act { width: 100%; padding: 13px; border: 0; border-radius: 13px; font-family: 'Space Grotesk'; font-weight: 700; font-size: 15px; }
+  .act.buy { background: #2fae7e; color: #051510; }
+  .act.sell { background: #d05858; color: #1b0808; }
+  .act.grad { background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.5); color: var(--gold); margin-top: 8px; }
+  .act:disabled { opacity: .45; }
+  .feed { margin-top: 16px; }
+  .feed h4 { font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 8px; }
+  .tr { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 6px 2px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
+  .tr .side-b { color: var(--safe); font-weight: 800; }
+  .tr .side-s { color: var(--red); font-weight: 800; }
+  .gradbox { border: 1px solid rgba(251,191,36,.4); background: rgba(251,191,36,.06); border-radius: 14px; padding: 14px; margin: 12px 0; font-size: 13px; color: var(--ink-2); }
+  .gradbox b { color: var(--gold); }
+  .linkrow { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12.5px; font-weight: 600; margin-top: 10px; }
+  .addrs { margin-top: 14px; display: grid; gap: 6px; }
+  .arow { display: flex; align-items: center; gap: 8px; font-size: 11.5px; background: rgba(7,11,24,.5); border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; }
+  .arow .lab { color: var(--ink-3); font-weight: 800; text-transform: uppercase; letter-spacing: .07em; font-size: 9.5px; flex: 0 0 92px; }
+  .arow code { flex: 1; color: var(--ink-2); font-size: 10.5px; word-break: break-all; font-family: ui-monospace, 'Cascadia Mono', monospace; }
+  .cp { background: none; border: 1px solid var(--line-2); color: var(--ink-2); border-radius: 7px; font-size: 11px; padding: 2px 8px; white-space: nowrap; }
+  .cp:hover { color: var(--cyan); border-color: rgba(56,225,255,.5); }
+  .xshare { margin-left: auto; align-self: flex-start; font-weight: 700; font-size: 11.5px; padding: 5px 12px; }
+  .pend { display: flex; justify-content: space-between; gap: 8px; background: rgba(7,11,24,.5); border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; font-size: 12px; color: var(--ink-2); margin: 10px 0 4px; flex-wrap: wrap; }
+  .pend b { color: var(--gold); }
+  a.tr { text-decoration: none; color: var(--ink-2); }
+  a.tr:hover { background: rgba(56,225,255,.04); }
+
+  .toast { position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%); z-index: 90; background: var(--card-solid); border: 1px solid var(--line-2); border-radius: 14px; padding: 12px 20px; font-size: 13.5px; max-width: 92vw; display: none; box-shadow: 0 14px 40px rgba(0,0,0,.5); }
+  .toast.on { display: block; }
+  .toast.ok { border-color: rgba(52,211,153,.5); }
+  .toast.err { border-color: rgba(248,113,113,.5); }
+
+  /* ── modo claro: la estética del staking (blanco, #0891b2, sombras suaves) ── */
+  body.light {
+    --bg: #ffffff; --card: #f6f7f9; --card-solid: #ffffff;
+    --line: #e7e9ee; --line-2: #d7dbe3;
+    --ink: #0e1116; --ink-2: #4b5563; --ink-3: #9aa3af;
+    --cyan: #0891b2; --gold: #b45309; --safe: #059669; --red: #dc2626;
+    --grad: linear-gradient(100deg, #0891b2, #2563eb);
+  }
+  body.light .aurora, body.light .stars { display: none; }
+  body.light .lcard, body.light .modal, body.light .king-in, body.light .burnbox, body.light .rules, body.light .stat, body.light .wbtn { box-shadow: 0 1px 2px rgba(14,17,22,.04), 0 8px 24px rgba(14,17,22,.06); }
+  body.light .f input, body.light .f textarea, body.light .quote, body.light .tstat, body.light .bstat, body.light .fstep, body.light .arow, body.light .prog, body.light .venue, body.light .lava, body.light .amt-quick button { background: #f6f7f9; border-color: #e7e9ee; }
+  body.light #search { background: #f6f7f9 !important; border-color: #e7e9ee !important; }
+  body.light .btn:not(.ghost) { color: #fff; }
+  body.light .act.buy { background: #059669; color: #fff; }
+  body.light .act.sell { background: #dc2626; color: #fff; }
+  body.light .act.grad:not(:disabled) { background: rgba(180,83,9,.08); }
+  body.light .b-safe { background: rgba(5,150,105,.07); }
+  body.light .mask { background: rgba(14,17,22,.35); }
+  body.light .toast { box-shadow: 0 16px 48px rgba(14,17,22,.18); }
+  body.light .embers i { opacity: 0; animation: none; }
+  body.light .kava { color: #fff; }
+  /* ── wow pass: entradas, shimmer, brasas, confetti ── */
+  @keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  header h1 { animation: riseIn .6s ease both; }
+  header .sub { animation: riseIn .7s .12s ease both; }
+  .statsbar { animation: riseIn .7s .24s ease both; }
+  .cta-row { animation: riseIn .7s .36s ease both; }
+  h1 .g { background-size: 220% auto; animation: shimmer 4s linear infinite; }
+  @keyframes shimmer { to { background-position: 220% center; } }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .65s ease, transform .65s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+  .lcard { animation: riseIn .5s ease both; }
+  .stat .num.tick, .bstat .num.tick { animation: tickpop .55s ease; }
+  @keyframes tickpop { 30% { transform: scale(1.2); filter: brightness(1.4); } }
+  .embers { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 20px; }
+  .embers i { position: absolute; bottom: -6px; width: 5px; height: 5px; border-radius: 50%; background: var(--gold); opacity: 0; animation: ember 4.5s linear infinite; }
+  @keyframes ember { 0% { opacity: 0; transform: translateY(0) scale(1); } 12% { opacity: .8; } 100% { opacity: 0; transform: translateY(-200px) translateX(16px) scale(.35); } }
+  .confetti { position: fixed; z-index: 200; width: 9px; height: 9px; border-radius: 2px; pointer-events: none; animation: confall 1.6s ease-out forwards; }
+  @keyframes confall { to { transform: translate(var(--dx), 105vh) rotate(740deg); opacity: .05; } }
+  /* ── polish pass: micro-interacciones ── */
+  button, .btn, .cp, .wbtn { transition: transform .16s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease, color .2s ease, filter .2s ease; }
+  button:active, .btn:active { transform: translateY(1px) scale(.985); }
+  .btn { position: relative; overflow: hidden; }
+  .btn:not(.ghost)::after { content: ''; position: absolute; top: 0; left: -80%; width: 50%; height: 100%; background: linear-gradient(105deg, transparent, rgba(255,255,255,.35), transparent); transform: skewX(-20deg); transition: left .5s ease; }
+  .btn:not(.ghost):hover::after { left: 130%; }
+  .btn:not(.ghost):hover { transform: translateY(-2px); box-shadow: 0 14px 36px rgba(76,201,240,.32); }
+  .btn.ghost:hover { border-color: rgba(76,201,240,.5); color: var(--cyan); }
+  .wbtn:hover { border-color: rgba(76,201,240,.55); color: var(--cyan); box-shadow: 0 0 18px rgba(76,201,240,.15); }
+  .act { position: relative; overflow: hidden; letter-spacing: .01em; }
+  .act:not(:disabled):hover { transform: translateY(-1.5px); filter: brightness(1.08); }
+  .act.buy:not(:disabled):hover { box-shadow: 0 10px 28px rgba(47,174,126,.35); }
+  .act.sell:not(:disabled):hover { box-shadow: 0 10px 28px rgba(208,88,88,.3); }
+  .act.grad:not(:disabled) { animation: goldpulse 2.6s ease-in-out infinite; }
+  .act.grad:not(:disabled):hover { background: rgba(251,191,36,.2); box-shadow: 0 10px 30px rgba(251,191,36,.28); animation: none; }
+  @keyframes goldpulse { 0%,100% { box-shadow: 0 0 0 0 rgba(251,191,36,.25); } 50% { box-shadow: 0 0 22px 2px rgba(251,191,36,.14); } }
+  .tabs button:hover { color: var(--ink); background: rgba(140,160,200,.07); }
+  .amt-quick button:hover, .cp:hover { transform: translateY(-1px); }
+  .venue { transition: transform .16s ease, border-color .2s ease, background .2s ease; }
+  .venue:hover { transform: translateY(-2px); border-color: rgba(76,201,240,.45); }
+  .lcard { transition: transform .18s ease, border-color .2s ease, box-shadow .25s ease; }
+  .lcard:hover { box-shadow: 0 16px 40px rgba(3,6,14,.6), 0 0 0 1px rgba(76,201,240,.18); }
+  .f input:focus, .f textarea:focus, #search:focus { box-shadow: 0 0 0 3px rgba(76,201,240,.13); }
+  .king:hover .king-in { background: #111a30; }
+  .king-in { transition: background .25s ease; }
+  footer { text-align: center; padding: 26px 16px 36px; font-size: 11.5px; color: var(--ink-3); }
+  footer a { color: var(--ink-2); font-weight: 600; }
+  @media (max-width: 640px) { .trow { grid-template-columns: repeat(2, 1fr); } .venues { grid-template-columns: 1fr; } .frow { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="aurora"></div><div class="stars"></div>
+<div class="shell">
+
+<nav>
+  <a class="brand" href="/" style="text-decoration:none"><div><span class="ms">ARCHITECT LAUNCH</span><div class="by">by NERON &amp; LYRA</div></div></a>
+  <div class="nav-r">
+    <a href="/">Scanner</a><a href="/dex">DEX</a><a href="/staking">Staking</a><a href="/shield">Shield</a><a href="/#agents">The Agents</a><a href="#how">How it works</a><a href="/faq">FAQ</a>
+    <button class="wbtn" id="theme-btn" onclick="toggleTheme()" title="light / dark" style="padding:9px 12px">☀️</button>
+    <button class="wbtn" id="wallet-btn" onclick="connect()">Connect wallet</button>
+  </div>
+</nav>
+
+<header class="wrap">
+  <h1>Every token born here<br>is <span class="g">born safe.</span></h1>
+  <p class="sub">One immutable template, <b>zero owner powers</b>. Every token is born <b>inside a real pool</b> — on DexScreener from block one — with the liquidity <b>locked for life</b>. Creators keep <b>90% of pool fees, forever</b>. The protocol's cut? Half funds the team, half buys &amp; burns <b>$NLYRA</b>. No graduation, no migration, no rugs. All of it on-chain.</p>
+  <div class="statsbar" id="statsbar">
+    <div class="stat"><div class="num" id="s-launches">—</div><span>Launches</span></div>
+    <div class="stat"><div class="num" id="s-grad">—</div><span>2+ ETH mcap 🌕</span></div>
+    <div class="stat"><div class="num" id="s-raised">—</div><span>ETH liquidity</span></div>
+    <div class="stat"><div class="num fire" id="s-burned">—</div><span>$NLYRA burned 🔥</span></div>
+  </div>
+  <div class="cta-row">
+    <button class="btn" onclick="openCreate()">✨ Create a token — free</button>
+    <a class="btn ghost" href="#how">how it works ↓</a>
+  </div>
+</header>
+
+<section class="wrap" id="king-sec" style="display:none">
+  <div class="sec-t"><h2>👑 King of the Hill</h2></div>
+  <div class="king" id="king"></div>
+</section>
+
+<section class="wrap">
+  <div class="sec-t">
+    <h2><span class="live-dot"></span> Launches</h2>
+    <div class="tabs"><button id="tab-live" class="on" onclick="setTab('live')">Newest</button><button id="tab-grad" onclick="setTab('grad')">Deepest 🌊</button></div>
+    <input id="search" placeholder="🔎 name · ticker · CA" oninput="renderGrid()" style="margin-left:auto;background:rgba(7,11,24,.6);border:1px solid var(--line-2);border-radius:10px;color:var(--ink);font-family:inherit;font-size:12.5px;padding:8px 12px;outline:none;min-width:180px">
+  </div>
+  <div class="grid" id="grid"><div class="skel"></div><div class="skel"></div><div class="skel"></div></div>
+  <div class="empty" id="empty" style="display:none"></div>
+</section>
+
+<section class="wrap" id="burn-sec">
+  <div class="sec-t"><h2>🔥 The Burn Engine</h2><span class="badge b-grad" style="font-size:10.5px">NO OWNER · ANYONE CAN PULL THE TRIGGER</span></div>
+  <div class="burnbox">
+    <div class="embers"><i style="left:6%"></i><i style="left:22%;animation-delay:1.2s"></i><i style="left:41%;animation-delay:2.4s"></i><i style="left:58%;animation-delay:.7s"></i><i style="left:74%;animation-delay:3.1s"></i><i style="left:90%;animation-delay:1.8s"></i></div>
+    <div class="flow">
+      <div class="fstep"><b>Every trade</b><span>1% pool fee, forever</span></div><div class="farrow">→</div>
+      <div class="fstep"><b>Creator</b><span>keeps up to 90%, in ETH</span></div><div class="farrow">→</div>
+      <div class="fstep"><b>Protocol cut</b><span>flows into the Burner</span></div><div class="farrow">→</div>
+      <div class="fstep fire"><b>50% buys $NLYRA</b><span>→ straight to 0xdEaD 🔥</span></div>
+    </div>
+    <p class="burntxt">The Burner contract has <b>no owner and no withdraw</b>. Half of every wei funds the team (fixed address, hardcoded), the other half <b>market-buys $NLYRA and sends it to the dead address in the same transaction</b> — it never touches a wallet. Nobody can change the split, redirect the funds, or stop it. And the trigger is public: <b>anyone</b> can press the button below and execute the burn themselves. Gas is all it costs. Every launch, every trade, every day — $NLYRA gets scarcer.</p>
+    <div class="burnstats">
+      <div class="bstat"><div class="num fire" id="b-waiting">—</div><span>ETH waiting to burn</span></div>
+      <div class="bstat"><div class="num fire" id="b-burned">—</div><span>$NLYRA burned so far</span></div>
+      <div class="bstat"><div class="num" id="b-kept">—</div><span>ETH to protocol ops</span></div>
+    </div>
+    <button class="act grad" id="burn-go" onclick="doBurn()" disabled>🔥 BURN NOW — loading…</button>
+    <p class="hint" style="text-align:center">Your wallet executes it, your tx goes down in history as the one that lit the fire. <a href="#" id="burner-link" target="_blank" rel="noopener">Verify the Burner contract →</a></p>
+  </div>
+</section>
+
+<section class="wrap" id="how">
+  <div class="sec-t"><h2>The rules of the house</h2></div>
+  <div class="rules"><ul>
+    <li>🛡️ <span><b>One template for every token</b> — fixed 1B supply, no mint, no blacklist, no taxes, no owner. Verified once on Blockscout; every launch inherits it. Our scanner marks them safe <b>by construction</b>.</span></li>
+    <li>🌊 <span><b>Born inside a REAL pool</b> — no bonding-curve limbo, no graduation, no migration, ever. Your token is on DexScreener and tradeable by any bot or aggregator <b>from block one</b>. The pool it's born in is the pool it lives in, forever.</span></li>
+    <li>🔒 <span><b>The liquidity is locked for life from second zero.</b> The entire supply sits in a position owned by an ownerless vault with <span class="no">no</span> function to withdraw, move or unlock it. Not the creator, not us, not anyone.</span></li>
+    <li>💸 <span><b>Creators keep 90%</b> of the 1% pool fee on every trade, forever — in ETH, claimable any time (or auto-paid by our bot). Born on Uniswap V3 instead and it's 80%. Hardcoded, immutable, no "we adjusted the split" ever.</span></li>
+    <li>🎯 <span><b>Dev's first buy is hard-capped at 5%</b> of supply — atomic inside the create transaction, so nobody can front-run the creator, and the creator can't corner their own launch at the floor price.</span></li>
+    <li>🔥 <span><b>The protocol's cut is split in stone:</b> half funds the team (fixed address), half flows into the ownerless Burner that market-buys $NLYRA and sends it straight to 0xdEaD. Anyone can pull the trigger — see the Burn Engine above.</span></li>
+    <li>🌙 <span><b>Every launch is announced and read by LYRA</b> — the only launchpad on any chain with a resident AI keeping receipts.</span></li>
+  </ul></div>
+</section>
+
+<footer>
+  <b>NERON &amp; LYRA</b> — nlyra.xyz · Robinhood Chain · <a href="/faq">every contract, verified</a>
+</footer>
+</div>
+
+<!-- ── CREATE MODAL ── -->
+<div class="mask" id="m-create">
+  <div class="modal">
+    <button class="mx" onclick="closeM('m-create')">×</button>
+    <h3>✨ Create your token</h3>
+    <p class="msub">30 seconds, free — you only pay gas. 100% of the supply goes to the curve; you buy like everyone else (your first buy caps at 5%).</p>
+    <div class="frow">
+      <div class="f"><label>Name</label><input id="c-name" maxlength="40" placeholder="Night Owl"></div>
+      <div class="f"><label>Ticker</label><input id="c-sym" maxlength="12" placeholder="NIGHTOWL"></div>
+    </div>
+    <div class="f"><label>Image (optional — png/jpg/webp/gif, max 400KB)</label>
+      <div style="display:flex;gap:10px;align-items:center">
+        <div class="lava" id="c-img-prev" style="width:54px;height:54px;flex:0 0 54px">🖼️</div>
+        <input type="file" id="c-img-file" accept="image/png,image/jpeg,image/webp,image/gif" style="display:none" onchange="pickImg(this)">
+        <button type="button" class="cp" style="padding:10px 16px" onclick="document.getElementById('c-img-file').click()">Choose file…</button>
+        <span class="hint" id="c-img-name" style="margin:0">no file selected</span>
+      </div>
+    </div>
+    <div class="f"><label>Description</label><textarea id="c-desc" maxlength="280" placeholder="the ones who never sleep, like the AIs watching this chain"></textarea></div>
+    <div class="frow">
+      <div class="f"><label>Telegram (optional)</label><input id="c-tg" maxlength="100" placeholder="https://t.me/…"></div>
+      <div class="f"><label>X / Twitter (optional)</label><input id="c-x" maxlength="100" placeholder="https://x.com/…"></div>
+    </div>
+    <div class="f"><label>Your first buy (optional, ETH) — hard-capped at 5% of supply, atomic, nobody can front-run you</label>
+      <input id="c-buy" inputmode="decimal" placeholder="0.0" oninput="buyEst()">
+      <div class="amt-quick"><button type="button" onclick="fillBuy(0.01)">1%</button><button type="button" onclick="fillBuy(0.025)">2.5%</button><button type="button" onclick="fillBuy(0.05)">MAX 5%</button></div>
+      <p class="hint" id="c-buy-est">skip it — you can always buy from the pool after launch</p>
+    </div>
+    <div class="f"><label>Where is it born? — your fee share, forever</label>
+      <div class="venues">
+        <div class="venue uni on" id="v2" onclick="pickVenue(2)"><span class="pct">80%</span><b>Uniswap V3</b><p>the canonical deployment</p></div>
+        <div class="venue" id="v1" onclick="pickVenue(1)"><span class="pct">90%</span><b>Architect Swap V3</b><p>our DEX · highest creator share on the chain</p></div>
+      </div>
+    </div>
+    <button class="btn" style="width:100%" id="c-go" onclick="doCreate()">Create — one transaction</button>
+    <p class="hint">Your token is born from the audited template, <b>inside a real pool</b> — on DexScreener from block one, liquidity locked for life, <b>SAFE by construction</b>.</p>
+  </div>
+</div>
+
+<!-- ── TOKEN DETAIL MODAL ── -->
+<div class="mask" id="m-token">
+  <div class="modal wide" id="token-body"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const CFG0 = "__LAUNCH_CONFIG__";
+const CFG = typeof CFG0 === 'string' ? { factory: '', burner: '', weth: '0x0Bd7D308f8E1639FAb988df18A8011f41EAcAD73', nlyra: '0xb9d3824149ad8ac984153ceec91d5a2405d1fb95', explorer: 'https://robinhoodchain.blockscout.com' } : CFG0;
+CFG.routerOurs = CFG.routerOurs || '0x4D0d17F66d1da788da50CF5217894F36684F958E'; // Architect Swap V3 (deadline)
+CFG.routerUni = CFG.routerUni || '0xcaf681a66d020601342297493863e78c959e5cb2'; // Uniswap SwapRouter02 (sin deadline)
+const BASE = location.pathname.startsWith('/testlaunch') ? '/testlaunch' : '/launch';
+// tema: oscuro NERON por defecto, claro estilo staking con switch persistente
+if (localStorage.getItem('al-theme') === 'light') document.body.classList.add('light');
+function toggleTheme() {
+  const light = document.body.classList.toggle('light');
+  localStorage.setItem('al-theme', light ? 'light' : 'dark');
+  const b = document.getElementById('theme-btn'); if (b) b.textContent = light ? '🌙' : '☀️';
+}
+setTimeout(() => { const b = document.getElementById('theme-btn'); if (b && document.body.classList.contains('light')) b.textContent = '🌙'; }, 50);
+if (CFG.test) {
+  const b = document.createElement('div');
+  b.style.cssText = 'position:sticky;top:0;z-index:60;background:rgba(251,191,36,.12);border-bottom:1px solid rgba(251,191,36,.4);color:#fbbf24;text-align:center;font-size:12.5px;font-weight:700;padding:8px 14px';
+  b.innerHTML = '🧪 TEST RUN — real chain, tiny amounts. Break it, trade it, tell us what hurts. The real launch opens at <a href="/launch" style="color:#fbbf24;text-decoration:underline">/launch</a> soon.';
+  document.body.prepend(b);
+}
+const CHAIN = { chainId: '0x1237', chainName: 'Robinhood Chain', nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+  rpcUrls: ['https://rpc.mainnet.chain.robinhood.com'], blockExplorerUrls: [CFG.explorer] };
+const ro = new ethers.JsonRpcProvider(CHAIN.rpcUrls[0]);
+
+const F_ABI = [
+  'function launchCount() view returns (uint256)',
+  'function launches(uint256) view returns (address token, address vault, address creator, string name, string symbol, string image, string description, string telegram, string xLink, uint256 createdAt, uint8 venue)',
+  'function create(string name, string symbol, string image, string description, string telegram, string xLink, uint8 venue) payable returns (address, address)',
+];
+const V_ABI = [
+  'function pool() view returns (address)',
+  'function positionId() view returns (uint256)',
+  'function npm() view returns (address)',
+  'function creator() view returns (address)',
+  'function creatorEarned() view returns (uint256)',
+  'function collectFees(uint256 minEthForTokens)',
+];
+const POOL_ABI = ['function slot0() view returns (uint160 sqrtPriceX96, int24 tick, uint16, uint16, uint16, uint8, bool)'];
+const R1_ABI = ['function exactInputSingle((address,address,uint24,address,uint256,uint256,uint256,uint160)) payable returns (uint256)',
+  'function unwrapWETH9(uint256, address) payable', 'function multicall(bytes[]) payable returns (bytes[])'];
+const R2_ABI = ['function exactInputSingle((address,address,uint24,address,uint256,uint256,uint160)) payable returns (uint256)',
+  'function unwrapWETH9(uint256, address) payable', 'function multicall(bytes[]) payable returns (bytes[])'];
+// precio en ETH por token desde slot0 (según orden weth/token en el pool)
+function ethPerToken(sqrtX96, weth0) {
+  const s = Number(sqrtX96) / 2 ** 96, p = s * s; // token1 por token0
+  return weth0 ? (p > 0 ? 1 / p : 0) : p;
+}
+const C_ABI = [
+  'function ethCollected() view returns (uint256)',
+  'function graduated() view returns (bool)',
+  'function priceWei() view returns (uint256)',
+  'function tokensSold() view returns (uint256)',
+  'function creatorEarned() view returns (uint256)',
+  'function creator() view returns (address)',
+  'function creatorFirstBuyDone() view returns (bool)',
+  'function pool() view returns (address)',
+  'function gradVenueUsed() view returns (uint8)',
+  'function positionId() view returns (uint256)',
+  'function npmUsed() view returns (address)',
+  'function quoteBuy(uint256 ethIn) view returns (uint256)',
+  'function quoteSell(uint256 tokensIn) view returns (uint256)',
+  'function buy(uint256 minTokensOut) payable',
+  'function sell(uint256 tokensIn, uint256 minEthOut)',
+  'function graduate()',
+  'function collectFees(uint256 minEthForTokens)',
+  'event Buy(address indexed buyer, uint256 ethIn, uint256 tokensOut, uint256 newPriceWei)',
+  'event Sell(address indexed seller, uint256 tokensIn, uint256 ethOut, uint256 newPriceWei)',
+];
+const T_ABI = [
+  'function balanceOf(address) view returns (uint256)',
+  'function allowance(address, address) view returns (uint256)',
+  'function approve(address, uint256) returns (bool)',
+];
+const B_ABI = ['function totalNlyraBurned() view returns (uint256)', 'function totalEthUsed() view returns (uint256)',
+  'function totalEthKept() view returns (uint256)', 'function burn(uint256 minNlyraOut) returns (uint256)'];
+const NPM_MIN_ABI = [
+  'function collect((uint256 tokenId, address recipient, uint128 amount0Max, uint128 amount1Max)) payable returns (uint256 amount0, uint256 amount1)',
+  'function positions(uint256) view returns (uint96, address, address token0, address token1, uint24, int24, int24, uint128, uint256, uint256, uint128, uint128)',
+];
+const MAX128 = (1n << 128n) - 1n;
+
+let factory = CFG.factory ? new ethers.Contract(CFG.factory, F_ABI, ro) : null;
+let TARGET = null, launches = [], tab = 'live', provider = null, signer = null, me = null;
+let curOpen = null, curSide = 'buy', quoteTimer = null, refreshTimer = null;
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const short = (a) => a ? a.slice(0, 6) + '…' + a.slice(-4) : '';
+const fe = (wei, d = 4) => { const n = Number(ethers.formatEther(wei ?? 0n)); return n >= 1000 ? n.toLocaleString('en', {maximumFractionDigits: 0}) : n.toLocaleString('en', {maximumFractionDigits: d}); };
+const fm = (wei) => { const n = Number(ethers.formatEther(wei ?? 0n)); return n >= 1e6 ? (n/1e6).toFixed(1) + 'M' : n >= 1e3 ? (n/1e3).toFixed(1) + 'K' : n.toFixed(0); };
+const ago = (ts) => { const s = Math.max(1, Math.floor(Date.now()/1000 - Number(ts))); if (s < 60) return s + 's ago'; if (s < 3600) return (s/60|0) + 'm ago'; if (s < 86400) return (s/3600|0) + 'h ago'; return (s/86400|0) + 'd ago'; };
+const okImg = (u) => typeof u === 'string' && (/^https:\/\/[^\s"'<>]+$/i.test(u) || /^\/li\/[a-f0-9]{40}\.(png|jpg|webp|gif)$/.test(u));
+const avatar = (l, cls) => okImg(l.image) ? `<div class="${cls}"><img src="${esc(l.image)}" onerror="this.parentNode.textContent='${esc((l.symbol||'?')[0])}'" alt=""></div>` : `<div class="${cls}">${esc((l.symbol || '?')[0])}</div>`;
+
+function cp(v) { navigator.clipboard.writeText(v).then(() => toast('Copied ✅', 'ok')).catch(() => toast('Copy failed', 'err')); }
+// ── wow: reveals al scroll, pops de números, confetti ──
+const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), { threshold: .15 });
+setTimeout(() => document.querySelectorAll('.burnbox, .rules, .king').forEach(el => { el.classList.add('reveal'); io.observe(el); }), 80);
+function tick(id, val) {
+  const el = $(id); if (!el) return;
+  if (el.textContent !== val) { el.textContent = val; el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+}
+function burst() {
+  const colors = ['#4cc9f0', '#6a8dd8', '#fbbf24', '#e9eef8'];
+  for (let i = 0; i < 48; i++) {
+    const d = document.createElement('div');
+    d.className = 'confetti';
+    d.style.cssText = `left:${(6 + Math.random() * 88).toFixed(1)}vw;top:-12px;background:${colors[i % 4]};--dx:${(Math.random() * 180 - 90).toFixed(0)}px;animation-delay:${(Math.random() * .4).toFixed(2)}s`;
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 2400);
+  }
+}
+// fees pendientes REALES de la posición bloqueada: simulamos collect() del NPM
+// con from = el vault (dueño del NFT) — lectura pura, sin firmar nada.
+async function pendingFees(l) {
+  const v = new ethers.Contract(l.vault, V_ABI, ro);
+  const [pid, npmAddr] = await Promise.all([v.positionId(), v.npm()]);
+  if (pid === 0n || npmAddr === ethers.ZeroAddress) return null;
+  const npm = new ethers.Contract(npmAddr, NPM_MIN_ABI, ro);
+  const res = await npm.collect.staticCall([pid, l.vault, MAX128, MAX128], { from: l.vault });
+  return { eth: l.weth0 ? res[0] : res[1], tok: l.weth0 ? res[1] : res[0] };
+}
+function toast(msg, cls) {
+  const t = $('toast'); t.textContent = msg; t.className = 'toast on ' + (cls || '');
+  clearTimeout(t._t); t._t = setTimeout(() => t.className = 'toast', 6000);
+}
+function closeM(id) { $(id).classList.remove('on'); if (id === 'm-token') { curOpen = null; if (location.pathname !== BASE) history.replaceState(null, '', BASE); } }
+document.querySelectorAll('.mask').forEach(m => m.addEventListener('click', (e) => { if (e.target === m) closeM(m.id); }));
+
+// ── wallet ──
+async function connect() {
+  if (!window.ethereum) return toast('No wallet found — open in the MetaMask/Rabby browser', 'err');
+  try {
+    provider = new ethers.BrowserProvider(window.ethereum);
+    await provider.send('eth_requestAccounts', []);
+    try { await provider.send('wallet_switchEthereumChain', [{ chainId: CHAIN.chainId }]); }
+    catch (_) { await provider.send('wallet_addEthereumChain', [CHAIN]); }
+    provider = new ethers.BrowserProvider(window.ethereum);
+    signer = await provider.getSigner(); me = (await signer.getAddress()).toLowerCase();
+    const b = $('wallet-btn'); b.textContent = short(me); b.classList.add('on');
+    if (curOpen) renderToken(curOpen);
+  } catch (e) { toast('Wallet connection cancelled', 'err'); }
+}
+async function needWallet() { if (!signer) await connect(); return !!signer; }
+
+// ── data ──
+async function loadAll() {
+  if (!factory) {
+    $('grid').innerHTML = '';
+    $('empty').style.display = 'block';
+    $('empty').innerHTML = 'Opening soon — the contracts are final and on-chain tested.<br>The launch alert drops in the <a href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Telegram</a> first. 🌕';
+    return;
+  }
+  try {
+    refreshEthUsd();
+    // factory actual + legacy (los launches viejos no se abandonan jamás)
+    const factories = [factory];
+    if (CFG.legacy) factories.push(new ethers.Contract(CFG.legacy, F_ABI, ro));
+    let metas = [];
+    for (const f of factories) {
+      const n = Number(await f.launchCount().catch(() => 0));
+      const idx = []; for (let i = Math.max(0, n - 96); i < n; i++) idx.push(i);
+      metas = metas.concat(await Promise.all(idx.map(i => f.launches(i))));
+    }
+    const n = metas.length;
+    const rows = await Promise.all(metas.map(async (m) => {
+      const v = new ethers.Contract(m.vault, V_ABI, ro);
+      const [pool, creatorEarned] = await Promise.all([v.pool(), v.creatorEarned()]);
+      const weth0 = CFG.weth.toLowerCase() < m.token.toLowerCase();
+      let price = 0, liq = 0n;
+      try {
+        const [s0, wbal] = await Promise.all([
+          new ethers.Contract(pool, POOL_ABI, ro).slot0(),
+          new ethers.Contract(CFG.weth, T_ABI, ro).balanceOf(pool),
+        ]);
+        price = ethPerToken(s0[0], weth0); liq = wbal * 2n;
+      } catch (_) {}
+      return { token: m.token, vault: m.vault, creator: m.creator, name: m.name, symbol: m.symbol,
+        image: m.image, description: m.description, telegram: m.telegram, xLink: m.xLink,
+        createdAt: m.createdAt, venue: Number(m.venue), pool, creatorEarned, price, liq, weth0 };
+    }));
+    launches = rows.sort((a, b) => Number(b.createdAt - a.createdAt)); // newest first
+    renderStats(n);
+    renderKing();
+    renderGrid();
+    if (!curOpen) {
+      const pm = location.pathname.match(/^\/(?:launch|testlaunch)\/(0x[a-fA-F0-9]{40})/);
+      const a = (pm ? pm[1] : (location.hash.startsWith('#t/') ? location.hash.slice(3) : '')).toLowerCase();
+      const l = a && launches.find(x => x.vault.toLowerCase() === a || x.token.toLowerCase() === a);
+      if (l) openToken(l.vault);
+    }
+    if (curOpen) { const l = launches.find(x => x.vault === curOpen); if (l) renderToken(curOpen, true); }
+  } catch (e) { console.error(e); toast('RPC hiccup — retrying shortly', 'err'); }
+}
+
+async function renderStats(n) {
+  tick('s-launches', String(n));
+  tick('s-grad', String(launches.filter(l => mcapOf(l) >= 2).length)); // 🌕 milestone: mcap ≥ 2 ETH
+  const liq = launches.reduce((a, l) => a + l.liq, 0n);
+  tick('s-raised', fe(liq, 2));
+  if (CFG.burner) {
+    try { const b = new ethers.Contract(CFG.burner, B_ABI, ro); tick('s-burned', fm(await b.totalNlyraBurned())); }
+    catch (_) { $('s-burned').textContent = '—'; }
+  } else $('s-burned').textContent = '0';
+  renderBurn();
+}
+
+async function renderBurn() {
+  const go = $('burn-go'); if (!go) return;
+  if (!CFG.burner) { $('burn-sec').style.display = 'none'; return; }
+  $('burner-link').href = CFG.explorer + '/address/' + CFG.burner;
+  try {
+    const b = new ethers.Contract(CFG.burner, B_ABI, ro);
+    const [waiting, burned] = await Promise.all([ro.getBalance(CFG.burner), b.totalNlyraBurned()]);
+    const kept = await b.totalEthKept().catch(() => null); // burner viejo de test no lo tiene
+    tick('b-waiting', fe(waiting, 6));
+    tick('b-burned', fm(burned));
+    $('b-kept').textContent = kept === null ? '—' : fe(kept, 6);
+    const has = waiting > 1000000000000n; // > 0.000001 ETH
+    go.disabled = !has;
+    go.innerHTML = has ? `🔥 BURN NOW — ${fe(waiting, 6)} ETH ready · buy &amp; burn $NLYRA` : '🔥 Nothing to burn right now — fees are accruing with every trade';
+  } catch (_) { go.disabled = true; go.textContent = '🔥 Burner stats unavailable'; }
+}
+
+async function doBurn() {
+  if (!(await needWallet())) return;
+  const go = $('burn-go'); go.disabled = true;
+  try {
+    const b = new ethers.Contract(CFG.burner, B_ABI, signer);
+    toast('Confirm in your wallet — you are about to make $NLYRA scarcer 🔥');
+    const tx = await b.burn(0);
+    toast('Burning… buying $NLYRA and sending it to 0xdEaD');
+    await tx.wait();
+    toast('BURNED 🔥 — your tx just bought $NLYRA and killed it forever', 'ok');
+    burst();
+    loadAll();
+  } catch (e) { toast((e?.reason || e?.shortMessage || 'burn failed').slice(0, 120), 'err'); go.disabled = false; }
+}
+const mcapOf = (l) => l.price * 1e9; // ETH (supply 1B)
+let ethUsd = 0, ethUsdAt = 0;
+async function refreshEthUsd() {
+  if (Date.now() - ethUsdAt < 60_000) return;
+  try {
+    const j = await (await fetch('https://api.dexscreener.com/latest/dex/tokens/' + CFG.nlyra)).json();
+    const pr = (j.pairs || []).find(p => Number(p.priceNative) > 0);
+    if (pr) { ethUsd = Number(pr.priceUsd) / Number(pr.priceNative); ethUsdAt = Date.now(); }
+  } catch (_) {}
+}
+const mcapStr = (l) => ethUsd ? '$' + Math.round(mcapOf(l) * ethUsd).toLocaleString('en') : mcapOf(l).toFixed(2) + ' ETH';
+const okLink = (u) => typeof u === 'string' && /^https:\/\/[^\s"'<>]+$/i.test(u);
+
+function renderKing() {
+  if (!launches.length) { $('king-sec').style.display = 'none'; return; }
+  const k = launches.reduce((a, b) => (b.liq > a.liq ? b : a));
+  $('king-sec').style.display = 'block';
+  $('king').onclick = () => openToken(k.vault);
+  $('king').innerHTML = `<div class="king-in">
+    ${avatar(k, 'kava')}
+    <div class="king-meta">
+      <span class="crown">👑 KING OF THE HILL — deepest pool</span>
+      <b>$${esc(k.symbol)} — ${esc(k.name)}</b>
+      <span>${esc(k.description || '')}</span>
+      <div class="prog-lab" style="margin-top:8px"><span>MKCAP ${mcapStr(k)}</span><span>liquidity ${fe(k.liq, 3)} ETH</span><span>creator earned ${fe(k.creatorEarned, 5)} ETH</span></div>
+    </div></div>`;
+}
+
+function setTab(t) { tab = t; $('tab-live').className = t === 'live' ? 'on' : ''; $('tab-grad').className = t === 'grad' ? 'on' : ''; renderGrid(); }
+
+function renderGrid() {
+  const q = ($('search')?.value || '').trim().toLowerCase();
+  let list = tab === 'live' ? launches : [...launches].sort((a, b) => (b.liq > a.liq ? 1 : -1));
+  if (q) list = list.filter(l => l.name.toLowerCase().includes(q) || l.symbol.toLowerCase().includes(q) || l.token.toLowerCase().includes(q) || l.creator.toLowerCase().includes(q));
+  const g = $('grid');
+  if (!list.length) {
+    g.innerHTML = '';
+    $('empty').style.display = 'block';
+    $('empty').innerHTML = 'No tokens yet. <b>Be the first — it\'s free.</b> ✨';
+    return;
+  }
+  $('empty').style.display = 'none';
+  const anim = !renderGrid._done; renderGrid._done = true; // stagger solo en la primera carga
+  g.innerHTML = list.map((l, i) => {
+    const vb = l.venue === 2 ? '<span class="badge b-uni">UNISWAP V3 · 80%</span>' : '<span class="badge b-venue">ARCHITECT SWAP · 90%</span>';
+    const moon = mcapOf(l) >= 2 ? '<span class="badge b-grad">🌕 2+ ETH MCAP</span>' : '';
+    return `<div class="lcard" style="${anim ? `animation-delay:${Math.min(i * 70, 500)}ms` : 'animation:none'}" onclick="openToken('${l.vault}')">
+      <div class="lhead">${avatar(l, 'lava')}<div><b>$${esc(l.symbol)}</b><span>by ${short(l.creator)} · ${ago(l.createdAt)}</span></div></div>
+      <div class="ldesc">${esc(l.description || '')}</div>
+      <div class="lstats"><span>MKCAP <b>${mcapStr(l)}</b></span><span>liq <b>${fe(l.liq, 3)} ETH</b></span></div>
+      <div class="lstats"><span>creator earned <b>${fe(l.creatorEarned, 5)} ETH</b></span></div>
+      <div class="badges"><span class="badge b-safe">SAFE BY CONSTRUCTION 🛡️</span>${vb}${moon}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── token detail ──
+async function openToken(vault) {
+  curOpen = vault;
+  const l = launches.find(x => x.vault === vault);
+  history.replaceState(null, '', BASE + '/' + (l ? l.token : vault)); // deep link por token CA
+  $('m-token').classList.add('on');
+  renderToken(vault);
+}
+
+async function renderToken(vault, soft) {
+  const l = launches.find(x => x.vault === vault);
+  if (!l) return;
+  const isCreator = me && l.creator.toLowerCase() === me;
+  let myBal = 0n, pend = null, holders = null;
+  const jobs = [pendingFees(l).then(v => pend = v).catch(() => {})];
+  if (me) jobs.push(new ethers.Contract(l.token, T_ABI, ro).balanceOf(me).then(v => myBal = v).catch(() => {}));
+  jobs.push(fetch(CFG.explorer + '/api/v2/tokens/' + l.token + '/counters').then(r => r.json())
+    .then(j => holders = j.token_holders_count ?? null).catch(() => {}));
+  await Promise.all(jobs);
+
+  const myPct = myBal > 0n ? (Number(ethers.formatEther(myBal)) / 1e9 * 100) : 0;
+  const splitC = l.venue === 2 ? '80%' : '90%';
+  const tw = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(`$${l.symbol} — born safe on Architect Launch, the launchpad where rugs are impossible. Creator keeps ${splitC} of fees, forever. 🌕`) + '&url=' + encodeURIComponent(location.origin + BASE + '/' + l.token);
+  const canCollect = pend && (pend.eth > 0n || pend.tok > 0n);
+  const pendHtml = pend
+    ? (canCollect
+      ? `<div class="pend"><span>♾️ Pending pool fees, claimable now</span><span><b>${fe(pend.eth, 6)} ETH</b> + <b>${fm(pend.tok)} $${esc(l.symbol)}</b> · creator keeps ${splitC}</span></div>`
+      : `<div class="pend"><span>♾️ Pending pool fees</span><span>none yet — they accrue with <b>every trade</b> in the pool, forever</span></div>`)
+    : '';
+  const body = $('token-body');
+  const prevAmt = soft ? (document.getElementById('amt')?.value || '') : '';
+  body.innerHTML = `
+    <button class="mx" onclick="closeM('m-token')">×</button>
+    <div class="thead">${avatar(l, 'kava')}<div><h3>$${esc(l.symbol)} <span class="sym">${esc(l.name)}</span></h3>
+      <span class="sym">by ${short(l.creator)} · ${ago(l.createdAt)} · born in ${l.venue === 2 ? 'Uniswap V3 · creator keeps 80%' : 'Architect Swap V3 · creator keeps 90%'}</span></div>
+      <a class="cp xshare" href="${tw}" target="_blank" rel="noopener">𝕏 share</a></div>
+    <p class="tdesc">${esc(l.description || '')}</p>
+    ${(okLink(l.telegram) || okLink(l.xLink)) ? `<div class="linkrow" style="margin:4px 0 8px">
+      ${okLink(l.telegram) ? `<a href="${esc(l.telegram)}" target="_blank" rel="noopener">💬 Telegram →</a>` : ''}
+      ${okLink(l.xLink) ? `<a href="${esc(l.xLink)}" target="_blank" rel="noopener">𝕏 Twitter →</a>` : ''}</div>` : ''}
+    <div class="trow">
+      <div class="tstat"><div class="num">${(l.price * 1e6).toFixed(5)}</div><span>ETH per 1M</span></div>
+      <div class="tstat"><div class="num">${mcapStr(l)}</div><span>MKCAP</span></div>
+      <div class="tstat"><div class="num">${fe(l.liq, 3)}</div><span>pool liq · ETH</span></div>
+      <div class="tstat"><div class="num">${fe(l.creatorEarned, 5)}</div><span>creator earned · ETH</span></div>
+      ${holders !== null ? `<div class="tstat"><div class="num">${esc(String(holders))}</div><span>holders</span></div>` : ''}
+      <div class="tstat"><div class="num">${me ? fm(myBal) : '—'}</div><span>your bag${myPct >= 0.01 ? ' · ' + myPct.toFixed(1) + '%' : ''}</span></div>
+    </div>
+    <iframe src="https://dexscreener.com/robinhood/${l.pool}?embed=1&theme=dark&trades=0&info=0" loading="lazy"
+      style="width:100%;height:330px;border:0;border-radius:14px;background:rgba(7,11,24,.5)" title="live chart"></iframe>
+    <div style="margin-top:6px">
+      <div class="bs"><button class="buy ${curSide === 'buy' ? 'on' : ''}" onclick="setSide('buy')">BUY</button><button class="sell ${curSide === 'sell' ? 'on' : ''}" onclick="setSide('sell')">SELL</button></div>
+      <div class="f"><label>${curSide === 'buy' ? 'ETH in' : 'Tokens in'}</label>
+        <input id="amt" inputmode="decimal" placeholder="0.05" value="${prevAmt}" oninput="reQuote()">
+        <div class="amt-quick" id="quick"></div>
+      </div>
+      <div class="quote" id="quote">Enter an amount — trades run in the real pool. 1% pool fee, ${splitC} of it flows to the creator.</div>
+      <button class="act ${curSide}" id="trade-go" onclick="doTrade('${vault}')">${curSide === 'buy' ? 'BUY from the pool' : 'SELL to the pool'}</button>
+      <p class="hint">The liquidity position is <b>locked for life</b> inside the vault — verifiable on-chain, no function exists to pull it.</p>
+    </div>
+    ${pendHtml}
+    <button class="act grad" onclick="doCollect('${vault}')" ${canCollect ? '' : 'disabled'}>${canCollect ? `♾️ Collect &amp; split the fees now${isCreator ? ' — your ' + splitC + ' arrives in ETH' : ' (anyone can trigger)'}` : '♾️ Nothing to collect yet — fees build up as the pool trades'}</button>
+    <div class="linkrow" style="margin-top:10px">
+      <a href="https://dexscreener.com/robinhood/${l.pool}" target="_blank" rel="noopener">Chart on DexScreener →</a>
+      <a href="${CFG.explorer}/address/${l.pool}" target="_blank" rel="noopener">Pool on explorer →</a>
+    </div>
+    <div class="addrs">
+      <div class="arow"><span class="lab">Token CA</span><code>${l.token}</code><button class="cp" onclick="cp('${l.token}')">copy</button><a class="cp" href="${CFG.explorer}/address/${l.token}" target="_blank" rel="noopener">↗</a></div>
+      <div class="arow"><span class="lab">Vault 🔒</span><code>${vault}</code><button class="cp" onclick="cp('${vault}')">copy</button><a class="cp" href="${CFG.explorer}/address/${vault}" target="_blank" rel="noopener">↗</a></div>
+      <div class="arow"><span class="lab">Pool</span><code>${l.pool}</code><button class="cp" onclick="cp('${l.pool}')">copy</button><a class="cp" href="${CFG.explorer}/address/${l.pool}" target="_blank" rel="noopener">↗</a></div>
+      <div class="arow"><span class="lab">Creator</span><code>${l.creator}</code><button class="cp" onclick="cp('${l.creator}')">copy</button><a class="cp" href="${CFG.explorer}/address/${l.creator}" target="_blank" rel="noopener">↗</a></div>
+    </div>
+    <div class="linkrow"><a href="/t/${l.token}" target="_blank">🛡️ Full scan report →</a></div>
+    <div class="feed"><h4>Recent trades</h4><div id="feed">loading…</div></div>
+    <div class="feed"><h4>Top holders</h4><div id="holders">loading…</div></div>`;
+  loadHolders(l);
+  renderQuick();
+  loadFeed(l);
+  if (!soft) reQuote();
+}
+
+function setSide(s) { curSide = s; if (curOpen) renderToken(curOpen); }
+function renderQuick() {
+  const q = $('quick'); if (!q) return;
+  const opts = curSide === 'buy' ? ['0.01', '0.05', '0.1', '0.5'] : ['25%', '50%', '75%', '100%'];
+  q.innerHTML = opts.map(o => `<button onclick="quick('${o}')">${o}</button>`).join('');
+}
+async function quick(o) {
+  const amt = $('amt'); if (!amt) return;
+  if (o.endsWith('%')) {
+    if (!me) { toast('Connect your wallet first', 'err'); return; }
+    const l = launches.find(x => x.vault === curOpen); if (!l) return;
+    const bal = await new ethers.Contract(l.token, T_ABI, ro).balanceOf(me);
+    amt.value = ethers.formatEther(bal * BigInt(parseInt(o)) / 100n);
+  } else amt.value = o;
+  reQuote();
+}
+function reQuote() { clearTimeout(quoteTimer); quoteTimer = setTimeout(quoteNow, 250); }
+// cotización aproximada contra el estado real del pool (precio spot − fee 1% − impacto)
+async function quoteNow() {
+  const el = $('quote'), amt = $('amt');
+  if (!el || !amt || !curOpen) return;
+  const l = launches.find(x => x.vault === curOpen);
+  const v = parseFloat(amt.value);
+  if (!l || !v || v <= 0) { if (el) el.innerHTML = 'Enter an amount to see the estimate.'; return; }
+  try {
+    if (curSide === 'buy') {
+      const out = v * 0.99 / l.price; // spot − 1% fee (el impacto real lo protege el minOut de la tx)
+      el.innerHTML = `≈ <b>${(out / 1e6).toFixed(2)}M</b> tokens at spot · min with 5% guard: <b>${(out * 0.95 / 1e6).toFixed(2)}M</b>`;
+    } else {
+      const out = v * l.price * 0.99;
+      el.innerHTML = `≈ <b>${out.toFixed(6)} ETH</b> at spot · min with 5% guard: <b>${(out * 0.95).toFixed(6)} ETH</b>`;
+    }
+  } catch (_) { el.innerHTML = 'Estimate unavailable.'; }
+}
+
+async function loadFeed(l) {
+  const el = $('feed'); if (!el) return;
+  try {
+    const pc = new ethers.Contract(l.pool, ['event Swap(address indexed sender, address indexed recipient, int256 amount0, int256 amount1, uint160 sqrtPriceX96, uint128 liquidity, int24 tick)'], ro);
+    const head = await ro.getBlockNumber();
+    const from = Math.max(0, head - 45000);
+    const evs = await pc.queryFilter(pc.filters.Swap(), from, head).catch(() => []);
+    const rows = evs.map(e => {
+      const aW = l.weth0 ? e.args[2] : e.args[3]; // delta WETH del pool: + = entró (BUY)
+      const aT = l.weth0 ? e.args[3] : e.args[2];
+      return { b: e.blockNumber, side: aW > 0n ? 'B' : 'S', who: e.args[1],
+        eth: aW < 0n ? -aW : aW, tok: aT < 0n ? -aT : aT, tx: e.transactionHash };
+    }).sort((x, y) => y.b - x.b).slice(0, 25);
+    el.innerHTML = rows.length ? rows.map(r =>
+      `<a class="tr" href="${CFG.explorer}/tx/${r.tx}" target="_blank" rel="noopener"><span class="${r.side === 'B' ? 'side-b' : 'side-s'}">${r.side === 'B' ? 'BUY' : 'SELL'}</span>
+       <span>${short(r.who)}</span><span>${fm(r.tok)} tokens</span><span>${fe(r.eth, 5)} ETH</span></a>`).join('')
+      : '<div class="tr">No trades yet — the curve is fresh. 🌱</div>';
+  } catch (_) { el.innerHTML = '<div class="tr">feed unavailable</div>'; }
+}
+
+async function loadHolders(l) {
+  const el = $('holders'); if (!el) return;
+  try {
+    const j = await (await fetch(CFG.explorer + '/api/v2/tokens/' + l.token + '/holders')).json();
+    const rows = (j.items || []).slice(0, 8).map(h => {
+      const a = (h.address?.hash || '').toLowerCase();
+      const pct = Number(h.value) / 1e27 * 100; // supply 1B * 1e18
+      const tag = a === l.pool.toLowerCase() ? ' <span class="badge b-safe">POOL 🔒</span>'
+        : a === '0x000000000000000000000000000000000000dead' ? ' <span class="badge b-grad">BURNED 🔥</span>'
+        : a === l.creator.toLowerCase() ? ' <span class="badge b-venue">CREATOR</span>'
+        : (me && a === me) ? ' <span class="badge b-venue">YOU</span>' : '';
+      return `<a class="tr" href="${CFG.explorer}/address/${h.address?.hash}" target="_blank" rel="noopener"><span>${short(h.address?.hash)}${tag}</span><span>${fm(BigInt(h.value || 0))} tokens</span><span>${pct.toFixed(2)}%</span></a>`;
+    });
+    el.innerHTML = rows.length ? rows.join('') : '<div class="tr">indexing…</div>';
+  } catch (_) { el.innerHTML = '<div class="tr">holders unavailable</div>'; }
+}
+
+// ── actions ──
+async function doTrade(vault) {
+  if (!(await needWallet())) return;
+  const l = launches.find(x => x.vault === vault);
+  const amt = $('amt'), go = $('trade-go');
+  const v = parseFloat(amt?.value);
+  if (!l || !v || v <= 0) return toast('Enter an amount first', 'err');
+  const wei = ethers.parseEther(String(amt.value));
+  const rAddr = l.venue === 1 ? CFG.routerOurs : CFG.routerUni;
+  const rt = new ethers.Contract(rAddr, l.venue === 1 ? R1_ABI : R2_ABI, signer);
+  const dl = Math.floor(Date.now() / 1000) + 600;
+  go.disabled = true;
+  try {
+    if (curSide === 'buy') {
+      const min = ethers.parseEther(String(v * 0.94 / l.price)); // spot −1% fee −5% guard
+      toast('Confirm the buy in your wallet…');
+      const args = l.venue === 1 ? [CFG.weth, l.token, 10000, me, dl, wei, min, 0] : [CFG.weth, l.token, 10000, me, wei, min, 0];
+      const tx = await rt.exactInputSingle(args, { value: wei });
+      toast('Buying from the pool…');
+      await tx.wait();
+      toast('Bought ✅ — the fee just accrued to the creator\'s locked position', 'ok');
+    } else {
+      const t = new ethers.Contract(l.token, T_ABI, signer);
+      const allowance = await new ethers.Contract(l.token, T_ABI, ro).allowance(me, rAddr);
+      if (allowance < wei) {
+        toast('First: approve the router to take your tokens…');
+        await (await t.approve(rAddr, ethers.MaxUint256)).wait();
+      }
+      const minEth = ethers.parseEther((v * l.price * 0.94).toFixed(18));
+      const args = l.venue === 1 ? [l.token, CFG.weth, 10000, rAddr, dl, wei, minEth, 0] : [l.token, CFG.weth, 10000, rAddr, wei, minEth, 0];
+      const c1 = rt.interface.encodeFunctionData('exactInputSingle', [args]);
+      const c2 = rt.interface.encodeFunctionData('unwrapWETH9', [minEth, me]);
+      toast('Confirm the sell in your wallet…');
+      const tx = await rt.multicall([c1, c2]);
+      toast('Selling to the pool…');
+      await tx.wait();
+      toast('Sold ✅ — ETH is in your wallet', 'ok');
+    }
+    await loadAll();
+  } catch (e) {
+    toast((e?.reason || e?.shortMessage || e?.message || 'transaction failed').slice(0, 120), 'err');
+  }
+  go.disabled = false;
+}
+
+async function doCollect(vault) {
+  if (!(await needWallet())) return;
+  try {
+    const c = new ethers.Contract(vault, V_ABI, signer);
+    toast('Confirm in your wallet…');
+    const tx = await c.collectFees(0);
+    toast('Collecting pool fees…');
+    await tx.wait();
+    toast('Fees collected and split — creator paid ✅', 'ok');
+    loadAll();
+  } catch (e) { toast((e?.reason || e?.shortMessage || 'nothing to collect yet').slice(0, 120), 'err'); }
+}
+
+// ── create ──
+// costo del first buy: curva desde el piso (reserva virtual y0 = supply/R = 0.5 ETH),
+// fee 1% del pool incluido, con margen 0.1% para que jamás pise el cap on-chain.
+const DEV_Y0 = 0.5;
+function devBuyCost(f) { return DEV_Y0 * (1 / (1 - f) - 1) / 0.99 * 0.999; }
+function fillBuy(f) { const i = $('c-buy'); if (!i) return; i.value = devBuyCost(f).toFixed(6); buyEst(); }
+function buyEst() {
+  const el = $('c-buy-est'); if (!el) return;
+  const v = parseFloat($('c-buy')?.value) || 0;
+  if (!v) { el.textContent = 'skip it — you can always buy from the pool after launch'; return; }
+  const net = v * 0.99, tok = 1e9 * net / (DEV_Y0 + net), pct = tok / 1e7;
+  el.innerHTML = pct > 5.001
+    ? `⚠️ over the 5% cap — max is <b>${devBuyCost(0.05).toFixed(4)} ETH</b> (tap MAX 5%)`
+    : `≈ <b>${(tok / 1e6).toFixed(1)}M tokens · ${pct.toFixed(2)}% of supply</b>`;
+}
+let venue = 2, imgFile = null; // default: Uniswap V3 (decisión del Arquitecto)
+function pickImg(inp) {
+  const f = inp.files && inp.files[0];
+  if (!f) return;
+  if (f.size > 400 * 1024) { toast('Image too big — max 400KB', 'err'); inp.value = ''; return; }
+  imgFile = f;
+  $('c-img-name').textContent = f.name;
+  const r = new FileReader();
+  r.onload = () => { $('c-img-prev').innerHTML = `<img src="${r.result}" style="width:100%;height:100%;object-fit:cover">`; };
+  r.readAsDataURL(f);
+}
+async function uploadImg() {
+  if (!imgFile) return '';
+  const res = await fetch('/api/launch/upload', { method: 'POST', headers: { 'Content-Type': imgFile.type }, body: imgFile });
+  const j = await res.json();
+  if (!res.ok || !j.url) throw new Error(j.error || 'image upload failed');
+  return j.url;
+}
+function pickVenue(v) { venue = v; $('v1').className = 'venue' + (v === 1 ? ' on' : ''); $('v2').className = 'venue uni' + (v === 2 ? ' on' : ''); }
+function openCreate() {
+  if (!factory) return toast('Opening soon — contracts are final, doors open after LYRA\'s public read 🌙', 'err');
+  $('m-create').classList.add('on');
+}
+async function doCreate() {
+  if (!(await needWallet())) return;
+  const name = $('c-name').value.trim(), sym = $('c-sym').value.trim().toUpperCase().replace(/^\$/, '');
+  const desc = $('c-desc').value.trim();
+  if (!name || name.length > 40) return toast('Name: 1–40 characters', 'err');
+  if (!sym || sym.length > 12) return toast('Ticker: 1–12 characters', 'err');
+  const go = $('c-go'); go.disabled = true;
+  try {
+    let img = '';
+    if (imgFile) { toast('Uploading image…'); img = await uploadImg(); }
+    const f = new ethers.Contract(CFG.factory, F_ABI, signer);
+    const devBuy = parseFloat($('c-buy')?.value) || 0;
+    if (devBuy > devBuyCost(0.05) + 1e-9) { go.disabled = false; return toast(`First buy over the 5% cap — max is ${devBuyCost(0.05).toFixed(4)} ETH`, 'err'); }
+    toast('Confirm in your wallet — one transaction: token + pool + locked liquidity' + (devBuy ? ' + your first buy' : '') + '…');
+    const tg = $('c-tg').value.trim(), xl = $('c-x').value.trim();
+    if ((tg && !okLink(tg)) || (xl && !okLink(xl))) { go.disabled = false; return toast('Links must start with https://', 'err'); }
+    const tx = await f.create(name, sym, img, desc, tg, xl, venue, { value: devBuy ? ethers.parseEther(String(devBuy)) : 0n });
+    toast('Deploying your token straight into its pool…');
+    const rc = await tx.wait();
+    toast(`$${sym} is born — in a real pool, safe by construction 🛡️`, 'ok');
+    burst();
+    closeM('m-create');
+    await loadAll();
+    const mine = launches.find(l => l.symbol === sym && l.creator.toLowerCase() === me);
+    if (mine) openToken(mine.vault);
+  } catch (e) { toast((e?.reason || e?.shortMessage || 'creation failed').slice(0, 120), 'err'); }
+  go.disabled = false;
+}
+
+// ── boot ──
+loadAll();
+refreshTimer = setInterval(loadAll, 25000);
+</script>
+</body>
+</html>

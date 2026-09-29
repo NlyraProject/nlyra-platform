@@ -1,0 +1,623 @@
+[
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "_entrypoint",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "_withdrawalVerifier",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "_ragequitVerifier",
+    "type": "address"
+   },
+   {
+    "internalType": "address",
+    "name": "_asset",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "nonpayable",
+  "type": "constructor"
+ },
+ {
+  "inputs": [],
+  "name": "ContextMismatch",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "IncorrectASPRoot",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InvalidCommitment",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InvalidDepositValue",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InvalidProcessooor",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InvalidProof",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "InvalidTreeDepth",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "LeafAlreadyExists",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "LeafCannotBeZero",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "LeafGreaterThanSnarkScalarField",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "MaxTreeDepthReached",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NativeAssetNotAccepted",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NativeAssetNotSupported",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NotYetRagequitteable",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "NullifierAlreadySpent",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "OnlyEntrypoint",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "OnlyOriginalDepositor",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "PoolIsDead",
+  "type": "error"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "token",
+    "type": "address"
+   }
+  ],
+  "name": "SafeERC20FailedOperation",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "ScopeMismatch",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "UnknownStateRoot",
+  "type": "error"
+ },
+ {
+  "inputs": [],
+  "name": "ZeroAddress",
+  "type": "error"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "_depositor",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_commitment",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_label",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_value",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_precommitmentHash",
+    "type": "uint256"
+   }
+  ],
+  "name": "Deposited",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_index",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_leaf",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_root",
+    "type": "uint256"
+   }
+  ],
+  "name": "LeafInserted",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [],
+  "name": "PoolDied",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "_ragequitter",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_commitment",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_label",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_value",
+    "type": "uint256"
+   }
+  ],
+  "name": "Ragequit",
+  "type": "event"
+ },
+ {
+  "anonymous": false,
+  "inputs": [
+   {
+    "indexed": true,
+    "internalType": "address",
+    "name": "_processooor",
+    "type": "address"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_value",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_spentNullifier",
+    "type": "uint256"
+   },
+   {
+    "indexed": false,
+    "internalType": "uint256",
+    "name": "_newCommitment",
+    "type": "uint256"
+   }
+  ],
+  "name": "Withdrawn",
+  "type": "event"
+ },
+ {
+  "inputs": [],
+  "name": "ASSET",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "ENTRYPOINT",
+  "outputs": [
+   {
+    "internalType": "contract IEntrypoint",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "MAX_TREE_DEPTH",
+  "outputs": [
+   {
+    "internalType": "uint32",
+    "name": "",
+    "type": "uint32"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "RAGEQUIT_VERIFIER",
+  "outputs": [
+   {
+    "internalType": "contract IVerifier",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "ROOT_HISTORY_SIZE",
+  "outputs": [
+   {
+    "internalType": "uint32",
+    "name": "",
+    "type": "uint32"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "SCOPE",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "WITHDRAWAL_VERIFIER",
+  "outputs": [
+   {
+    "internalType": "contract IVerifier",
+    "name": "",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "currentRoot",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "_root",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "currentRootIndex",
+  "outputs": [
+   {
+    "internalType": "uint32",
+    "name": "",
+    "type": "uint32"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "currentTreeDepth",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "_depth",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "currentTreeSize",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "_size",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "dead",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "address",
+    "name": "_depositor",
+    "type": "address"
+   },
+   {
+    "internalType": "uint256",
+    "name": "_value",
+    "type": "uint256"
+   },
+   {
+    "internalType": "uint256",
+    "name": "_precommitmentHash",
+    "type": "uint256"
+   }
+  ],
+  "name": "deposit",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "_commitment",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "payable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "_label",
+    "type": "uint256"
+   }
+  ],
+  "name": "depositors",
+  "outputs": [
+   {
+    "internalType": "address",
+    "name": "_depositooor",
+    "type": "address"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "nonce",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "_nullifierHash",
+    "type": "uint256"
+   }
+  ],
+  "name": "nullifierHashes",
+  "outputs": [
+   {
+    "internalType": "bool",
+    "name": "_spent",
+    "type": "bool"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "components": [
+     {
+      "internalType": "uint256[2]",
+      "name": "pA",
+      "type": "uint256[2]"
+     },
+     {
+      "internalType": "uint256[2][2]",
+      "name": "pB",
+      "type": "uint256[2][2]"
+     },
+     {
+      "internalType": "uint256[2]",
+      "name": "pC",
+      "type": "uint256[2]"
+     },
+     {
+      "internalType": "uint256[4]",
+      "name": "pubSignals",
+      "type": "uint256[4]"
+     }
+    ],
+    "internalType": "struct ProofLib.RagequitProof",
+    "name": "_proof",
+    "type": "tuple"
+   }
+  ],
+  "name": "ragequit",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "internalType": "uint256",
+    "name": "_index",
+    "type": "uint256"
+   }
+  ],
+  "name": "roots",
+  "outputs": [
+   {
+    "internalType": "uint256",
+    "name": "_root",
+    "type": "uint256"
+   }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+ },
+ {
+  "inputs": [],
+  "name": "windDown",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ },
+ {
+  "inputs": [
+   {
+    "components": [
+     {
+      "internalType": "address",
+      "name": "processooor",
+      "type": "address"
+     },
+     {
+      "internalType": "bytes",
+      "name": "data",
+      "type": "bytes"
+     }
+    ],
+    "internalType": "struct IPrivacyPool.Withdrawal",
+    "name": "_withdrawal",
+    "type": "tuple"
+   },
+   {
+    "components": [
+     {
+      "internalType": "uint256[2]",
+      "name": "pA",
+      "type": "uint256[2]"
+     },
+     {
+      "internalType": "uint256[2][2]",
+      "name": "pB",
+      "type": "uint256[2][2]"
+     },
+     {
+      "internalType": "uint256[2]",
+      "name": "pC",
+      "type": "uint256[2]"
+     },
+     {
+      "internalType": "uint256[8]",
+      "name": "pubSignals",
+      "type": "uint256[8]"
+     }
+    ],
+    "internalType": "struct ProofLib.WithdrawProof",
+    "name": "_proof",
+    "type": "tuple"
+   }
+  ],
+  "name": "withdraw",
+  "outputs": [],
+  "stateMutability": "nonpayable",
+  "type": "function"
+ }
+]

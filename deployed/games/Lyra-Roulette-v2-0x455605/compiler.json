@@ -1,0 +1,25 @@
+{
+  "compiler": "v0.8.26+commit.8a97fa7a",
+  "language": "solidity",
+  "contractName": "LyraRouletteV2",
+  "mainFile": "LyraRouletteV2.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    }
+  },
+  "license": "none",
+  "constructorArgs": "0x000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb950000000000000000000000003bcc63463838c5ecbc21816b06f9419f01d0d3e70000000000000000000000009b3f07126f9c23df4d89a2ab3473a3de6294008a00000000000000000000000000000000000000000000003635c9adc5dea0000000000000000000000000000000000000000000000000152d02c7e14af68000000000000000000000000000000000000000000000000034f086f3b33b68400000"
+}

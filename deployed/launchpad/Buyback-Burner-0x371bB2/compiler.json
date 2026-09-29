@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "BuybackBurner",
+  "mainFile": "BuybackBurner.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "none",
+  "constructorArgs": "0x000000000000000000000000caf681a66d020601342297493863e78c959e5cb2000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb950000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad73000000000000000000000000483c24d1e36df01b650f1e9beeb2a1c31c005c39000000000000000000000000e30647793192d15bfa6e53ae8651368d332fe04c0000000000000000000000000000000000000000000000000000000000001388"
+}

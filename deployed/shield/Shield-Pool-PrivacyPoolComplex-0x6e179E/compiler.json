@@ -1,0 +1,41 @@
+{
+  "compiler": "v0.8.28+commit.7893614a",
+  "language": "solidity",
+  "contractName": "PrivacyPoolComplex",
+  "mainFile": "core/packages/contracts/src/contracts/implementations/PrivacyPoolComplex.sol",
+  "settings": {
+    "libraries": {},
+    "metadata": {
+      "appendCBOR": false,
+      "bytecodeHash": "none"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 10000
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "remappings": [
+      "@openzeppelin/contracts-upgradeable/=C:/nlyra-privacy/node_modules/@openzeppelin/contracts-upgradeable/",
+      "@openzeppelin/contracts/=C:/nlyra-privacy/node_modules/@openzeppelin/contracts/",
+      "lean-imt/=C:/nlyra-privacy/node_modules/@zk-kit/lean-imt.sol/",
+      "@oz-upgradeable/=C:/nlyra-privacy/node_modules/@openzeppelin/contracts-upgradeable/",
+      "@oz/=C:/nlyra-privacy/node_modules/@openzeppelin/contracts/",
+      "poseidon-solidity/=C:/nlyra-privacy/node_modules/poseidon-solidity/",
+      "poseidon/=C:/nlyra-privacy/node_modules/poseidon-solidity/",
+      "contracts/=C:/nlyra-privacy/core/packages/contracts/src/contracts/",
+      "interfaces/=C:/nlyra-privacy/core/packages/contracts/src/interfaces/"
+    ],
+    "viaIR": true
+  },
+  "license": "apache_2_0",
+  "constructorArgs": "0x0000000000000000000000009c03515e1c7aa04adcccd1293be4ea0dd8f522f2000000000000000000000000e8868719dc0aaca1f7c8aef0dfe9304af57ca1cb000000000000000000000000d1e125953be2eee7e59caef4789949e70402bef4000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb95"
+}

@@ -1,0 +1,89 @@
+{
+  "chain": {
+    "name": "Robinhood Chain",
+    "chainId": 4663,
+    "explorer": "https://robinhoodchain.blockscout.com"
+  },
+  "contracts": {
+    "ArchitectSpotGridV4": {
+      "address": "0xF8ef52605FBcc968B24b7FdBD7e93c752A659D5f",
+      "deployed": "2026-09-11",
+      "verification": "Blockscout full match + Sourcify exact match",
+      "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0xF8ef52605FBcc968B24b7FdBD7e93c752A659D5f/",
+      "blockscout": "https://robinhoodchain.blockscout.com/address/0xF8ef52605FBcc968B24b7FdBD7e93c752A659D5f?tab=contract"
+    },
+    "ArchitectInfinityGridV4": {
+      "address": "0xBdC77e3D589D161489f7C986d8f654F30b88DDeb",
+      "deployed": "2026-09-12",
+      "verification": "Blockscout full match + Sourcify exact match",
+      "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0xBdC77e3D589D161489f7C986d8f654F30b88DDeb/",
+      "blockscout": "https://robinhoodchain.blockscout.com/address/0xBdC77e3D589D161489f7C986d8f654F30b88DDeb?tab=contract"
+    },
+    "ArchitectShadow": {
+      "address": "0xE26dd0A09Cd7bA2F7d0a31e4B625E983B0B1B3D2",
+      "deployed": "2026-09-13",
+      "verification": "Blockscout full match + Sourcify exact match",
+      "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0xE26dd0A09Cd7bA2F7d0a31e4B625E983B0B1B3D2/",
+      "blockscout": "https://robinhoodchain.blockscout.com/address/0xE26dd0A09Cd7bA2F7d0a31e4B625E983B0B1B3D2?tab=contract"
+    },
+    "ArchitectSniper": {
+      "address": "0x6B30B0946743eF8A2D323127c8CfaC9966b5C84c",
+      "deployed": "2026-09-20",
+      "verification": "Blockscout full match + Sourcify exact match",
+      "blockscout": "https://robinhoodchain.blockscout.com/address/0x6B30B0946743eF8A2D323127c8CfaC9966b5C84c?tab=contract",
+      "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0x6B30B0946743eF8A2D323127c8CfaC9966b5C84c/",
+      "note": "v2 after the 2026-09-20 security review; the first deploy 0x2E47eA1ACAbAa69c12a2F051F9c685884497f1f5 is paused for good and never held a bot"
+    },
+    "ArchitectSendTo": {
+      "address": "0x0eF655f16345afb66b42d4e65B71a16052d1Ddc0",
+      "deployed": "2026-09-20",
+      "verification": "Blockscout full match + Sourcify exact match",
+      "blockscout": "https://robinhoodchain.blockscout.com/address/0x0eF655f16345afb66b42d4e65B71a16052d1Ddc0?tab=contract",
+      "sourcify": "https://repo.sourcify.dev/contracts/full_match/4663/0x0eF655f16345afb66b42d4e65B71a16052d1Ddc0/",
+      "note": "not a bot: router wrapper that lets a wallet buy or sell and deliver the output to another wallet. v2: the first deploy 0xb7F767fE61138026B6D430FC2D2381364cbe3596 passed the referrer on the swapETH/swapToETH paths (router would bind it to the contract) and is disabled on the router"
+    },
+    "ArchitectFeeRouter": {
+      "address": "0x9d1eA9Abbb99D813b7acA7666285CDed7f833565",
+      "role": "1% fee router used by every bot swap; only the owner can change fee recipient"
+    },
+    "ArchitectRegistry": {
+      "address": "0x80d4dCbc9814f1bCA48C0f10f70B36BF3bc09fAF",
+      "role": "on-chain @names for referrals, leaderboard and copy trading"
+    },
+    "keeper": {
+      "address": "0x96D0B8008d1E38d45A1B9cFCCCC932629059246c",
+      "role": "off-chain keeper EOA; can only call fill/stop-loss/take-profit paths, never withdraw"
+    },
+    "StakingRewards": {
+      "address": "0x5e63228add4390f77BbcDb364F6A7b42bA7Aa3ef",
+      "role": "single-sided NLYRA staking, no owner, no migration path"
+    },
+    "FixedAPYPoolFactory": {
+      "address": "0x8347e6CD205C0D5CA68A0481B8292992A46519c2",
+      "role": "community staking pools"
+    },
+    "LaunchpadV4Factory": {
+      "address": "0x4e4AD39E1A38104F8f74C3aF8d3F8c8E27f8836f",
+      "role": "token launches; LP locked in an ownerless vault per launch"
+    },
+    "LaunchpadV2Factory": {
+      "address": "0x5fedb61690513D9EA1E0123c39f2E02CDAfEb720"
+    },
+    "LaunchpadHRFactory": {
+      "address": "0xc641a5bD946290cA1905A68c4BA3b1d969169398"
+    },
+    "Burner": {
+      "address": "0x371bB2107f6E021EF2a5a980a9204F5a73151926",
+      "role": "protocol fees market-buy NLYRA and send it to 0x...dEaD"
+    },
+    "NLYRA": {
+      "address": "0xb9d3824149ad8ac984153ceec91d5a2405d1fb95"
+    },
+    "USDG": {
+      "address": "0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168",
+      "role": "Paxos Global Dollar; quote/payment asset for USDG-quoted bots, limit orders, launch pairs, bounties and API keys"
+    }
+  },
+  "liveStats": "https://nlyra.xyz/api/desk/stats · https://nlyra.xyz/api/staking · https://nlyra.xyz/api/launch/list · https://nlyra.xyz/api/supply/circulating",
+  "allContracts": "../CONTRACTS.md"
+}

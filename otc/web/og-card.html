@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<link href="/desk2/fonts/fonts.css?v=1" rel="stylesheet">
+<link rel="stylesheet" href="/desk2/app.css?v=7">
+<style>
+html,body{margin:0;background:#070B18;width:1200px;height:630px;overflow:hidden}
+.og{position:relative;width:1200px;height:630px;background:#070B18;color:#E9EEF8;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+.og::before{content:"";position:absolute;inset:0;background:
+ radial-gradient(900px 500px at 85% 20%,rgba(139,124,246,.16),transparent 60%),
+ radial-gradient(700px 400px at 20% 110%,rgba(232,79,224,.12),transparent 60%),
+ repeating-linear-gradient(0deg,rgba(233,238,248,.035) 0 1px,transparent 1px 40px),
+ repeating-linear-gradient(90deg,rgba(233,238,248,.035) 0 1px,transparent 1px 40px)}
+.l{position:absolute;left:72px;top:88px;width:520px}
+.eyebrow{font:600 15px/1 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.14em;color:#E84FE0;text-transform:uppercase}
+.eyebrow b{color:#8B7CF6;font-weight:600}
+h1{margin:26px 0 0;font:700 58px/1.06 'Space Grotesk','Inter',sans-serif;letter-spacing:-.02em}
+h1 span{background:linear-gradient(90deg,#8B7CF6,#E84FE0);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{margin-top:26px;font:400 21px/1.45 'Inter',sans-serif;color:#C3CCDF;max-width:470px}
+.sub b{color:#E9EEF8;font-weight:600}
+.foot{position:absolute;left:72px;bottom:60px;font:600 15px 'JetBrains Mono',ui-monospace,monospace;letter-spacing:.12em;color:#9AA7BD}
+.brand{position:absolute;right:72px;top:64px;display:flex;align-items:center;gap:10px;font:600 17px 'Space Grotesk',sans-serif;letter-spacing:.02em}
+.brand img{width:40px;height:26px}.brand .the{color:#9AA7BD;font-weight:500;margin-right:-6px}.brand .otc{color:#A89CFF}
+.card{position:absolute;right:72px;width:440px;border:1px solid #1E2747;border-radius:16px;background:#0B1022;padding:20px 22px 18px;box-shadow:0 24px 64px -12px rgba(0,0,0,.8)}
+.card.c1{top:140px}.card.c2{top:390px;opacity:.72;transform:scale(.96);transform-origin:top right}
+.hd{display:flex;align-items:center;gap:12px}
+.ic{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#8B7CF6,#E84FE0);flex:0 0 auto}
+.ic.u{background:linear-gradient(135deg,#4ADE80,#22c55e)}
+.sym{font:700 20px 'Space Grotesk',sans-serif}.sym small{font:500 13px 'JetBrains Mono',monospace;color:#5D6A82;margin-left:6px}
+.nm{font-size:13px;color:#5D6A82;margin-top:2px}
+.sp{flex:1}
+.badge{height:24px;padding:0 10px;border-radius:999px;font:600 11px/24px 'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:#4ADE80;background:rgba(74,222,128,.12)}
+.badge.b{color:#8B7CF6;background:rgba(139,124,246,.14)}
+.rows{display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;margin-top:18px}
+.k{font:600 10.5px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#5D6A82}
+.v{font:600 18px 'Space Grotesk',sans-serif;margin-top:3px;font-variant-numeric:tabular-nums}
+.v small{font:500 12px 'JetBrains Mono',monospace;color:#9AA7BD}
+.v.up{color:#4ADE80}
+.ft{display:flex;align-items:center;gap:10px;margin-top:18px}
+.meta{white-space:nowrap;font:500 11.5px 'JetBrains Mono',monospace;color:#5D6A82}
+.btn{height:36px;padding:0 18px;border-radius:9px;background:linear-gradient(90deg,#8B7CF6,#E84FE0);color:#0B0E1A;font:700 13px/36px 'Space Grotesk',sans-serif}
+</style></head><body>
+<div class="og">
+  <div class="brand"><img src="/brand/dual-core-mark.svg" alt=""><span class="the">THE</span><span>DESK</span><span class="otc">/ OTC</span></div>
+  <div class="l">
+    <div class="eyebrow">New · OTC Desk · <b>Robinhood Chain</b></div>
+    <h1>Block trades, <span>without moving the pool.</span></h1>
+    <div class="sub">Sell or buy a block at a fixed price. <b>Escrow on-chain</b>, <b>atomic settlement</b>, no slippage. Every fill pays <b>0.5% that buys and burns NLYRA</b>.</div>
+  </div>
+  <div class="foot">NLYRA.XYZ/OTC</div>
+  <div class="card c1">
+    <div class="hd"><div class="ic"></div><div><div class="sym">NLYRA <small>for USDG</small></div><div class="nm">Neron Lyra</div></div><span class="sp"></span><span class="badge">bluechip</span></div>
+    <div class="rows">
+      <div><div class="k">For sale</div><div class="v">25.00M <small>NLYRA</small></div></div>
+      <div><div class="k">Ask</div><div class="v">3,600 <small>USDG</small></div></div>
+      <div><div class="k">Price / token</div><div class="v">0.000144 <small>USDG</small></div></div>
+      <div><div class="k">vs pool</div><div class="v up">−5.0% <small>below pool</small></div></div>
+    </div>
+    <div class="ft"><span class="meta">#12 · Open · expires in 2 d 6 h</span><span class="sp"></span><span class="btn">Buy</span></div>
+  </div>
+  <div class="card c2">
+    <div class="hd"><div class="ic u"></div><div><div class="sym">USDG <small>for ETH</small></div><div class="nm">Global Dollar</div></div><span class="sp"></span><span class="badge b">private</span></div>
+    <div class="rows">
+      <div><div class="k">For sale</div><div class="v">12,000 <small>USDG</small></div></div>
+      <div><div class="k">Ask</div><div class="v">4.52 <small>ETH</small></div></div>
+    </div>
+  </div>
+</div>
+</body></html>

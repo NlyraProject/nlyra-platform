@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "StakePoolFactory",
+  "mainFile": "ArchitectStake.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "none",
+  "constructorArgs": null
+}

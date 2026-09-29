@@ -1,0 +1,27 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "ArchitectDCA",
+  "mainFile": "ArchitectDCA.sol",
+  "settings": {
+    "evmVersion": "cancun",
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "mit",
+  "constructorArgs": "0x0000000000000000000000009d1ea9abbb99d813b7aca7666285cded7f8335650000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad7300000000000000000000000096d0b8008d1e38d45a1b9cfcccc932629059246c"
+}

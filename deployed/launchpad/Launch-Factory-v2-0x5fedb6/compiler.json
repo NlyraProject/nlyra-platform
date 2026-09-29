@@ -1,0 +1,26 @@
+{
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "language": "solidity",
+  "contractName": "ArchitectLaunchFactoryV2",
+  "mainFile": "ArchitectLaunchPool.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "none",
+  "constructorArgs": "000000000000000000000000371bb2107f6e021ef2a5a980a9204f5a731519260000000000000000000000000bd7d308f8e1639fab988df18a8011f41eacad730000000000000000000000004b71be063e72b0be36f690535c9c0ce533a9fb5c00000000000000000000000073991a25c818bf1f1128deaab1492d45638de0d30000000000000000000000004d0d17f66d1da788da50cf5217894f36684f958e000000000000000000000000000000000000aeb15c0b77f1363c65f06c6ad0b8000000000000000000000000000000000000000000017726636ae6e77c62917900000000000000000000000000000000000000000000000000000000000343f0fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcbc10"
+}

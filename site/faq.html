@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FAQ — NLYRA · short answers, straight</title>
+<meta name="description" content="Is NLYRA custodial? Can the team access my funds? Are the contracts audited? What does The Desk charge? The questions people actually ask about the NERON & LYRA ecosystem on Robinhood Chain, answered straight.">
+<!--OG-->
+<meta property="og:title" content="NLYRA FAQ — short answers, straight">
+<meta property="og:description" content="Custody, admin powers, audits, fees, the Keeper, withdrawing without the website, and which contract addresses are official.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://nlyra.xyz/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<!--/OG-->
+<link rel="icon" href="/brand/dual-core.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/brand/nlyra-brand-tokens.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { line-height: 1.6; }
+  a:hover { text-decoration: none; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 46px 0 34px; }
+  .kicker { font: 600 12px var(--font-body); letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); }
+  h1 { font-size: clamp(28px, 5vw, 42px); letter-spacing: -.02em; margin: 10px 0 12px; line-height: 1.12; }
+  .lead { color: var(--text-2); font-size: 16.5px; }
+  .heroact { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  section { padding: 22px 0; }
+
+  .qa { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg); margin-bottom: 10px; overflow: hidden; scroll-margin-top: 70px; }
+  .qa > summary { padding: 16px 18px; font-weight: 600; font-size: 15.5px; cursor: pointer; list-style: none;
+      display: flex; justify-content: space-between; align-items: center; gap: 14px; font-family: var(--font-display); color: var(--text); }
+  .qa > summary::-webkit-details-marker { display: none; }
+  .qa > summary::after { content: '+'; color: var(--text-3); font-size: 21px; font-weight: 400; flex: none; line-height: 1; }
+  .qa[open] > summary::after { content: '\2212'; }
+  .qa .a { padding: 0 18px 16px; color: var(--text-2); font-size: 14.5px; }
+  .qa .a p { margin-bottom: 9px; }
+  .qa .a p:last-child { margin-bottom: 0; }
+  .qa .a b { color: var(--text); }
+  .qa .a code { font-family: var(--font-mono); font-size: 12px; color: var(--text); background: var(--nested); padding: 1px 5px; border-radius: 4px; word-break: break-all; }
+  .qa .a ul { padding-left: 20px; margin: 8px 0; }
+  .qa .a li { margin: 4px 0; }
+  .more { display: inline-block; margin-top: 10px; font-size: 13px; font-weight: 600; }
+  .yes { color: var(--safe); font-weight: 600; } .no { color: var(--danger); font-weight: 600; }
+  .part { color: var(--caution); font-weight: 600; }
+
+  .callout { background: var(--nested); border: 1px solid var(--line); border-radius: var(--radius-lg); padding: 22px 24px; margin-top: 8px; }
+  .callout h2 { font-size: 19px; margin-bottom: 9px; }
+  .callout p { color: var(--text-2); font-size: 14.5px; }
+  .callout p + p { margin-top: 9px; }
+  .callout .g2 { color: var(--text); font-weight: 600; }
+  .callout .links { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .seedwarn { border: 1px solid rgba(248,113,113,.35); background: var(--danger-bg); border-radius: var(--radius-lg); padding: 16px 18px; margin-top: 8px; }
+  .seedwarn b { color: var(--danger); }
+  .seedwarn p { color: var(--text-2); font-size: 14px; }
+
+  footer.dfoot { border-top: 1px solid var(--line); padding: 24px 20px 56px; margin-top: 34px; font-size: 13px; color: var(--text-3); }
+  footer.dfoot .inner { max-width: 760px; margin: 0 auto; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+  footer.dfoot a { color: var(--text-2); }
+</style>
+<style id="lang-css">
+.nl-nav details.lang{position:relative}
+.nl-nav details.lang>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;
+  padding:7px 10px;border:1px solid rgba(255,255,255,.14);border-radius:9px;font-size:13px;
+  color:var(--text-2,#9aa4b2);background:rgba(255,255,255,.03);white-space:nowrap}
+.nl-nav details.lang>summary::-webkit-details-marker{display:none}
+.nl-nav details.lang>summary:hover{color:#fff;border-color:rgba(139,124,246,.5)}
+.nl-nav details.lang .menu{position:absolute;top:calc(100% + 6px);right:0;min-width:172px;z-index:70;
+  background:#0d1220;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:6px;
+  box-shadow:0 18px 44px rgba(0,0,0,.5)}
+.nl-nav details.lang .menu a{display:flex;justify-content:space-between;gap:12px;padding:9px 11px;
+  border-radius:8px;font-size:14px;color:#e6e9ef;text-decoration:none}
+.nl-nav details.lang .menu a:hover{background:rgba(139,124,246,.16)}
+.nl-nav details.lang .menu a[aria-current]{color:#8B7CF6;font-weight:600}
+.nl-nav details.lang .menu a i{font-style:normal;opacity:.5;font-size:12px}
+@media(max-width:900px){.nl-nav details.lang .menu{right:auto;left:0}}
+.i18n-partial{background:rgba(139,124,246,.12);border-bottom:1px solid rgba(139,124,246,.3);
+  padding:9px 16px;font-size:13.5px;color:#cfd5e1;text-align:center}
+.i18n-partial a{color:#8B7CF6;text-decoration:none;margin:0 5px}
+</style><link rel="alternate" hreflang="en" href="https://nlyra.xyz/faq"><link rel="alternate" hreflang="ar" href="https://nlyra.xyz/ar/faq"><link rel="alternate" hreflang="zh-Hans" href="https://nlyra.xyz/zh/faq"><link rel="alternate" hreflang="x-default" href="https://nlyra.xyz/faq"></head>
+<body class="nl">
+<nav class="nl-nav" id="nlnav" aria-label="NLYRA">
+  <a class="lockup" href="/" aria-label="NERON × LYRA home"><img class="mark" src="/brand/dual-core-mark.svg" alt="" aria-hidden="true" width="34" height="22">NERON<span class="x">×</span><span class="lyra">LYRA</span></a>
+  <div class="links">
+    <details data-nav="intel"><summary>Intelligence <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="menu">
+        <a href="/">Scanner <small>paste a CA</small></a>
+        <a href="/wallet">Wallet Check</a>
+        <a href="/map">Constellation <small>holders map</small></a>
+        <a href="/faq#agents">The Agents</a>
+        <a href="/premium">The Key</a>
+      </div></details>
+    <details data-nav="trade"><summary>Trade &amp; DeFi <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="menu">
+        <a href="/desk">The Desk <small>terminal</small></a>
+        <a href="/desk/bots">Bots <small>grid · DCA · copy</small></a>
+        <a href="/explorer">The Explorer <small>blocks &amp; txs</small></a>
+        <a href="/staking">Staking <small>$NLYRA</small></a>
+      </div></details>
+    <details data-nav="build"><summary>Build <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="menu">
+        <a href="/launch">Launchpad</a>
+        <a href="/api-docs">API</a>
+      </div></details>
+    <details data-nav="community"><summary>Community <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg></summary>
+      <div class="menu">
+        <a href="/chat">Chat <small>with LYRA</small></a>
+        <a href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Telegram ↗</a>
+        <a href="/docs">Docs <small>the manual</small></a>
+        <a href="/faq">FAQ</a>
+        <a href="/stats">Stats</a>
+      </div></details>
+  </div>
+  <span class="spacer"></span>
+  <details class="lang" data-nav="lang"><summary aria-label="Language"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>EN</summary><div class="menu"><a href="/faq" aria-current="true" hreflang="en">English<i>EN</i></a><a href="/ar/faq" hreflang="ar">العربية<i>AR</i></a><a href="/zh/faq" hreflang="zh-Hans">中文<i>中</i></a></div></details><a class="cta" href="/desk2/">Open the Desk</a>
+  <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var n=document.getElementById('nlnav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',String(o));"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+</nav>
+<script>(function(){var n=document.getElementById('nlnav');if(!n)return;var p=location.pathname;var map={'/':'intel','/wallet':'intel','/map':'intel','/premium':'intel','/desk':'trade','/desk2':'trade','/dex':'trade','/stake':'trade','/staking':'trade','/invest':'trade','/presale':'trade','/launch':'build','/api-docs':'build','/bounties':'build','/gov':'build','/chat':'community','/faq':'community','/docs':'community','/report':'community','/stats':'community','/roulette':'play','/slots':'play','/game':'play'};var k=map[p.replace(/\/$/,'')||'/'];if(k){var a=n.querySelector('[data-nav="'+k+'"]');if(a){if(a.tagName==='A')a.setAttribute('aria-current','page');else a.querySelector('summary').setAttribute('aria-current','page');}}document.addEventListener('click',function(e){n.querySelectorAll('details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});})();</script>
+
+
+<header class="wrap">
+  <div class="kicker">FAQ</div>
+  <h1 class="brand-headline">The questions<br>people actually ask.</h1>
+  <p class="lead">The things people actually ask before putting money in. Short answers here; every one links to the long version in <a href="/docs">the docs</a>.</p>
+  <div class="heroact">
+    <a class="btn-primary" href="/docs">Open the full docs</a>
+    <a class="btn-secondary" href="/report?from=faq">Report a bug</a>
+  </div>
+</header>
+
+<section class="wrap">
+
+  <details class="qa" id="agents"><summary>Who are NERON and LYRA?</summary><div class="a">
+    <p>Two AI agents with a clean split of the work.</p>
+    <p><b>NERON</b> is the watcher. He reads the chain itself &mdash; contract powers, ownership, liquidity locks, holder forensics, the shape of every pool &mdash; and he is the engine behind the verdict: SAFE, CAUTION, DANGER, RUG. If the chain does not say it, NERON does not claim it.</p>
+    <p><b>LYRA</b> is the reader. She downloads a contract's verified Solidity and reads it line by line, telling guarded power apart from open power &mdash; the difference between an owner who can freeze a transfer and one who merely collects a fee. Her read sits next to NERON's verdict, so you get both the what and the why.</p>
+    <p>They are the front of the scanner, and the reason the ecosystem exists. They do not hold funds and they do not sign transactions for you.</p>
+    <a class="more" href="/docs#what-is">What NLYRA is &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-custodial" open><summary>Is NLYRA custodial?</summary><div class="a">
+    <p><span class="part">It depends on the product</span> &mdash; and anyone who answers this with one word is selling you something.</p>
+    <ul>
+      <li><b>Not custodial:</b> market swaps, limit orders, providing liquidity, $NLYRA staking. Swaps are atomic; a limit order escrows nothing, you sign a Permit2 witness for exactly one transfer.</li>
+      <li><b>Escrowed:</b> bots, the Ladder, the Martingale, Predict stakes, presale contributions, Shield deposits. <b>These hold your funds inside a contract while they run.</b> The contract is booked to your wallet as the maker and only you can withdraw &mdash; but the money is not sitting in your wallet in the meantime.</li>
+    </ul>
+    <p>Nobody at NLYRA holds keys to your funds in either case.</p>
+    <a class="more" href="/docs#custody">The full custody table &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-team"><summary>Can the team access my funds?</summary><div class="a">
+    <p><span class="no">No</span> &mdash; there is no owner function that reaches user balances, and none of the Desk contracts is upgradeable, so that cannot be added later. (One exception elsewhere in the ecosystem: the Lyra Shield entrypoint is an upgradeable proxy.)</p>
+    <p>The complete list on The Desk: <b>pause</b> (which stops trading, never a withdrawal), <b>call <code>rescue(token, to)</code></b> on the surplus above what users deposited &mdash; arithmetically capped, reverts at zero &mdash; <b>change the fee band for new bots and swaps</b> within a hard 3% ceiling, <b>change the referrer share</b>, and on Predict alone <b>repoint the oracle</b> that decides future rounds.</p>
+    <p>What it cannot do: move your escrow, redirect a withdrawal (the maker address has no setter), upgrade anything, or raise the fee on a bot already running or an order already signed.</p>
+    <p><b>The honest caveat:</b> those keys are single hot keys, not a multisig, and the handover to anything safer has not been started.</p>
+    <a class="more" href="/docs#admin-powers">Every admin power, listed &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-audit"><summary>Are the contracts audited?</summary><div class="a">
+    <p><b>Partly, and here is exactly which part.</b> Much of what you use runs on code that has been audited for years by other people: Uniswap V2 and V3, Synthetix StakingRewards, Permit2, and the 0xbow Privacy Pools circuits.</p>
+    <p>The contracts we wrote ourselves &mdash; The Desk, the bots, the launchpad, the games &mdash; have <b>not</b> been through a third-party audit firm. An upstream audit says the design is well studied; it says nothing about our wiring or the code around it, so we do not count it as ours.</p>
+    <p>What we do instead: every source is verified and readable on Blockscout, LYRA reads each contract before it ships, and <b>every withdrawal path has been run on mainnet with real money</b> &mdash; so the way you get your funds out is tested, not assumed. The contracts are small, immutable and public so you can check them yourself.</p>
+    <p>Still, "no bug found" is never "no bug". Size your position accordingly.</p>
+    <a class="more" href="/docs#risks">Risks &amp; audits, in full &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-fees"><summary>What fees does The Desk charge?</summary><div class="a">
+    <p><b>1% of each executed trade</b>, or <b>0.9% if you were referred</b>. That is the whole story for trading.</p>
+    <ul>
+      <li>Charged at the moment of the swap, by the fee router &mdash; on market orders, limit-order fills, ladder rungs, martingale steps and every bot fill.</li>
+      <li><b>0% performance fee.</b> Nothing is taken from your profit, ever.</li>
+      <li>Placing a limit order is free (it is a signature). Cancelling costs gas only, about $0.001. Depositing into and withdrawing from a bot cost gas only.</li>
+      <li>Predict's NLYRA pool takes 3% of the pot, and only when a round settles with a winner.</li>
+      <li>The 1% ceiling is hard-coded in the page and the router refuses anything below 0.9%.</li>
+    </ul>
+    <p>Separately, the pool charges its own fee and some V4 pools attach a hook that takes 1&ndash;2% more &mdash; both are already inside the quote you see.</p>
+    <a class="more" href="/desk/docs#fees">Every fee and minimum &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-keeper"><summary>What happens if the Keeper stops?</summary><div class="a">
+    <p>Your bot freezes mid-strategy: no buys, no sells, no take-profit and <b>no stop-loss</b>. The bots hub shows a <i>keeper offline</i> tag when this is the case.</p>
+    <p><b>Your money stays safe and withdrawable throughout</b> &mdash; withdrawing needs neither the Keeper, the server nor the website. What you lose is the automation, including the protection you were relying on.</p>
+    <p>The Keeper's failure mode is inaction, not theft: it owns nothing, it never holds funds, and every execution it triggers is re-checked against on-chain rules. If it is down and you were counting on a stop, withdraw and manage the position by hand.</p>
+    <a class="more" href="/docs#tr-bot">What to do when a bot stalls &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-usdgbots"><summary>Can I run the bots in USDG instead of ETH?</summary><div class="a">
+    <p>That is what the USDG grids are for. Two escrow contracts quoted in <b>USDG</b> &mdash; the Robinhood Chain dollar &mdash; are deployed and verified on-chain, and they are being enabled in the new bots v2 interface:</p>
+    <ul>
+      <li><b>Spot Grid &middot; USDG:</b> <code data-c="0xdd13354cfE3E79a944d8F93476176F016f6311e4">0xdd13354cfE3E79a944d8F93476176F016f6311e4</code></li>
+      <li><b>Infinity Grid &middot; USDG:</b> <code data-c="0x551C66EF613c283FC439AE21DFa9C54c6f6b19a3">0x551C66EF613c283FC439AE21DFa9C54c6f6b19a3</code></li>
+    </ul>
+    <p><b>What it changes.</b> The grid logic is the same v3 logic, level for level &mdash; only the quote is different. Your idle capital sits in dollars instead of ETH, so a grid you meant to be flat is not quietly long or short ETH while it runs. It is also the only way to grid the <b>stock tokens</b> (NVDA, SPY, GME and the rest), whose pools quote against USDG and nothing else.</p>
+    <p><b>How you fund it.</b> USDG is an ERC-20, not the native coin, so opening a bot is <b>approve, then open</b> &mdash; two signatures instead of one. Getting out is unchanged: the same maker-only <code>stop(id, 0x, 0, false)</code>, no keeper, no server, no route data, paid back to you in USDG and tokens.</p>
+    <p>Same custody and the same fee as everything else on The Desk &mdash; your money lives in the contract, only your wallet can take it out, the keeper only executes inside the limits you set, and it is 1% per executed leg. The bots execute your strategy; they do not predict the market.</p>
+    <p>One thing is genuinely different: <b>USDG is a regulated stablecoin and its issuer can freeze an address.</b> If a payout to your wallet is rejected for that reason the contract does not lose it &mdash; it books the amount to <code>pending</code>, and <code>withdrawPending(token, to)</code> lets you send it elsewhere later.</p>
+    <a class="more" href="/docs#desk-contracts">Every Desk contract, current and legacy &rarr;</a> &nbsp; <a class="more" href="/desk/help/bots">How to get your money out &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-limitfill"><summary>My limit order never filled &mdash; is it broken?</summary><div class="a">
+    <p>Almost always the price never reached the <b>executable</b> level. The chart shows the pool&rsquo;s raw price, but your order fills on the executable quote &mdash; which already includes the 1% fee (0.9% referred) and the keeper&rsquo;s 0.3% safety margin. In chart terms that is about <b>1.3% past your trigger</b>.</p>
+    <ul>
+      <li>The <b>fills near</b> price on the order ticket is the level that actually executes. Trust it over the candle wick.</li>
+      <li>Give the order time: asking for a 5% move with a 1-hour expiry usually expires &mdash; that is the order working, not failing.</li>
+      <li>The keeper checks every open order <b>once per second</b>, around the clock. We audited the full history on 2026-08-28: every fill and every expiry was correct.</li>
+    </ul>
+  </div></details>
+
+  <details class="qa" id="q-nowebsite"><summary>Can I withdraw without the website?</summary><div class="a">
+    <p><span class="yes">Yes.</span> Nothing about your money depends on nlyra.xyz being reachable.</p>
+    <p>Every escrow contract exposes a maker-only withdrawal that needs <b>only your bot id</b> &mdash; no route data, no quote, no signature from us. It is not blocked by pause and not blocked by expiry, and past expiry <code>refundExpired(id)</code> can be called by anybody and still pays you, never the caller.</p>
+    <p>Call it from <a href="https://robinhoodchain.blockscout.com" target="_blank" rel="noopener">Blockscout</a>'s Write Contract tab, or from the rescue guide &mdash; a single self-contained file you can save with Ctrl+S and use offline, with an off-site mirror on GitHub.</p>
+    <p><b>Save it before you need it.</b></p>
+    <a class="more" href="/desk/help/bots">The rescue guide &rarr;</a> &nbsp; <a class="more" href="/docs#tr-blockscout">Step by step from Blockscout &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-rugresistant"><summary>What does "rug-resistant" actually mean?</summary><div class="a">
+    <p>It means specific things about tokens launched through <b>Architect Launch</b>, and nothing at all about tokens launched anywhere else:</p>
+    <ul>
+      <li>The token is born inside a real pool and the liquidity position is <b>locked for life</b> in a vault the creator does not control &mdash; the classic rug, pulling liquidity, has no path.</li>
+      <li>The token itself has <b>no owner powers</b>: the supply is a compile-time constant, so there is no mint function, no blacklist and no pause.</li>
+      <li>The creator's own first buy is <b>hard-capped at 5% of supply</b>, atomic inside the create transaction.</li>
+    </ul>
+    <p><b>What it does not mean.</b> The creator's 5% is <b>unlocked and sellable from the first block</b>, and nothing stops them buying more from the pool immediately after. "The creator holds 5% at the floor price and sells into their holders" is wide open, and that is how most launchpad tokens actually go to zero. It also does not mean the price cannot go to zero, and it says nothing about tokens on the market board that were not launched here. The scanner's verdict is a filter, not a promise.</p>
+    <a class="more" href="/docs#p-launch">How Launch works &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-addresses"><summary>Which contract addresses are official?</summary><div class="a">
+    <p>Only the ones listed in <a href="/docs#addresses">the docs address table</a>. If an address is not there, it is not ours.</p>
+    <p>The two most impersonated:</p>
+    <ul>
+      <li><b>$NLYRA token:</b> <code data-c="0xb9d3824149ad8ac984153ceec91d5a2405d1fb95">0xb9d3824149ad8ac984153ceec91d5a2405d1fb95</code></li>
+      <li><b>Desk fee router (v2):</b> <code data-c="0x9d1eA9Abbb99D813b7acA7666285CDed7f833565">0x9d1eA9Abbb99D813b7acA7666285CDed7f833565</code></li>
+    </ul>
+    <p>Note that several contracts have <b>legacy versions</b> that are still live and still hold positions opened on them. A legacy address is not a fake address &mdash; the table marks which is which.</p>
+    <p>Two more worth knowing: the fee treasury is <code data-c="0xe30647793192D15BFA6E53aE8651368d332fe04C">0xe30647793192D15BFA6E53aE8651368d332fe04C</code> and the liquidity locker is <code data-c="0x736D76699C26D0d966744cAe304C000d471f7F35">0x736D76699C26D0d966744cAe304C000d471f7F35</code>.</p>
+    <p>The only official website is <b>nlyra.xyz</b>. We never DM first.</p>
+    <a class="more" href="/docs#addresses">Every address, current and legacy &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-apr"><summary>Is staking APR guaranteed?</summary><div class="a">
+    <p><span class="no">No &mdash; and anyone promising you a guaranteed APR is lying to you.</span></p>
+    <p><b>$NLYRA staking pays a fixed stream, not a fixed rate.</b> The contract emits a set number of tokens per second and splits them among everyone staked, so the percentage is an output. Read on 27 Aug 2026: 12,801,393 NLYRA over the cycle ending 17 Oct, against 292.4M staked &rarr; <b>&asymp;26.6%</b>. Any headline number goes stale the moment someone stakes or unstakes &mdash; compute it from <code>rewardRate()</code> and <code>totalSupply()</code> on the contract.</p>
+    <p><b>Architect Stake creator pools</b> are stronger but still not a guarantee: the contract escrows each staker's full reward from the creator's locked reserve at the moment they stake, so the advertised rate is funded before you enter. That says nothing about what the token will be worth when you exit.</p>
+    <p>Verified against the deployed bytecode: the staking contract has <b>no owner, no pause and no sweep function</b>, and the reward pool is funded to the wei.</p>
+    <a class="more" href="/docs#p-staking">Staking, both kinds &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-lock"><summary>Are the team tokens locked, and for how long?</summary><div class="a">
+    <p><b>Yes, and the answer is months, not years.</b> 52,570,139 NLYRA &mdash; 5.26% of supply &mdash; are in PinkLock02 releasing <b>10% every 10 days</b>. The first tranche unlocked on 24 August 2026 and the <b>last unlocks on 22 November 2026</b>. 47.3M are still locked today. The schedule can no longer be changed by anyone, including us.</p>
+    <p><b>That is a different lock from the liquidity.</b> The launch liquidity position &mdash; 99.7% of all NLYRA liquidity &mdash; is held by a contract with <b>no withdraw, unlock or transfer function at all</b>, and no proxy to add one. It is not on a timer; there is no code path that releases it.</p>
+    <p>Plan for 5.26% of supply entering the float before 22 November 2026.</p>
+    <a class="more" href="/docs#supply-locks">The full schedule and the numbers &rarr;</a>
+  </div></details>
+
+  <details class="qa" id="q-revenue"><summary>Where does ecosystem revenue go?</summary><div class="a">
+    <p>Every fee is on-chain and traceable. The main flows:</p>
+    <ul>
+      <li><b>Desk trading, 1%:</b> 30% is credited to your referrer by the router itself, in the asset the fee was taken in, claimable at any time. The other 70% goes to the treasury. The 30% is current policy &mdash; the owner can set the referrer share to zero for future fees.</li>
+      <li><b>Launch and Presale:</b> the protocol's share of pool fees and the 5% presale fee go to the <b>Buyback Burner</b> &mdash; a contract with no owner that anybody can trigger, which sends <b>50% to ops and 50% into market-buying $NLYRA straight to <code>0xdEaD</code></b>.</li>
+      <li><b>Liquidity Desk:</b> 20% of profit plus 0.5% on exit, both to the buyback burner.</li>
+      <li><b>OTC Desk:</b> 0.5% of every fill, paid by the buyer, to the buyback burner (ETH in the same transaction, NLYRA burned directly, USDG swapped to ETH by the keeper). Contract <code>0x9656513aC910a9839B51dB7c92a6914ABB4F52e8</code>, verified.</li>
+      <li><b>DEX:</b> 0.05% of V2 volume and a quarter of each V3 pool's fee tier to the treasury; the rest to liquidity providers.</li>
+    </ul>
+    <p>What the treasury then does with its share is not yet documented here, because it has not been verified on-chain for publication. The address is public and so are its outflows.</p>
+    <a class="more" href="/docs#revenue">The full revenue table &rarr;</a>
+  </div></details>
+
+</section>
+
+<section class="wrap">
+  <div class="seedwarn">
+    <p><b>NLYRA will never ask for your seed phrase or private key.</b> Not here, not in a DM, not from "support", not to "verify" or "restore" your wallet. Anyone who asks is stealing from you. We also never DM first, and the only official site is nlyra.xyz.</p>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="callout">
+    <h2>Didn't find it?</h2>
+    <p>The long-form material that used to live on this page &mdash; the full product list, every contract address, admin powers, custody, emergency withdrawal and the honest risk section &mdash; <span class="g2">moved into the docs</span>. Nothing was deleted.</p>
+    <p>If something is broken or missing, say so. It goes straight to the Architect and fixes get named in the Friday changelog.</p>
+    <div class="links">
+      <a class="btn-primary" href="/docs">Open the docs</a>
+      <a class="btn-secondary" href="/report?from=faq">Report a bug or suggest an improvement</a>
+      <a class="btn-secondary" id="tg-cta" href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Ask in Telegram</a>
+    </div>
+  </div>
+</section>
+
+<footer class="dfoot"><div class="inner">
+  <span><b>NERON &amp; LYRA</b> &mdash; nlyra.xyz &middot; Robinhood Chain &middot; chain id 4663</span>
+  <span><a href="/docs">Docs</a> &middot; <a href="/desk/docs">Desk manual</a> &middot; <a href="/report?from=faq-footer"><b>Report a bug or suggest an improvement</b></a> &middot; <a id="tg-foot" href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Telegram</a></span>
+</div></footer>
+
+<script>
+const CFG = {"telegram":"https://t.me/NeronWakeUp"};
+const cfg = (typeof CFG === 'object') ? CFG : { telegram: 'https://t.me/NeronWakeUp' };
+for (const id of ['tg-nav', 'tg-foot', 'tg-cta']) { const el = document.getElementById(id); if (el) el.href = cfg.telegram; }
+document.querySelectorAll('code[data-c]').forEach((c) => {
+  c.title = 'click to copy';
+  c.style.cursor = 'pointer';
+  c.onclick = () => { const t = c.textContent; navigator.clipboard.writeText(c.dataset.c).then(() => { c.textContent = 'copied'; setTimeout(() => { c.textContent = t; }, 1100); }, () => {}); };
+});
+// open the question named in the URL
+if (location.hash) { const el = document.querySelector(location.hash); if (el && el.tagName === 'DETAILS') { el.open = true; el.scrollIntoView({ block: 'start' }); } }
+</script>
+</body>
+</html>

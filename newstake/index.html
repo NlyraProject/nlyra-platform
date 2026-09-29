@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<base href="/newstake/">
+<title>NLYRA Real Yield Staking</title>
+<meta name="description" content="Real Yield Staking v2 for NLYRA on Robinhood Chain: 50% of NLYRA's creator trading fees streamed to stakers over 7 days. No inflation, no printed rewards. Coming soon.">
+<meta name="theme-color" content="#070B18">
+<link rel="canonical" href="https://nlyra.xyz/newstake/">
+<link rel="icon" type="image/svg+xml" href="dual-core.svg">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="NLYRA">
+<meta property="og:url" content="https://nlyra.xyz/newstake/">
+<meta property="og:title" content="Real yield. From real volume. | NLYRA Staking v2">
+<meta property="og:description" content="50% of NLYRA's creator trading fees, streamed to stakers second by second. Claim in ETH, NLYRA or USDG. Coming soon on Robinhood Chain.">
+<meta property="og:image" content="https://nlyra.xyz/newstake/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NLYRA Real Yield Staking v2: real yield from real volume">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@LyraNeron">
+<meta name="twitter:title" content="Real yield. From real volume. | NLYRA Staking v2">
+<meta name="twitter:description" content="50% of NLYRA's creator trading fees, streamed to stakers second by second. Coming soon.">
+<meta name="twitter:image" content="https://nlyra.xyz/newstake/og.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Space+Grotesk:wght@600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="newstake.css?v=1">
+<script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" id="top">
+  <div class="wrap nav-in">
+    <a class="brand" href="/" aria-label="NLYRA home">
+      <img src="dual-core.svg" alt="" width="30" height="30">
+      <span class="wm"><span class="wm-n">NERON</span><span class="wm-x">×</span><span class="wm-l">LYRA</span></span>
+    </a>
+    <nav class="nav-links" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="/desk">The Desk</a>
+      <a href="/docs">Docs</a>
+    </nav>
+    <a class="btn btn-nav" href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Join Telegram</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="hero-bg" aria-hidden="true"></div>
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <p class="status-pill"><span class="pulse" aria-hidden="true"></span>Staking v2 · Preview · Coming soon</p>
+      <h1 id="hero-h" class="hero-h">Real yield.<br><span class="grad">From real volume.</span></h1>
+      <p class="lede">Half of NLYRA's creator trading fees, streamed to stakers second by second. No inflation. No printed rewards. Just a share of what the market actually pays.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#calc" data-jump>Estimate your yield</a>
+        <a class="btn btn-ghost" href="#how" data-jump>See how it works</a>
+      </div>
+
+      <dl class="ticker" id="ticker" aria-live="polite">
+        <div><dt>NLYRA price</dt><dd id="tk-price" class="mono">—</dd></div>
+        <div><dt>Market cap</dt><dd id="tk-mcap" class="mono">—</dd></div>
+        <div><dt>24h volume</dt><dd id="tk-vol" class="mono">—</dd></div>
+        <div><dt>Liquidity</dt><dd id="tk-liq" class="mono">—</dd></div>
+      </dl>
+      <p class="ticker-note" id="tk-note">Loading live market data…</p>
+    </div>
+
+    <div class="hero-visual">
+      <div class="core-stage" id="coreStage">
+        <canvas id="coreCanvas" aria-hidden="true"></canvas>
+        <img class="core-logo" src="dual-core.svg" alt="" aria-hidden="true">
+        <span class="stage-tag tag-in">Trades in</span>
+        <span class="stage-tag tag-tr">50% Treasury</span>
+        <span class="stage-tag tag-st">50% Stakers</span>
+        <p class="sr-only">Illustration: trading fees flow into the NLYRA Dual Core; half goes to the treasury and half streams to stakers.</p>
+      </div>
+
+      <div class="stream-card" aria-labelledby="sc-h">
+        <div class="sc-top">
+          <p id="sc-h" class="sc-label">Stakers' stream · this week</p>
+          <span class="chip chip-sim" title="Simulated from the last 7 days of on-chain data. Not live payouts.">Simulation</span>
+        </div>
+        <p class="sc-big mono" id="scBig">$0.00</p>
+        <div class="sc-bar" aria-hidden="true"><span id="scBar"></span></div>
+        <div class="sc-meta">
+          <span><b class="mono" id="scRate">$0.00081</b> / second</span>
+          <span><b class="mono">≈ $490</b> / week</span>
+        </div>
+        <p class="sc-foot">At the last-7-day rate. Variable, depends on volume; not a guarantee.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <ul class="features" aria-label="Highlights">
+      <li><span class="f-ico" aria-hidden="true">50</span><span><b>50% of creator fees</b> to stakers</span></li>
+      <li><span class="f-ico" aria-hidden="true">7d</span><span><b>Streamed over 7 days</b>, second by second</span></li>
+      <li><span class="f-ico" aria-hidden="true">Ξ</span><span><b>Claim in ETH, NLYRA or USDG</b></span></li>
+      <li><span class="f-ico" aria-hidden="true">A→B</span><span><b>Stake from one wallet,</b> withdraw from another</span></li>
+      <li><span class="f-ico" aria-hidden="true">0</span><span><b>No inflation.</b> Paid by real volume</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ NUMBERS ============ -->
+<section class="band" aria-labelledby="num-h">
+  <div class="wrap">
+    <h2 id="num-h" class="sr-only">Current estimates</h2>
+    <div class="stats">
+      <div class="stat reveal">
+        <p class="stat-v mono">≈ $<span data-count="978">978</span></p>
+        <p class="stat-k">Creator fees / week</p>
+      </div>
+      <div class="stat reveal">
+        <p class="stat-v mono">≈ $<span data-count="490">490</span></p>
+        <p class="stat-k">Stakers' half / week</p>
+      </div>
+      <div class="stat reveal">
+        <p class="stat-v mono">~<span data-count="28">28</span>–<span data-count="31">31</span>%</p>
+        <p class="stat-k">APR with ~360M staked</p>
+      </div>
+      <div class="stat reveal">
+        <p class="stat-v mono">≈ $<span data-count="633">633</span>k</p>
+        <p class="stat-k">30-day volume</p>
+      </div>
+    </div>
+    <p class="fine center">Estimates from the last 7 days of on-chain data, at current volume and price. Variable, depends on volume; not a guarantee.</p>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">How it works</p>
+      <h2 id="how-h">From every trade to your wallet.</h2>
+      <p class="sec-sub">NLYRA launched on Pons. Every trade in the NLYRA/WETH pool pays a fee, and the creator's share arrives as roughly half WETH, half NLYRA. v2 hands half of it to stakers.</p>
+    </header>
+
+    <ol class="flow reveal" id="flow">
+      <li class="fnode">
+        <span class="fn-step">01</span>
+        <div class="fn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 17l5-5 4 3 7-8" /><path d="M15 7h5v5"/></svg>
+        </div>
+        <h3>Trades</h3>
+        <p>Buys and sells in the NLYRA/WETH pool pay a trading fee.</p>
+      </li>
+      <li class="flink" aria-hidden="true"><span></span></li>
+      <li class="fnode">
+        <span class="fn-step">02</span>
+        <div class="fn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg>
+        </div>
+        <h3>Pons creator fees</h3>
+        <p>The creator's share lands as <b>~½ WETH + ~½ NLYRA</b>.</p>
+      </li>
+      <li class="flink" aria-hidden="true"><span></span></li>
+      <li class="fnode fnode-split">
+        <span class="fn-step">03</span>
+        <div class="fn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 12h6"/><path d="M10 12l8-6"/><path d="M10 12l8 6"/></svg>
+        </div>
+        <h3>Fee Splitter</h3>
+        <p>Collects about once a day and splits <b>50 / 50</b>.</p>
+        <div class="split">
+          <span class="sp sp-st">50% Stakers</span>
+          <span class="sp sp-tr">50% Treasury</span>
+        </div>
+      </li>
+      <li class="flink" aria-hidden="true"><span></span></li>
+      <li class="fnode">
+        <span class="fn-step">04</span>
+        <div class="fn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M3 12c3-6 6 6 9 0s6 6 9 0"/></svg>
+        </div>
+        <h3>7-day stream</h3>
+        <p>Each deposit streams to stakers <b>second by second</b>, pro-rata to weight.</p>
+      </li>
+      <li class="flink" aria-hidden="true"><span></span></li>
+      <li class="fnode fnode-you">
+        <span class="fn-step">05</span>
+        <div class="fn-ico" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12.5h2"/><path d="M3 10h18"/></svg>
+        </div>
+        <h3>You claim</h3>
+        <p>As <b>ETH</b>, <b>NLYRA</b> or <b>USDG</b>, to any wallet.</p>
+      </li>
+    </ol>
+
+    <div class="how-notes">
+      <article class="note reveal">
+        <h3>Why a 7-day stream?</h3>
+        <p>Rewards don't drop in one lump. Each deposit is released over 7 days, so staking right before a payout and leaving right after earns almost nothing. Long-term stakers get the yield.</p>
+      </article>
+      <article class="note reveal">
+        <h3>Why “real” yield?</h3>
+        <p>Nothing is minted. Rewards are paid from trading fees the pool already collects. More volume means more yield, and less volume means less. That's the honest trade-off.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CALCULATOR ============ -->
+<section class="sec sec-calc" id="calc" aria-labelledby="calc-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Yield calculator</p>
+      <h2 id="calc-h">What would your stake earn?</h2>
+      <p class="sec-sub">Play with the numbers. Defaults use the last 7 days of on-chain data.</p>
+    </header>
+
+    <div class="calc reveal">
+      <form class="calc-in" id="calcForm" autocomplete="off" onsubmit="return false">
+        <div class="field">
+          <label for="inAmt">Your NLYRA</label>
+          <div class="inp inp-big">
+            <input id="inAmt" inputmode="decimal" value="50,000,000" aria-describedby="amtHelp">
+            <span class="unit">NLYRA</span>
+          </div>
+          <input type="range" id="inAmtR" min="0" max="1000" step="1" aria-label="NLYRA amount slider">
+          <div class="quick" role="group" aria-label="Quick amounts">
+            <button type="button" data-amt="1000000">1M</button>
+            <button type="button" data-amt="10000000">10M</button>
+            <button type="button" data-amt="50000000">50M</button>
+            <button type="button" data-amt="100000000">100M</button>
+            <button type="button" data-amt="250000000">250M</button>
+          </div>
+          <p class="help" id="amtHelp">≈ <span id="amtUsd" class="mono">$0</span> at the price below</p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Lock tier</legend>
+          <div class="seg" id="tierSeg">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <label><input type="radio" name="tier" value="1" checked><span><b>Flexible</b><i>1×</i></span></label>
+            <label><input type="radio" name="tier" value="1.25"><span><b>7 days</b><i>1.25×</i></span></label>
+            <label><input type="radio" name="tier" value="1.5"><span><b>14 days</b><i>1.5×</i></span></label>
+            <label><input type="radio" name="tier" value="2"><span><b>30 days</b><i>2×</i></span></label>
+          </div>
+        </fieldset>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="inPool">Total staked by others</label>
+            <div class="inp"><input id="inPool" inputmode="decimal" value="360,000,000"><span class="unit">NLYRA</span></div>
+          </div>
+          <div class="field">
+            <label for="inPot">Weekly stakers' pot</label>
+            <div class="inp"><span class="unit unit-pre">$</span><input id="inPot" inputmode="decimal" value="490"><span class="unit">/ week</span></div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="inPrice">NLYRA price <span class="chip chip-live" id="priceChip">manual</span></label>
+            <div class="inp"><span class="unit unit-pre">$</span><input id="inPrice" inputmode="decimal" value="0.000216"></div>
+          </div>
+          <div class="field">
+            <label for="inAvg">Others' average multiplier</label>
+            <div class="inp inp-sel">
+              <select id="inAvg">
+                <option value="1" selected>1× (all flexible)</option>
+                <option value="1.25">1.25×</option>
+                <option value="1.5">1.5×</option>
+                <option value="2">2× (all 30-day)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="calc-out" aria-live="polite">
+        <div class="out-top">
+          <div class="donut" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <circle class="d-bg" cx="60" cy="60" r="50"/>
+              <circle class="d-fg" id="donutFg" cx="60" cy="60" r="50" pathLength="100" stroke-dasharray="0 100"/>
+            </svg>
+            <div class="d-lbl"><span class="mono" id="outShare">0%</span><small>of the pot</small></div>
+          </div>
+          <div class="out-apr">
+            <p class="o-k">Estimated APR</p>
+            <p class="o-apr mono" id="outApr">0%</p>
+            <p class="o-sub">Weight <span class="mono" id="outW">0</span></p>
+          </div>
+        </div>
+
+        <div class="out-rows">
+          <div class="orow"><span>Weekly</span><b class="mono" id="outWk">$0</b></div>
+          <div class="orow"><span>Monthly</span><b class="mono" id="outMo">$0</b></div>
+          <div class="orow orow-hi"><span>Yearly</span><b class="mono" id="outYr">$0</b></div>
+        </div>
+
+        <div class="sens">
+          <p class="o-k">If weekly volume…</p>
+          <div class="sens-row">
+            <div><span>halves</span><b class="mono" id="sHalf">$0</b></div>
+            <div class="now"><span>stays</span><b class="mono" id="sSame">$0</b></div>
+            <div><span>doubles</span><b class="mono" id="sDbl">$0</b></div>
+          </div>
+          <p class="o-cap">per week</p>
+        </div>
+
+        <p class="out-note">Your payout depends on <b>volume</b> and <b>your share</b> of the pool's weight, not on price. Price mostly changes the APR %, because the same payout is measured against a cheaper or pricier stake (and the NLYRA half of rewards moves with it).</p>
+        <p class="out-disc">Estimate only. Variable, depends on volume; not a guarantee. Staking v2 is not live yet.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LOCK TIERS ============ -->
+<section class="sec" id="tiers" aria-labelledby="tiers-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Lock tiers</p>
+      <h2 id="tiers-h">Lock longer. Weigh more.</h2>
+      <p class="sec-sub">Your weight is your NLYRA times the tier multiplier. The pot is shared pro-rata to weight.</p>
+    </header>
+    <div class="tiers">
+      <article class="tier reveal" data-m="1">
+        <p class="t-name">Flexible</p>
+        <p class="t-mult mono">1<span>×</span></p>
+        <div class="t-bar"><span style="--w:50%"></span></div>
+        <ul><li>No lock</li><li>2-day cooldown to unstake</li></ul>
+      </article>
+      <article class="tier reveal" data-m="1.25">
+        <p class="t-name">7-day lock</p>
+        <p class="t-mult mono">1.25<span>×</span></p>
+        <div class="t-bar"><span style="--w:62.5%"></span></div>
+        <ul><li>+25% weight</li><li>Unlocks at midnight UTC</li></ul>
+      </article>
+      <article class="tier reveal" data-m="1.5">
+        <p class="t-name">14-day lock</p>
+        <p class="t-mult mono">1.5<span>×</span></p>
+        <div class="t-bar"><span style="--w:75%"></span></div>
+        <ul><li>+50% weight</li><li>Unlocks at midnight UTC</li></ul>
+      </article>
+      <article class="tier tier-top reveal" data-m="2">
+        <p class="t-name">30-day lock <span class="chip">Max</span></p>
+        <p class="t-mult mono">2<span>×</span></p>
+        <div class="t-bar"><span style="--w:100%"></span></div>
+        <ul><li>Double weight</li><li>Auto-compound target (+5%)</li></ul>
+      </article>
+    </div>
+    <p class="fine center reveal">All locks expire at midnight UTC. You can extend a lock at any time.</p>
+  </div>
+</section>
+
+<!-- ============ CLAIM ============ -->
+<section class="sec" id="claim" aria-labelledby="claim-h">
+  <div class="wrap claim-grid">
+    <header class="sec-head sec-head-left reveal">
+      <p class="eyebrow">Claim your way</p>
+      <h2 id="claim-h">Earn in WETH + NLYRA.<br>Take it however you like.</h2>
+      <p class="sec-sub">Rewards accrue in the same two assets the fees arrive in. When you claim, you choose the form.</p>
+      <ul class="checks">
+        <li><b>As ETH</b>: WETH unwrapped, NLYRA swapped.</li>
+        <li><b>As NLYRA</b>: stack more of the token.</li>
+        <li><b>As USDG</b>: swapped on-chain in the same transaction, with a guaranteed minimum out.</li>
+        <li><b>To another wallet</b>: send the claim anywhere.</li>
+      </ul>
+    </header>
+
+    <div class="claim-side">
+      <div class="claim-mock reveal" id="claimMock">
+        <div class="cm-head">
+          <span>Claimable</span>
+          <span class="chip chip-sim">Preview</span>
+        </div>
+        <div class="cm-assets">
+          <div><i class="dot dot-n"></i><span>WETH</span><b class="mono">~50%</b></div>
+          <div><i class="dot dot-l"></i><span>NLYRA</span><b class="mono">~50%</b></div>
+        </div>
+        <p class="cm-k">Receive as</p>
+        <div class="cm-opts" role="tablist" aria-label="Claim options">
+          <button type="button" role="tab" aria-selected="true" data-opt="eth">ETH</button>
+          <button type="button" role="tab" aria-selected="false" data-opt="nlyra">NLYRA</button>
+          <button type="button" role="tab" aria-selected="false" data-opt="usdg">USDG</button>
+        </div>
+        <p class="cm-desc" id="cmDesc">WETH is unwrapped and the NLYRA half is swapped to ETH in the same transaction.</p>
+        <div class="cm-to">
+          <span>Send to</span>
+          <span class="mono">0xB0B…c01d <em>(any wallet)</em></span>
+        </div>
+      </div>
+
+      <div class="compound reveal">
+        <div class="cp-ico mono" aria-hidden="true">+5%</div>
+        <div>
+          <h3>Auto-compound</h3>
+          <p>Compound your rewards straight into a 30-day lock and get a <b>+5% bonus</b> on what you compound. Max weight, no extra steps.</p>
+        </div>
+      </div>
+
+      <div class="perk reveal">
+        <div class="cp-ico cp-ico-alt" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 18V8M10 18V5M16 18v-7M22 18H2"/></svg>
+        </div>
+        <div>
+          <h3>Desk perks</h3>
+          <p>Stakers get a trading-fee discount on <a href="/desk">The Desk</a>. Only stake held for 24 hours or more counts.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ A -> B ============ -->
+<section class="sec sec-ab" id="wallets" aria-labelledby="ab-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">New in v2 · Position transfers</p>
+      <h2 id="ab-h">Stake here. Withdraw there.</h2>
+      <p class="sec-sub">Deposit from one wallet and unstake or claim from another. Move a staked position from wallet A to wallet B in two steps. The lock and the weight travel with it.</p>
+    </header>
+
+    <div class="ab reveal" id="abStage">
+      <div class="ab-wallet ab-a">
+        <p class="ab-tag">Wallet A</p>
+        <p class="ab-addr mono">0xA11…ce01</p>
+        <p class="ab-role">Hot wallet · staked here</p>
+      </div>
+
+      <div class="ab-track" aria-hidden="true">
+        <svg class="ab-line" viewBox="0 0 400 40" preserveAspectRatio="none"><path d="M0 20 H400"/></svg>
+        <div class="ab-pos" id="abPos">
+          <span class="ab-pos-t">Position</span>
+          <span class="mono">50M · 30d · 2×</span>
+        </div>
+      </div>
+
+      <div class="ab-wallet ab-b">
+        <p class="ab-tag">Wallet B</p>
+        <p class="ab-addr mono">0xB0B…c01d</p>
+        <p class="ab-role">Cold wallet · withdraws here</p>
+      </div>
+    </div>
+
+    <ol class="ab-steps reveal" id="abSteps">
+      <li data-s="1"><span class="mono">1</span><div><b>Offer</b><p>Wallet A offers the position to wallet B.</p></div></li>
+      <li data-s="2"><span class="mono">2</span><div><b>Accept</b><p>Wallet B accepts. Lock, weight and future yield move over.</p></div></li>
+      <li data-s="3"><span class="mono">3</span><div><b>Unstake or claim from B</b><p>When the lock ends, B unstakes. B claims rewards any time.</p></div></li>
+    </ol>
+
+    <div class="ab-notes">
+      <article class="note reveal">
+        <h3>Two steps, on purpose</h3>
+        <p>Nothing moves until the receiver accepts, so a typo in an address can't send your position into the void. The sender can offer; only the receiver can take.</p>
+      </article>
+      <article class="note reveal">
+        <h3>Claim to any wallet</h3>
+        <p>Don't need to move the whole position? Keep it where it is and send just the rewards to another address with claim-to.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARKET ============ -->
+<section class="sec" id="market" aria-labelledby="mk-h">
+  <div class="wrap mk-grid">
+    <header class="sec-head sec-head-left reveal">
+      <p class="eyebrow">New in v2 · Position Market</p>
+      <h2 id="mk-h">Locked? Sell the position, not the patience.</h2>
+      <p class="sec-sub">Need out before your lock ends? List the position. The buyer gets the stake, the remaining lock and all future yield. You get paid now.</p>
+      <ul class="checks">
+        <li><b>Opt-in per position.</b> Nothing is listed unless you list it.</li>
+        <li><b>0.5% market fee</b>, which flows into the same 50/50 split: half to stakers, half to treasury.</li>
+        <li><b>The lock travels.</b> Weight and unlock date stay exactly as they were.</li>
+      </ul>
+    </header>
+
+    <div class="mk-board reveal" aria-label="Illustrative Position Market listings">
+      <div class="mk-head"><span>Position Market</span><span class="chip chip-sim">Illustrative</span></div>
+      <div class="mk-row mk-cols"><span>Position</span><span>Lock left</span><span>Weight</span><span></span></div>
+      <div class="mk-row"><span class="mono">40M NLYRA</span><span>23 d</span><span class="mono">2×</span><span class="mk-buy">Soon</span></div>
+      <div class="mk-row"><span class="mono">12M NLYRA</span><span>9 d</span><span class="mono">1.5×</span><span class="mk-buy">Soon</span></div>
+      <div class="mk-row"><span class="mono">5M NLYRA</span><span>4 d</span><span class="mono">1.25×</span><span class="mk-buy">Soon</span></div>
+      <p class="mk-foot">Example rows to show the layout. There are no live listings yet.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAFETY ============ -->
+<section class="sec sec-safe" id="safety" aria-labelledby="safe-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Safety & transparency</p>
+      <h2 id="safe-h">The owner can't touch your stake.</h2>
+      <p class="sec-sub">Designed so that the worst case for stakers is bounded, and written down in code.</p>
+    </header>
+
+    <div class="safe-grid">
+      <article class="safe reveal"><h3>Non-custodial</h3><p>Your NLYRA sits in the staking contract under your address. Nobody holds your keys or your tokens.</p></article>
+      <article class="safe reveal"><h3>Principal is untouchable</h3><p>The owner has no function to move stakers' principal. Admin powers stop at the edges.</p></article>
+      <article class="safe reveal"><h3>Bounded pause</h3><p>An emergency pause exists, and it auto-expires after 30 days. It can't freeze funds forever.</p></article>
+      <article class="safe reveal"><h3>Ownership can't be renounced</h3><p>So the contract is never left without someone accountable for its settings.</p></article>
+      <article class="safe reveal"><h3>Two internal audit rounds</h3><p><b>0</b> critical, <b>0</b> high, <b>0</b> medium findings. <b>168 tests</b> passing on a mainnet fork.</p></article>
+      <article class="safe reveal"><h3>Verified before launch</h3><p>Contracts will be verified on Blockscout before launch. An external audit is recommended and pending.</p></article>
+    </div>
+
+    <div class="contracts reveal">
+      <div class="ct">
+        <p class="ct-k">NLYRA token · Robinhood Chain (4663)</p>
+        <div class="ct-v"><a class="mono" href="https://robinhoodchain.blockscout.com/token/0xB9d3824149aD8ac984153CeEc91D5A2405d1FB95" target="_blank" rel="noopener">0xB9d3824149aD8ac984153CeEc91D5A2405d1FB95</a>
+          <button class="copy" type="button" data-copy="0xB9d3824149aD8ac984153CeEc91D5A2405d1FB95" aria-label="Copy NLYRA token address">Copy</button></div>
+      </div>
+      <div class="ct">
+        <p class="ct-k">Staking v2 · Fee Splitter</p>
+        <div class="ct-v"><span class="pending">Published here at launch, verified on Blockscout</span></div>
+      </div>
+      <div class="ct">
+        <p class="ct-k">Staking v1 (StakingRewards) · pays until 17 Oct 2026</p>
+        <div class="ct-v"><a class="mono" href="https://robinhoodchain.blockscout.com/address/0x5e63228add4390f77BbcDb364F6A7b42bA7Aa3ef" target="_blank" rel="noopener">0x5e63228add4390f77BbcDb364F6A7b42bA7Aa3ef</a>
+          <button class="copy" type="button" data-copy="0x5e63228add4390f77BbcDb364F6A7b42bA7Aa3ef" aria-label="Copy v1 staking address">Copy</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ROADMAP ============ -->
+<section class="sec" id="roadmap" aria-labelledby="rm-h">
+  <div class="wrap">
+    <header class="sec-head reveal">
+      <p class="eyebrow">Roadmap</p>
+      <h2 id="rm-h">Where we are.</h2>
+      <p class="sec-sub">No dates we can't keep. This is the order, and we'll post each step as it lands.</p>
+    </header>
+    <ol class="road reveal">
+      <li class="rd done">
+        <span class="rd-dot" aria-hidden="true"></span>
+        <p class="rd-st">Done</p>
+        <h3>Contracts written & internally audited</h3>
+        <p>Staking, Fee Splitter, claim routes. Two internal rounds, 168 tests on a mainnet fork.</p>
+      </li>
+      <li class="rd now">
+        <span class="rd-dot" aria-hidden="true"></span>
+        <p class="rd-st">In progress</p>
+        <h3>Transfers & Position Market</h3>
+        <p>Two-step A → B transfers and the opt-in market for locked positions.</p>
+      </li>
+      <li class="rd">
+        <span class="rd-dot" aria-hidden="true"></span>
+        <p class="rd-st">Next</p>
+        <h3>Final audit & verification</h3>
+        <p>Final review of the full set, then verification on Blockscout.</p>
+      </li>
+      <li class="rd">
+        <span class="rd-dot" aria-hidden="true"></span>
+        <p class="rd-st">Launch</p>
+        <h3>Staking v2 goes live</h3>
+        <p>v1 stakers can move over. v1 keeps paying until 17 Oct 2026.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="sec" id="faq" aria-labelledby="faq-h">
+  <div class="wrap faq-wrap">
+    <header class="sec-head sec-head-left reveal">
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-h">Straight answers.</h2>
+      <p class="sec-sub">Still curious? Ask in <a href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Telegram</a>.</p>
+    </header>
+    <div class="faq reveal">
+      <details>
+        <summary>Where do the rewards come from?</summary>
+        <p>From trading. NLYRA launched on Pons, and every trade in the NLYRA/WETH pool pays a fee. The creator's share arrives as roughly half WETH and half NLYRA. A Fee Splitter collects it about once a day and sends 50% to the staking contract; the other 50% goes to the treasury. Nothing is minted.</p>
+      </details>
+      <details>
+        <summary>What happens if the NLYRA price drops?</summary>
+        <p>The size of the pot depends on trading volume, not on price. If the price drops, your stake is worth less in dollars, so the same payout shows up as a higher APR %. The NLYRA half of rewards is also worth less in dollars. Lower volume means lower rewards. Nothing here is guaranteed.</p>
+      </details>
+      <details>
+        <summary>Can I unstake any time?</summary>
+        <p>Flexible stakes can be unstaked after a 2-day cooldown. Locked stakes (7, 14 or 30 days) unlock at midnight UTC on the day the lock ends. If you need out earlier, you can sell a locked position on the Position Market.</p>
+      </details>
+      <details>
+        <summary>Can I stake from one wallet and withdraw from another?</summary>
+        <p>Yes. Stake from wallet A, then offer the position to wallet B; once B accepts, the position (with its lock and weight) belongs to B, and B can claim and unstake. If you only want the rewards elsewhere, claim them to any wallet without moving the position.</p>
+      </details>
+      <details>
+        <summary>What if the fees are redirected?</summary>
+        <p>The treasury controls where the Pons creator fees go and could redirect them. Rewards already sent to the staking contract stay with stakers and keep streaming to them; they can't be taken back.</p>
+      </details>
+      <details>
+        <summary>What's the difference between v1 and v2?</summary>
+        <p>v1 (StakingRewards, 0x5e63…a3ef) keeps paying until 17 Oct 2026. v2 is real yield: it pays from trading fees, adds lock tiers, claims in ETH/NLYRA/USDG, transfers and the Position Market. v1 stakers can move to v2 when it launches; nothing to do today.</p>
+      </details>
+      <details>
+        <summary>What does the Position Market cost?</summary>
+        <p>A 0.5% market fee on each sale. It flows into the same 50/50 split: half to stakers, half to the treasury. Listing is opt-in, per position.</p>
+      </details>
+      <details>
+        <summary>How does the Desk discount work?</summary>
+        <p>Stakers get a trading-fee discount on The Desk. Only stake held for 24 hours or more counts, so you can't stake for a minute to grab the discount.</p>
+      </details>
+      <details>
+        <summary>Which wallet should I use?</summary>
+        <p>Any EVM wallet that can connect to Robinhood Chain (chain ID 4663), such as MetaMask or Rabby, holding your NLYRA. Always stake from a wallet you control, never from an exchange deposit address.</p>
+      </details>
+      <details>
+        <summary>Is it audited?</summary>
+        <p>Two internal audit rounds found 0 critical, high or medium issues, and 168 tests pass on a mainnet fork. An external audit is recommended and pending. Contracts will be verified on Blockscout before launch.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ END CTA ============ -->
+<section class="endcta" aria-labelledby="end-h">
+  <div class="wrap endcta-in reveal">
+    <img src="dual-core.svg" alt="" width="64" height="64">
+    <h2 id="end-h">Be there at launch.</h2>
+    <p>Launch news lands first in Telegram. Until then, v1 keeps paying.</p>
+    <div class="end-btns">
+      <a class="btn btn-solid" href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Join Telegram</a>
+      <a class="btn btn-ghost" href="/desk">Open The Desk</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <div class="foot-brand">
+      <a class="brand" href="/" aria-label="NLYRA home">
+        <img src="dual-core.svg" alt="" width="26" height="26">
+        <span class="wm"><span class="wm-n">NERON</span><span class="wm-x">×</span><span class="wm-l">LYRA</span></span>
+      </a>
+      <p>Real Yield Staking v2 · preview. Not live yet.</p>
+    </div>
+    <nav class="foot-links" aria-label="Footer">
+      <a href="/">Home</a>
+      <a href="/desk">The Desk</a>
+      <a href="/docs">Docs</a>
+      <a href="https://t.me/NeronWakeUp" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://x.com/LyraNeron" target="_blank" rel="noopener">X</a>
+    </nav>
+  </div>
+  <div class="wrap">
+    <p class="foot-disc">All figures are estimates from on-chain data and change with volume and price. Nothing on this page is a promise of returns or financial advice. Staking involves smart-contract risk. Internal audits completed; external audit pending.</p>
+  </div>
+</footer>
+
+<script src="newstake.js?v=1" defer></script>
+</body>
+</html>

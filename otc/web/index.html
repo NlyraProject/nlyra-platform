@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,maximum-scale=1">
+<meta name="theme-color" content="#070B18">
+<title>OTC Desk — block trades on Robinhood Chain · NERON &amp; LYRA</title>
+<meta name="description" content="Peer-to-peer block trades on Robinhood Chain, settled atomically on-chain. No pool, no slippage, no price impact. Escrowed in a non-custodial contract; every fill buys and burns NLYRA.">
+<meta property="og:title" content="OTC Desk — block trades without moving the pool">
+<meta property="og:description" content="Sell or buy a block of any Robinhood Chain token at a fixed price. Escrow on-chain, atomic settlement, 0.5% fee that buys and burns NLYRA.">
+<meta property="og:image" content="https://nlyra.xyz/otc/og-otc.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://nlyra.xyz/otc/og-otc.png">
+<meta property="og:url" content="https://nlyra.xyz/otc">
+<meta name="twitter:card" content="summary_large_image">
+<link href="/desk2/fonts/fonts.css?v=1" rel="stylesheet">
+<link rel="icon" href="/desk2/dual-core.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" sizes="180x180" href="/desk2/apple-touch-icon.png">
+<link rel="stylesheet" href="/desk2/app.css?v=7">
+<link rel="stylesheet" href="/otc/otc.css?v=2">
+</head>
+<body>
+<div id="otc">
+
+  <header class="o-top">
+    <a class="brand" href="/desk" aria-label="The Desk">
+      <img src="/brand/dual-core-mark.svg" alt="" aria-hidden="true" width="34" height="22"><span class="the">THE</span><span class="word">DESK</span><span class="otc">/ OTC</span>
+    </a>
+    <span class="sp"></span>
+    <a class="o-chip" href="/desk/bots">BOTS</a>
+    <button type="button" class="o-chip" id="oWallet">CONNECT</button>
+  </header>
+
+  <div class="o-wrap">
+
+    <div class="o-hero">
+      <h1>Block trades, <b>without moving the pool.</b></h1>
+      <p>Sell a block of any Robinhood Chain token at the price you name. The tokens sit in a <b>non-custodial escrow</b>; the buyer pays and receives them in <b>one atomic transaction</b>. No pool is touched, so there is no slippage and no price impact. Every completed trade pays a <b><span id="oFeePct">0.5</span>% fee that buys and burns NLYRA</b>.</p>
+    </div>
+
+    <div class="o-notlive" id="oNotLive" hidden>The OTC contract is not live on mainnet yet. Offers cannot be created or filled until it is deployed and verified.</div>
+
+    <div class="o-stats" id="oStats">
+      <div class="o-stat"><div class="k">Open offers</div><div class="v" id="sOpen">—</div></div>
+      <div class="o-stat"><div class="k">Traded OTC</div><div class="v" id="sVol">—</div></div>
+      <div class="o-stat"><div class="k">Fees to the burner</div><div class="v" id="sFees">—</div></div>
+      <div class="o-stat"><div class="k">NLYRA burned by OTC</div><div class="v" id="sBurn">—</div></div>
+    </div>
+
+    <div class="o-layout">
+      <div>
+        <div class="o-tabs" role="tablist">
+          <button type="button" class="o-tab" role="tab" aria-selected="true" data-tab="open">Open offers<span class="n" id="nOpen"></span></button>
+          <button type="button" class="o-tab" role="tab" aria-selected="false" data-tab="mine">My offers<span class="n" id="nMine"></span></button>
+          <button type="button" class="o-tab" role="tab" aria-selected="false" data-tab="done">Filled &amp; closed<span class="n" id="nDone"></span></button>
+        </div>
+        <div class="o-sec">
+          <div class="o-grid" id="oList"></div>
+          <div class="o-empty" id="oEmpty" hidden>No offers here yet.</div>
+        </div>
+      </div>
+
+      <aside class="o-side">
+        <div class="o-sec">
+          <h2>Create an offer <small>seller escrows · buyer pays · atomic</small></h2>
+          <form class="o-form" id="oForm" autocomplete="off">
+            <div class="o-field">
+              <label>I want to</label>
+              <div class="o-quotes" id="fMode">
+                <button type="button" data-m="sell" aria-pressed="true">Sell a token</button>
+                <button type="button" data-m="buy" aria-pressed="false">Buy NLYRA</button>
+              </div>
+            </div>
+            <div class="o-field" id="fTokenRow">
+              <label for="fToken">Token to sell (contract address)</label>
+              <input id="fToken" placeholder="0x…" spellcheck="false">
+              <div class="hint" id="fTokenHint">Paste the contract. NERON checks it and shows the pool price.</div>
+              <div class="o-tok" id="fTokBox" hidden style="margin-top:8px"></div>
+            </div>
+            <div class="o-field">
+              <label id="lQuotes">Paid in</label>
+              <div class="o-quotes" id="fQuotes">
+                <button type="button" data-q="ETH" aria-pressed="true">ETH</button>
+                <button type="button" data-q="USDG" aria-pressed="false">USDG</button>
+                <button type="button" data-q="NLYRA" aria-pressed="false">NLYRA</button>
+              </div>
+            </div>
+            <div class="o-field" id="fPayRow" hidden>
+              <label>Pay with (goes into escrow now)</label>
+              <div class="o-quotes" id="fPays">
+                <button type="button" data-p="USDG" aria-pressed="true">USDG</button>
+                <button type="button" data-p="WETH" aria-pressed="false">ETH <small style="font-weight:500;opacity:.7">(wrapped for you)</small></button>
+                <button type="button" data-p="NLYRA" aria-pressed="false">NLYRA</button>
+              </div>
+              <div class="hint" id="fPayHint"></div>
+            </div>
+            <div class="o-field">
+              <label for="fAmount" id="lAmount">Amount to sell</label>
+              <input id="fAmount" inputmode="decimal" placeholder="0.0">
+              <div class="hint" id="fAmountHint"></div>
+            </div>
+            <div class="o-2">
+              <div class="o-field" id="fPriceRow">
+                <label for="fPrice">Price per token</label>
+                <input id="fPrice" inputmode="decimal" placeholder="0.0">
+                <div class="hint" id="fPriceHint"></div>
+              </div>
+              <div class="o-field">
+                <label for="fTotal" id="lTotal">Total ask</label>
+                <input id="fTotal" inputmode="decimal" placeholder="0.0">
+                <div class="hint" id="fTotalHint"></div>
+              </div>
+            </div>
+            <div class="o-2">
+              <div class="o-field">
+                <label for="fMin">Min. partial fill</label>
+                <select id="fMin">
+                  <option value="100">All or nothing</option>
+                  <option value="50">Half or more</option>
+                  <option value="25">A quarter or more</option>
+                  <option value="10" selected>10% or more</option>
+                  <option value="0">Any size</option>
+                </select>
+              </div>
+              <div class="o-field">
+                <label for="fExp">Expires in</label>
+                <select id="fExp">
+                  <option value="3600">1 hour</option>
+                  <option value="21600">6 hours</option>
+                  <option value="86400" selected>1 day</option>
+                  <option value="604800">7 days</option>
+                  <option value="2592000">30 days</option>
+                </select>
+              </div>
+            </div>
+            <div class="o-field">
+              <label for="fTaker">Private buyer (optional)</label>
+              <input id="fTaker" placeholder="0x… only this wallet can fill" spellcheck="false">
+            </div>
+            <div class="o-sum" id="fSum" hidden></div>
+            <div class="o-steps" id="fSteps" hidden>
+              <div class="o-step" id="st0" hidden><span class="n">1</span><span id="st0t">Wrap the ETH you pay into WETH — 1:1, no swap, it stays yours</span></div>
+              <div class="o-step" id="st1"><span class="n">1</span><span id="st1t">Approve exactly the amount you sell — no blanket allowance</span></div>
+              <div class="o-step" id="st2"><span class="n">2</span><span id="st2t">Create the offer — the tokens move into escrow</span></div>
+            </div>
+            <button type="submit" class="o-btn primary" id="fGo" style="height:44px;font-size:13.5px" disabled>Connect a wallet</button>
+            <div class="hint" style="font-size:11.5px;color:var(--ink3)">You can cancel any time and the tokens come straight back. After expiry anyone can trigger the refund — to you.</div>
+          </form>
+        </div>
+      </aside>
+    </div>
+
+    <div class="o-sec" style="margin-top:26px">
+      <h2>How it works</h2>
+      <div class="o-how">
+        <div><b>1 · Escrow</b>The seller deposits the tokens in the OTC contract and names a price in ETH, USDG or NLYRA, with an expiry. Partial fills are allowed above the minimum the seller chose. A <b>bid</b> is the mirror image: you escrow USDG, WETH or NLYRA and name the amount of NLYRA (or USDG, or ETH) you want for it.</div>
+        <div><b>2 · Atomic fill</b>A buyer pays the ask. In the same transaction the tokens leave the escrow to the buyer and the payment reaches the seller. Nobody holds anyone's money in between.</div>
+        <div><b>3 · Burn</b>0.5% of the payment goes to the NLYRA buyback burner: ETH is forwarded on the spot, NLYRA is burned directly, USDG is swapped to ETH for the burner. The other 99.5% is the seller's.</div>
+      </div>
+    </div>
+
+    <div class="o-sec">
+      <h2>Before you fill</h2>
+      <div class="o-how">
+        <div><b>Read the verdict</b>Every offer shows NERON's verdict for the token. A token in escrow can still be a honeypot or carry a transfer tax; the escrow does not make a bad token good.</div>
+        <div><b>Compare with the pool</b>The card shows how far the offer sits from the live pool price. A block above pool price is not a bargain; a block below it is why OTC exists.</div>
+        <div><b>Taxed tokens</b>If the token charges a fee on transfer, what arrives in your wallet is what the token lets through. The seller was escrowed at what actually arrived, too.</div>
+      </div>
+    </div>
+
+    <div class="o-foot">
+      <span id="oContractLink">Contract: not deployed yet</span>
+      <span>Non-custodial · no admin withdraw · fee capped at 1% by code</span>
+      <a href="/desk">The Desk</a>
+      <a href="/docs">Docs</a>
+    </div>
+  </div>
+</div>
+<div class="o-toasts" id="oToasts"></div>
+<script src="/otc/otc.js?v=6"></script>
+</body>
+</html>

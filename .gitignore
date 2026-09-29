@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+
+# Foundry build output
+staking-v2/out/
+staking-v2/out-dev/
+staking-v2/cache/
+staking-v2/cache-dev/
+staking-v2/broadcast/
+
+# Local secrets and scratch
+.env
+.env.*
+NOTE.json
+run/

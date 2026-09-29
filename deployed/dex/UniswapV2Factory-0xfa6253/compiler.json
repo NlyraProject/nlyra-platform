@@ -1,0 +1,25 @@
+{
+  "compiler": "v0.5.16+commit.9c3226ce",
+  "language": "solidity",
+  "contractName": "UniswapV2Factory",
+  "mainFile": "UniswapV2Factory.sol",
+  "settings": {
+    "libraries": {},
+    "optimizer": {
+      "enabled": true,
+      "runs": 999999
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    }
+  },
+  "license": "none",
+  "constructorArgs": "0x000000000000000000000000e30647793192d15bfa6e53ae8651368d332fe04c"
+}

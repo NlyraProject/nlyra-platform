@@ -1,0 +1,30 @@
+{
+  "compiler": "v0.8.28+commit.7893614a",
+  "language": "solidity",
+  "contractName": "PoseidonT3",
+  "mainFile": "poseidon-solidity/PoseidonT3.sol",
+  "settings": {
+    "libraries": {},
+    "metadata": {
+      "appendCBOR": false,
+      "bytecodeHash": "none"
+    },
+    "optimizer": {
+      "enabled": true,
+      "runs": 10000
+    },
+    "outputSelection": {
+      "*": {
+        "": [
+          "*"
+        ],
+        "*": [
+          "*"
+        ]
+      }
+    },
+    "viaIR": true
+  },
+  "license": "mit",
+  "constructorArgs": null
+}
