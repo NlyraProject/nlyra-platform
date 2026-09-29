@@ -1,11 +1,26 @@
-# NLYRA Real Yield Staking v2: contracts, PRE-LAUNCH (not deployed yet)
+# NLYRA Real Yield Staking v2
+
+**Deployed on Robinhood Chain (chainId 4663) on Sept 29, 2026 — closed beta.** Source verified (exact match) on Sourcify and Blockscout.
+
+| Contract | Address |
+|---|---|
+| `RealYieldStaking` | [`0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8`](https://robinhoodchain.blockscout.com/address/0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8) |
+| `NlyraFeeSplitter` (created by the staking constructor) | [`0x8300Ef5cC02cAb1D141dBE1c0B33d8Ac115F2D48`](https://robinhoodchain.blockscout.com/address/0x8300Ef5cC02cAb1D141dBE1c0B33d8Ac115F2D48) |
+| `PositionMarket` | [`0x3BcA70536aC7FfB44023e971d204dAb7c23E95D7`](https://robinhoodchain.blockscout.com/address/0x3BcA70536aC7FfB44023e971d204dAb7c23E95D7) |
+
+- Owner: the NLYRA treasury `0xe30647793192D15BFA6E53aE8651368d332fe04C`. Constructor args: `SPLIT_BPS = 5000`, `MIN_HARVEST_INTERVAL = 86400`.
+- Deploy txs: staking `0xe3838ad2813d09497bf1a11d6e83abe5814dd1ba99deb167538ef7efd677efb2` (block 75,661,721), market `0x30d2e3f19ddbe5172e0f38b2c21af507abdf0cb7f1f8fb4d19cadcdf241b3e20` (block 75,661,770).
+- Pons `feeRedirects(NLYRA)` points to the splitter since Sept 29, 2026; the treasury can point it back at any time.
+- The files in `src/` are byte-for-byte the verified sources (line endings aside).
+- External audit: in progress.
+
+## Development history
 
 Written on Sept 27, 2026 and revised to address the 8 findings of the internal audit ([`AUDIT.md`](AUDIT.md)); on Sept 28, 2026
 it was revised again for the 7 findings of round 2 ([`AUDIT-2.md`](AUDIT-2.md)) plus the new tiers we decided on. Also on Sept 28 (round 3)
 we added **lock transfers between wallets** and the **lock market** (`PositionMarket`), and the owner
 became the treasury. What changed in each round: [`CHANGES.md`](CHANGES.md). Tested on a fork of Robinhood Chain (4663), pinned block **74,478,703** (`ForkPin.BLOCK` in
-`test/ForkBase.sol`), through a Robinhood Chain RPC set in `RH_RPC` (see [Reproducing the tests](#reproducing-the-tests)). **Nothing has been deployed and no real
-transaction has been sent.**
+`test/ForkBase.sol`), through a Robinhood Chain RPC set in `RH_RPC` (see [Reproducing the tests](#reproducing-the-tests)).
 
 ## What's here
 
@@ -21,7 +36,7 @@ transaction has been sent.**
 | `test/audit/v_*.t.sol` | round 1 PoCs turned into regression tests (the attack no longer works) |
 | `test/r3/` | round 3: transfers (`r3_transfer_local`), market (`r3_market_local`) and both on the fork with the real fee (`r3_fork`) |
 | `test/audit2/` | round 2: `v_*` PoCs turned into regression tests, local stateful fuzzing with an exact model (`inv2_stateful_local`), differential model (`diff_model_r2`), time edge cases, tranche engine, tokens, owner/deploy |
-| `script/Deploy.s.sol` | deploy script: **only run in simulation** (without `--broadcast`) |
+| `script/Deploy.s.sol` | deploy script (simulation + post-deploy checks); the mainnet deploy used the same constructor arguments |
 
 Not included in this repository: snapshots of the code as audited in round 1 (before the fixes), in round 2 (before the
 [`AUDIT-2.md`](AUDIT-2.md) fixes) and before round 3 (without transfers or the market); the original PoCs of each round as they ran

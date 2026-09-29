@@ -92,7 +92,7 @@ USDG (`0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168`) is a first-class quote asset
 | SendTo v2 | Buy paying with USDG and deliver the output to another wallet | [`0x0eF655f16345afb66b42d4e65B71a16052d1Ddc0`](https://robinhoodchain.blockscout.com/address/0x0eF655f16345afb66b42d4e65B71a16052d1Ddc0) |
 | Launch Factory v4 | Tokens can launch paired with USDG | [`0x4e4AD39E1A38104F8f74C3aF8d3F8c8E27f8836f`](https://robinhoodchain.blockscout.com/address/0x4e4AD39E1A38104F8f74C3aF8d3F8c8E27f8836f) |
 | Bounty Escrow | Community bounties escrowed in USDG | [`0xf01a4bD90aeF8dD75FCb1EA6a3865Ac4b72DFF2c`](https://robinhoodchain.blockscout.com/address/0xf01a4bD90aeF8dD75FCb1EA6a3865Ac4b72DFF2c) |
-| Real Yield Staking v2 | `ALL_USDG` claim mode: rewards paid in USDG through the WETH/USDG 0.01% pool | [`staking-v2/`](staking-v2/) (**pre-launch**) |
+| Real Yield Staking v2 | `ALL_USDG` claim mode: rewards paid in USDG through the WETH/USDG 0.01% pool | [`staking-v2/`](staking-v2/) (**live, closed beta**) |
 | Risk layer | The sell test also runs on USDG pools | hosted service |
 
 ## Built during the Buildathon (Sep 13 – Oct 4)
@@ -104,7 +104,7 @@ USDG (`0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168`) is a first-class quote asset
 | Sep 20, 12:24 | **Sniper v2** `0x6B30B094…C84c` (after the security review of v1) | [`0xfd533496…76f44`](https://robinhoodchain.blockscout.com/tx/0xfd5334968ce9dfb0ce965e56cbba619cbb253e20e1e3aaa398e1ca6838776f44) |
 | Sep 20, 15:38 | **SendTo v2** `0x0eF655f1…Ddc0` | [`0x14160bd0…7ec59`](https://robinhoodchain.blockscout.com/tx/0x14160bd00fe53c5cfd9e0486f3b00888c0665c1b2c2844eb5c93340b8d07ec59) |
 | Sep 26 – 27 | **Risk layer**: sell test, CAN'T SELL gate, bot buy-brake, Risk Level v1, `/api/risk` | hosted service ([example](#risk-layer-hosted-service-closed-source)) |
-| Sep 27 – 28 | **Real Yield Staking v2**: contracts, 211 fork tests, two internal audit rounds | [`staking-v2/`](staking-v2/) (**pre-launch**, not deployed) |
+| Sep 27 – 28 | **Real Yield Staking v2**: contracts, 211 fork tests, two internal audit rounds | [`staking-v2/`](staking-v2/) (deployed Sep 29, closed beta) |
 | Sep 28 | Staking v2 **position transfers** and the **Position Market** | [`staking-v2/src/PositionMarket.sol`](staking-v2/src/PositionMarket.sol), [`staking-v2/test/r3/`](staking-v2/test/r3/) |
 
 Spot Grid v4 (Sep 11, [`0x021aee16…3308d`](https://robinhoodchain.blockscout.com/tx/0x021aee16b556303b2cb17cca57ec1cd8afff94399511f1e9ec5220f54c73308d)) and Infinity Grid v4 (Sep 12, [`0xaa42408c…4c9cb`](https://robinhoodchain.blockscout.com/tx/0xaa42408ccf12911d8487d081638241c7de613d8e50a324790d604e311534c9cb)) predate the Buildathon window.
@@ -156,7 +156,7 @@ flowchart LR
 | [`launchpad/`](launchpad/) | Architect Launch: tokens born with a pool, LP locked forever, buyback-and-burn treasury | Live |
 | [`dex/`](dex/) | Uniswap V2 and V3 deployed verbatim, plus the single-file swap/liquidity frontend | Live |
 | [`shield/`](shield/) | Lyra Shield: private NLYRA transfers on 0xbow Privacy Pools (zk proofs built in the browser) | Live |
-| [`staking-v2/`](staking-v2/) | Real Yield Staking v2 (Foundry): 50% of NLYRA creator fees streamed to stakers. 211 mainnet-fork tests, two internal audit reports | **Pre-launch** |
+| [`staking-v2/`](staking-v2/) | Real Yield Staking v2 (Foundry): 50% of NLYRA creator fees streamed to stakers. 211 mainnet-fork tests, two internal audit reports. Deployed at `0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8` | **Live (closed beta)** |
 | [`newstake/`](newstake/) | The staking v2 page ([nlyra.xyz/newstake](https://nlyra.xyz/newstake)) | Preview |
 | [`desk/`](desk/) | What The Desk is and which contracts it uses (the service itself is closed source) | Live |
 | [`wiki/`](wiki/) | "Bots, from zero", an illustrated guide ([nlyra.xyz/wiki/bots](https://nlyra.xyz/wiki/bots)) | Live |

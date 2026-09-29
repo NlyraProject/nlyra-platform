@@ -1,6 +1,6 @@
 # Real Yield Staking v2: public preview page
 
-**Live preview at [nlyra.xyz/newstake](https://nlyra.xyz/newstake).** This is the static page for [Real Yield Staking v2](../staking-v2/), which is **pre-launch**: its contracts are written, tested and internally audited, but not deployed.
+**Live preview at [nlyra.xyz/newstake](https://nlyra.xyz/newstake).** This is the static page for [Real Yield Staking v2](../staking-v2/), which was deployed on Sept 29, 2026 and is in closed beta (addresses in [`staking-v2/README.md`](../staking-v2/README.md)).
 
 The page explains the model (50% of NLYRA's creator trading fees streamed to stakers, no inflation, no printed rewards). It also shows live market data and a yield estimator. Until v2 is deployed, the numbers are a simulation at the last-7-day fee rate, and the page labels them as such. The current staking contract (StakingRewards, [`0x5e63…a3ef`](https://robinhoodchain.blockscout.com/address/0x5e63228add4390f77BbcDb364F6A7b42bA7Aa3ef)) stays live at [nlyra.xyz/staking](https://nlyra.xyz/staking).
 
