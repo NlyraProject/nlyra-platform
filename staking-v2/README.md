@@ -30,6 +30,7 @@ became the treasury. What changed in each round: [`CHANGES.md`](CHANGES.md). Tes
 | `src/NlyraFeeSplitter.sol` | target of NLYRA's `feeRedirect` on Pons: collects fees and splits them 50/50 staking/treasury |
 | `src/PositionMarket.sol` | round 3: lock market in native ETH (no owner, fixed 0.5% fee to the splitter) |
 | `src/interfaces/External.sol` | minimal interfaces (PonsLaunchLocker, v3 pool, WETH) |
+| [`CONTRACT-NOTES.md`](CONTRACT-NOTES.md) | the explanatory comments in `src/` (written in Spanish), translated to English in code order with line numbers |
 | `test/ForkBase.sol` | shared base for the fork tests (setUp, helpers, solvency invariant) |
 | `test/RealYieldStaking.fork.t.sol` | main suite against the real locker, pool and tokens |
 | `test/StakingInvariant.t.sol` | solvency invariants with a handler (sequence fuzzing) |
