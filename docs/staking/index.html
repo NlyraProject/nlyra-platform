@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>NLYRA Real Yield</title>
+<link rel="icon" href="dual-core.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
+<style>
+:root{
+  --neron:#8B7CF6; --lyra:#E84FE0;
+  --grad:linear-gradient(100deg,#8B7CF6 0%,#B466EE 48%,#E84FE0 100%);
+  --page:#070B18; --card:#0F1528; --nested:#141B33; --nested2:#1A2240;
+  --ink:#E9EEF8; --ink2:#9AA7BD; --ink3:#5D6A82;
+  --line:rgba(154,167,189,.12); --line2:rgba(154,167,189,.22);
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171;
+  --display:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;overflow-x:hidden}
+body{margin:0;background:var(--page);color:var(--ink);font:400 15px/1.55 var(--body);-webkit-font-smoothing:antialiased;overflow-x:hidden;
+  background-image:radial-gradient(900px 500px at 85% -10%,rgba(139,124,246,.14),transparent 60%),radial-gradient(700px 420px at -10% 20%,rgba(232,79,224,.08),transparent 60%)}
+a{color:var(--ink);text-decoration-color:rgba(139,124,246,.6);text-underline-offset:3px}
+h1,h2{font-family:var(--display);font-weight:600;letter-spacing:-.025em;margin:0;line-height:1.08;text-wrap:balance}
+p{margin:0}
+button{font-family:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding-inline:16px}
+.k{color:var(--ink3);font:500 11.5px var(--body);text-transform:uppercase;letter-spacing:.08em}
+.muted{color:var(--ink3)}
+.center{text-align:center}
+.fine{font-size:12.5px;color:var(--ink3);margin-top:12px}
+.exit-how{margin-top:16px;padding:14px 16px;border:1px solid var(--line);border-radius:9px;background:var(--nested)}
+.exit-how .lbl{margin:0 0 8px}
+.exit-how ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.exit-how li{font-size:13px;line-height:1.45;color:var(--ink2)}
+.exit-how b{color:var(--ink)}
+.accent{color:var(--lyra)!important}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+
+/* top */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:rgba(7,11,24,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.top-in{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 17px var(--display)}
+.brand em{font-style:normal;color:var(--lyra)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 20px;border-radius:9px;border:0;font:500 15px var(--body);cursor:pointer;white-space:nowrap;transition:transform .15s var(--ease),box-shadow .2s,background .2s,opacity .2s}
+.btn:active{transform:translateY(1px)}
+.btn[disabled]{opacity:.4;cursor:not-allowed}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 10px 30px -12px rgba(232,79,224,.7)}
+.btn-ghost{background:var(--nested);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+.btn-ghost:not([disabled]):hover{box-shadow:inset 0 0 0 1px var(--neron)}
+.btn-wallet{background:var(--nested);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2);height:40px}
+.btn-wallet .dot{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
+.btn-wallet.on .dot{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.btn-xl{height:52px;font-size:16px;width:100%;margin-top:18px}
+.btn-sm{height:34px;padding:0 12px;font-size:13px}
+.link{background:none;border:0;color:var(--neron);font:600 12px var(--body);cursor:pointer;letter-spacing:.04em}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;align-items:center;padding-block:44px 28px}
+@media (max-width:900px){.hero{grid-template-columns:1fr;padding-block:28px 20px}}
+.pill-live{display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 12px;border-radius:999px;background:var(--nested);box-shadow:inset 0 0 0 1px var(--line2);font:500 12.5px var(--body);color:var(--ink2)}
+.pill-live i{width:7px;height:7px;border-radius:50%;background:var(--ink3)}
+.pill-live.on{color:var(--ok)} .pill-live.on i{background:var(--ok);animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}70%{box-shadow:0 0 0 8px rgba(74,222,128,0)}100%{box-shadow:0 0 0 0 rgba(74,222,128,0)}}
+.hero h1{font-size:clamp(32px,5vw,50px);margin-top:16px}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{color:var(--ink2);font-size:17px;max-width:52ch;margin-top:14px}
+.apr-hero{display:flex;align-items:baseline;gap:12px;margin-top:22px;flex-wrap:wrap}
+.apr-hero b{font:700 clamp(40px,6vw,60px)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.apr-note{margin:6px 0 0;font-size:13px;color:var(--ink3);max-width:520px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
+@media (max-width:560px){.hero-stats{grid-template-columns:1fr 1fr}.hero-stats>div:last-child{grid-column:1/-1}}
+.hero-stats>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:3px;min-width:0}
+.hero-stats b{font:600 19px var(--display);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.hero-stats small{color:var(--ink3);font-size:12px}
+
+/* flow */
+.flow{padding:18px 18px 16px}
+.flow-svg{width:100%;height:auto;display:block}
+.wire{fill:none;stroke:rgba(154,167,189,.25);stroke-width:2;stroke-dasharray:4 6}
+.spark{fill:var(--neron);filter:drop-shadow(0 0 5px rgba(139,124,246,.9))}
+.spark.s-l{fill:var(--lyra);filter:drop-shadow(0 0 6px rgba(232,79,224,.9))}
+.spark.s-d{fill:#5D6A82;filter:none}
+.node rect{fill:var(--nested);stroke:var(--line2)}
+.node text{fill:var(--ink2);font:500 12.5px var(--body);text-anchor:middle}
+.node.hot rect{stroke:rgba(139,124,246,.6)}
+.node.you rect{fill:rgba(232,79,224,.1);stroke:rgba(232,79,224,.6)}
+.node .big{font:700 20px var(--display);fill:var(--lyra)}
+.node .big.dim{fill:var(--ink2)}
+.flow-note{font-size:13px;color:var(--ink2);text-align:center;margin-top:8px}
+.flow-note b{color:var(--ink);font-weight:500}
+
+/* steps */
+.steps{list-style:none;margin:8px 0 28px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+@media (max-width:760px){.steps{grid-template-columns:1fr}}
+.steps li{display:flex;gap:14px;align-items:flex-start;padding:16px;border-radius:12px;background:linear-gradient(180deg,rgba(20,27,51,.7),rgba(15,21,40,.4));border:1px solid var(--line)}
+.steps li>span{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font:600 14px var(--display);color:var(--neron);box-shadow:inset 0 0 0 1.5px rgba(139,124,246,.5)}
+.steps li:last-child>span{color:var(--lyra);box-shadow:inset 0 0 0 1.5px rgba(232,79,224,.5)}
+.steps b{font:600 15px var(--display)}
+.steps p{color:var(--ink2);font-size:13.5px;margin-top:2px}
+
+/* app */
+.app{padding:0;overflow:hidden}
+.tabs{display:flex;gap:4px;padding:8px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:1 0 auto;height:42px;padding:0 16px;border:0;border-radius:9px;background:transparent;color:var(--ink2);font:500 14.5px var(--body);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.tabs button.on{background:var(--nested);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2)}
+.tabs em{font-style:normal;font:600 11px var(--body);background:var(--lyra);color:#fff;border-radius:999px;padding:1px 7px}
+.pane{display:none;padding:22px}
+.pane.on{display:block;animation:fade .25s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.cols{display:grid;grid-template-columns:1.1fr .9fr;gap:22px}
+@media (max-width:860px){.cols{grid-template-columns:1fr}}
+.col{min-width:0}
+.col.est,.cols>.col+.col{background:var(--nested);border-radius:12px;padding:18px}
+.lbl{font:600 14px var(--display);color:var(--ink);margin-bottom:10px}
+.lbl-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.bal{font-size:13px;color:var(--ink3)} .bal b{color:var(--ink2);font-weight:500}
+
+.amt{display:flex;align-items:center;gap:12px;background:var(--nested);border-radius:12px;padding:0 16px;box-shadow:inset 0 0 0 1px var(--line2);transition:box-shadow .2s}
+.amt:focus-within{box-shadow:inset 0 0 0 1.5px var(--neron)}
+.amt input{flex:1;min-width:0;background:none;border:0;color:var(--ink);font:600 28px var(--display);height:64px;outline:none;font-variant-numeric:tabular-nums}
+.amt span{color:var(--ink3);font-size:13px}
+.amt.sm input{font-size:17px;height:42px}
+.amt.sm{padding:0 12px;border-radius:9px}
+.pcts{display:flex;gap:6px;margin-top:8px}
+.pcts button{flex:1;height:32px;border:0;border-radius:7px;background:var(--nested);color:var(--ink2);font:500 12.5px var(--body);cursor:pointer}
+.pcts button:hover{color:var(--ink)}
+
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.plan{position:relative;text-align:left;border:0;border-radius:12px;background:var(--nested);box-shadow:inset 0 0 0 1px var(--line);padding:14px;cursor:pointer;display:grid;gap:4px;color:var(--ink);transition:box-shadow .2s,transform .15s}
+.plan:hover{transform:translateY(-1px)}
+.plan.on{box-shadow:inset 0 0 0 2px var(--neron);background:rgba(139,124,246,.08)}
+.plan.best.on{box-shadow:inset 0 0 0 2px var(--lyra);background:rgba(232,79,224,.07)}
+.pn{font:500 13px var(--body);color:var(--ink2)}
+.plan .apr{font:700 24px var(--display);font-variant-numeric:tabular-nums}
+.plan small{color:var(--ink3);font-size:12px}
+.mult{display:block;height:5px;border-radius:5px;background:rgba(154,167,189,.12);overflow:hidden;margin:4px 0 2px}
+.mult i{display:block;height:100%;background:var(--neron);border-radius:5px}
+.plan.best .mult i{background:var(--grad)}
+.tagb{position:absolute;top:10px;right:10px;font:600 10.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--grad);padding:2px 8px;border-radius:999px}
+
+.est-big{display:flex;align-items:baseline;gap:8px}
+.est-big b{font:700 40px var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.est-big span{color:var(--ink3)}
+.est-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.est-row>div{display:grid;gap:2px}
+.est-row b{font:600 16px var(--display);font-variant-numeric:tabular-nums}
+.chart{width:100%;height:170px;display:block;margin-top:8px;overflow:visible}
+#chart-hist{height:140px}
+.chart text{fill:var(--ink3);font:500 10.5px var(--body)}
+.chart .val{fill:var(--ink);font:600 11px var(--body)}
+
+.unstake{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:22px;padding:16px 18px;border-radius:12px;box-shadow:inset 0 0 0 1px var(--line)}
+.un-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.un-actions .amt{width:190px}
+
+/* earnings */
+.ticker{display:flex;align-items:center;gap:12px}
+.ticker b{font:700 clamp(34px,5vw,46px)/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.live-dot{width:9px;height:9px;border-radius:50%;background:var(--ok);animation:pulse 1.8s infinite}
+.toks{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.toks>div{display:flex;align-items:center;gap:8px;background:var(--nested);border-radius:9px;padding:8px 12px;font-variant-numeric:tabular-nums}
+.toks img{border-radius:50%}
+.toks small{color:var(--ink3)}
+.coins{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:520px){.coins{grid-template-columns:1fr 1fr}}
+.coins button{border:0;border-radius:12px;background:var(--nested);box-shadow:inset 0 0 0 1px var(--line);padding:12px 8px;cursor:pointer;display:grid;justify-items:center;gap:4px;color:var(--ink)}
+.coins button img{border-radius:50%}
+.coins button b{font:600 14px var(--display)}
+.coins button small{color:var(--ink3);font-size:11.5px}
+.coins button.on{box-shadow:inset 0 0 0 2px var(--neron);background:rgba(139,124,246,.08)}
+.duo{display:flex}.duo img+img{margin-left:-6px}
+.recv{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:14px;padding:14px 16px;background:var(--nested);border-radius:12px;flex-wrap:wrap}
+.recv b{font:600 18px var(--display);font-variant-numeric:tabular-nums}
+.more{margin-top:10px;color:var(--ink2);font-size:13px}
+.more summary{cursor:pointer}
+.more input{width:100%;margin-top:8px}
+input{background:var(--nested);border:0;box-shadow:inset 0 0 0 1px var(--line2);border-radius:9px;color:var(--ink);padding:10px 12px;font:500 14px var(--body);min-width:0;outline:none}
+input:focus{box-shadow:inset 0 0 0 1.5px var(--neron)}
+.btn-row{display:grid;grid-template-columns:1.3fr 1fr;gap:10px}
+.btn-row .btn-xl{margin-top:16px}
+
+.donut-wrap{position:relative;width:180px;height:180px;margin:4px auto 10px}
+.donut{width:100%;height:100%;transform:rotate(-90deg)}
+.donut-c{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.donut-c b{font:700 26px var(--display);font-variant-numeric:tabular-nums}
+.donut-c span{color:var(--ink3);font-size:12px}
+.kv{display:grid;grid-template-columns:1fr auto;gap:9px 16px;margin-top:8px}
+.kv span{color:var(--ink2);font-size:14px}.kv b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+
+/* locks */
+.locks{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.empty{color:var(--ink3);padding:30px 0;text-align:center;grid-column:1/-1}
+.lock{background:var(--nested);border-radius:12px;padding:16px;display:grid;gap:10px;box-shadow:inset 0 0 0 1px var(--line)}
+.lock-h{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lock-h b{font:600 22px var(--display);font-variant-numeric:tabular-nums}
+.chip{display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;font:600 11.5px var(--body);background:rgba(139,124,246,.14);color:var(--neron)}
+.chip.l30{background:rgba(232,79,224,.14);color:var(--lyra)}
+.chip.done{background:rgba(74,222,128,.12);color:var(--ok)}
+.bar{height:8px;border-radius:8px;background:rgba(154,167,189,.12);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--grad);border-radius:8px}
+.lock-m{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;gap:8px;flex-wrap:wrap}
+.lock-a{display:flex;gap:6px;flex-wrap:wrap}
+.lock-a select{background:var(--card);color:var(--ink);border:0;box-shadow:inset 0 0 0 1px var(--line2);border-radius:8px;height:34px;padding:0 8px;font:500 13px var(--body)}
+.lock-mv{display:flex;gap:6px}
+.lock-mv input{flex:1;height:34px;padding:0 10px;font-size:13px}
+.offered{font-size:12.5px;color:var(--warn)}
+/* permissionless daily collection: shown only when it is due */
+#b-harvest{margin-top:10px;justify-self:start;align-self:start}
+/* lock slots + tiny (probable junk) locks · Coinsult RYSM1 */
+.slots{grid-column:1/-1;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;color:var(--ink2);font-size:13px}
+.slots b{color:var(--ink);font-variant-numeric:tabular-nums}
+.slots.near b{color:var(--warn)}
+.slots span{flex-basis:100%;color:var(--warn);font-size:12.5px}
+.junk{grid-column:1/-1;background:var(--nested);border-radius:12px;padding:16px;display:grid;gap:10px;box-shadow:inset 0 0 0 1px rgba(251,191,36,.28)}
+.junk-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.junk-h b{font:600 16px var(--display);color:var(--warn)}
+.junk-h small{font:500 12.5px var(--body);color:var(--ink3)}
+.junk p{margin:0;color:var(--ink2);font-size:13px;line-height:1.5;max-width:70ch}
+.junk p.junk-w{color:var(--warn)}
+.junk-r{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding-top:10px;border-top:1px solid var(--line);font-size:13px;color:var(--ink2)}
+.junk-r b{color:var(--ink);font-variant-numeric:tabular-nums}
+.junk-r .lock-mv{flex:1 1 260px;max-width:420px}
+
+/* move */
+.move-ill{display:flex;align-items:center;justify-content:center;gap:12px;margin:6px 0 16px;flex-wrap:wrap}
+.mv{display:grid;justify-items:center;gap:2px;background:var(--nested);border-radius:12px;padding:14px 22px;min-width:150px}
+.mv-n{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 15px var(--display);color:#fff;background:var(--neron);margin-bottom:4px}
+.mv-n.b{background:var(--lyra)}
+.mv small{color:var(--ink3)}
+.mv-arrow svg{width:80px;height:20px;fill:none;stroke:var(--ink3);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.move-ill+p{max-width:60ch;margin:0 auto 20px;font-size:14px}
+.row-in{display:flex;gap:8px}.row-in input{flex:1}
+.rc{display:grid;gap:8px;margin-top:12px}
+.rc>div{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--card);border-radius:9px;padding:10px 12px;flex-wrap:wrap;font-size:14px}
+
+/* log/foot */
+.log-card{padding:18px;margin-top:16px}
+.log{display:grid;gap:6px;font-size:13.5px}
+.log div{background:var(--nested);border-radius:8px;padding:8px 12px}
+.t-ok{color:var(--ok)} .t-bad{color:var(--bad)} .t-warn{color:var(--warn)}
+.foot{padding-block:26px 40px;text-align:center;font-size:13px;color:var(--ink2);display:grid;gap:6px}
+
+/* toast */
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--nested2);box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 0 0 1px var(--line2);border-radius:12px;padding:12px 16px;font-size:14px;z-index:50;max-width:calc(100% - 32px)}
+
+/* ===== motion ===== */
+#fx{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.grad{background-size:200% 100%;animation:gradmove 6s ease-in-out infinite}
+@keyframes gradmove{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.apr-hero b{background:var(--grad);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:gradmove 5s ease-in-out infinite;filter:drop-shadow(0 6px 26px rgba(232,79,224,.35))}
+.orb{position:fixed;border-radius:50%;filter:blur(60px);opacity:.35;pointer-events:none;z-index:-1;animation:drift 18s ease-in-out infinite}
+.orb.a{width:420px;height:420px;background:#8B7CF6;top:40px;right:-120px}
+.orb.b{width:340px;height:340px;background:#E84FE0;top:380px;left:-160px;animation-delay:-6s;opacity:.22}
+@keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-40px,30px) scale(1.08)}66%{transform:translate(30px,-20px) scale(.95)}}
+.hero-stats>div,.steps li,.plan,.coins button,.lock,.card{transition:transform .25s var(--ease),box-shadow .25s,border-color .25s}
+.hero-stats>div:hover,.steps li:hover{transform:translateY(-3px);border-color:rgba(139,124,246,.4);box-shadow:0 14px 40px -18px rgba(139,124,246,.6)}
+.plan.on{animation:pop .35s var(--ease)}
+@keyframes pop{0%{transform:scale(.97)}60%{transform:scale(1.02)}100%{transform:scale(1)}}
+.flow{position:relative;overflow:hidden}
+.flow::before{content:"";position:absolute;inset:-1px;border-radius:14px;padding:1px;background:conic-gradient(from var(--ang,0deg),transparent 0 70%,#8B7CF6 80%,#E84FE0 90%,transparent 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:spin 6s linear infinite;pointer-events:none}
+@property --ang{syntax:"<angle>";initial-value:0deg;inherits:false}
+@keyframes spin{to{--ang:360deg}}
+.node.you rect{animation:glow 2.4s ease-in-out infinite}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 0 rgba(232,79,224,0))}50%{filter:drop-shadow(0 0 10px rgba(232,79,224,.55))}}
+.chart rect{transform-box:fill-box;transform-origin:bottom;animation:grow .7s var(--ease) both}
+@keyframes grow{from{transform:scaleY(.05)}to{transform:scaleY(1)}}
+.chart text.val{animation:fadein .6s .35s both}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.donut circle+circle,.donut circle:last-child{transition:stroke-dasharray 1s var(--ease)}
+.bar i{animation:barin 1.1s var(--ease) both}
+@keyframes barin{from{width:0!important}}
+.ticker b{background:linear-gradient(90deg,var(--ink) 0%,var(--ink) 40%,#fff 50%,var(--ink) 60%,var(--ink) 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 3.5s linear infinite}
+@keyframes shine{from{background-position:100% 0}to{background-position:-150% 0}}
+.btn-primary{background-size:200% 100%;animation:gradmove 6s ease-in-out infinite}
+.btn-primary:not([disabled]):hover{transform:translateY(-2px);box-shadow:0 16px 40px -12px rgba(232,79,224,.85)}
+.next{display:inline-flex;align-items:center;gap:8px;margin-top:14px;font-size:13px;color:var(--ink2)}
+.next b{font:600 13px var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.bump{animation:bump .5s var(--ease)}
+@keyframes bump{0%{color:inherit}30%{color:#fff;text-shadow:0 0 14px rgba(232,79,224,.8)}100%{text-shadow:none}}
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:60}
+@media (prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}#fx{display:none}}
+
+/* vault */
+.vault{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;padding:22px;margin-bottom:24px;position:relative;overflow:hidden}
+.vault::after{content:"";position:absolute;right:-80px;top:-80px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(232,79,224,.18),transparent 70%);pointer-events:none}
+@media (max-width:860px){.vault{grid-template-columns:1fr}}
+.v-big{display:flex;align-items:center;gap:12px;margin-top:6px}
+.v-big b{font:700 clamp(38px,6vw,56px)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stream{margin-top:18px}
+.stream-bar{height:12px;border-radius:12px;background:rgba(154,167,189,.12);overflow:hidden;position:relative}
+.stream-bar i{display:block;height:100%;width:0;border-radius:12px;background:var(--grad);background-size:200% 100%;animation:gradmove 4s ease-in-out infinite;transition:width 1.2s var(--ease);position:relative}
+.stream-bar i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.35),transparent);animation:shine2 2.2s linear infinite}
+@keyframes shine2{from{transform:translateX(-100%)}to{transform:translateX(200%)}}
+.stream-m{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:12.5px;color:var(--ink3);flex-wrap:wrap}
+.v-side{display:grid;gap:10px}
+.v-tile{background:var(--nested);border-radius:12px;padding:12px 14px;display:grid;gap:2px}
+.v-tile b{font:600 22px var(--display);font-variant-numeric:tabular-nums}
+.v-tile small{color:var(--ink3);font-size:12px}
+[hidden]{display:none!important}
+.amt input,.amt input:focus{box-shadow:none;border-radius:0;padding:0;background:none}
+.how{margin-top:14px;font-size:12.5px;color:var(--ink2);background:rgba(139,124,246,.06);border-radius:9px;padding:10px 12px;box-shadow:inset 0 0 0 1px rgba(139,124,246,.18)}
+.how b{color:var(--ink);font-weight:500}
+
+img[src*="dual-core"]{border-radius:0!important;object-fit:contain}
+img{-webkit-user-drag:none;user-select:none}
+
+/* ---- next payout ring ---- */
+.next{display:flex;align-items:center;gap:10px}
+.ring{width:34px;height:34px;transform:rotate(-90deg);flex:0 0 auto}
+.ring-bg{fill:none;stroke:rgba(154,167,189,.16);stroke-width:3.5}
+.ring-fg{fill:none;stroke:var(--lyra);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:94.25;stroke-dashoffset:94.25;transition:stroke-dashoffset 1s linear;filter:drop-shadow(0 0 4px rgba(232,79,224,.6))}
+/* ---- dual core engine ---- */
+.core-svg .glow{animation:breathe 4.5s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+.core-svg .glow.g2{animation-delay:-2.2s}
+@keyframes breathe{0%,100%{opacity:.75;transform:scale(.94)}50%{opacity:1;transform:scale(1.06)}}
+.core-svg .ring-o{fill:none;stroke:rgba(154,167,189,.16);stroke-dasharray:2 7}
+.core-svg .elec{fill:var(--neron);filter:drop-shadow(0 0 5px rgba(139,124,246,.95))}
+.core-svg .elec.l{fill:var(--lyra);filter:drop-shadow(0 0 5px rgba(232,79,224,.95))}
+.core-svg .elec.dim{fill:#7d86a8;filter:none}
+.core-svg .core-logo{filter:drop-shadow(0 0 14px rgba(139,124,246,.45))}
+/* ---- fee tank ---- */
+.tank-wrap{margin-top:14px}
+.tank{width:100%;max-width:470px;height:auto;display:block}
+.tank text{font:500 12.5px var(--body);fill:var(--ink2)}
+.tank text.v{font:600 13.5px var(--display);fill:var(--ink)}
+.tank text.dim{fill:var(--ink3)}
+.tank .shell{fill:rgba(20,27,51,.65);stroke:var(--line2);stroke-width:1.5}
+.tank .ghost{fill:rgba(232,79,224,.10);stroke:rgba(232,79,224,.65);stroke-dasharray:5 5}
+.tank .lead{stroke:rgba(154,167,189,.28);stroke-dasharray:2 4}
+.tank .drop{fill:var(--lyra);filter:drop-shadow(0 0 4px rgba(232,79,224,.9))}
+/* ---- trust strip ---- */
+.trust{list-style:none;margin:14px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:8px 14px}
+.trust li{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink2);min-width:0}
+.trust a{color:var(--ink2)}
+.trust svg{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:var(--neron);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:400px){.trust{grid-template-columns:1fr}}
+/* ---- example chip ---- */
+.ex-chip{display:inline-block;margin-left:8px;padding:2px 9px;border-radius:999px;font:500 11.5px var(--body);color:var(--lyra);background:rgba(232,79,224,.1);box-shadow:inset 0 0 0 1px rgba(232,79,224,.35);vertical-align:middle}
+/* ---- share modal ---- */
+.modal{position:fixed;inset:0;z-index:60;display:grid;place-items:center;padding:16px;background:rgba(4,6,14,.72);backdrop-filter:blur(6px)}
+.modal-box{position:relative;width:min(640px,100%);max-height:calc(100dvh - 32px);overflow:auto;background:var(--card);border:1px solid var(--line2);border-radius:14px;padding:18px}
+.modal-box canvas{width:100%;height:auto;display:block;border-radius:9px;margin-top:4px}
+.modal-x{position:absolute;top:8px;right:10px;width:34px;height:34px;border:0;border-radius:9px;background:var(--nested);color:var(--ink);font-size:20px;cursor:pointer}
+.share-a{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.share-a .btn{flex:1 1 150px;text-decoration:none}
+@media (prefers-reduced-motion:reduce){.core-svg .glow{animation:none}.ring-fg{transition:none}}
+</style>
+</head>
+<body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="orb a"></div><div class="orb b"></div>
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="./"><img src="dual-core.svg" alt="" width="30" height="30"><span>NLYRA <em>Real Yield</em></span></a>
+    <button class="btn btn-wallet" id="connect"><span class="dot"></span><span id="connect-t">Connect wallet</span></button>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="pill-live" id="live"><i></i><span>Loading…</span></span>
+      <h1>Stake NLYRA.<br><span class="grad">Earn real ETH</span> from every trade.</h1>
+      <p class="lead">Half of the trading fees NLYRA earns go straight to stakers. Nothing is printed: when people trade, you get paid.</p>
+      <div class="apr-hero">
+        <span class="k">Up to</span>
+        <b id="h-apr">—</b>
+        <span class="k">APR · at the real fee pace</span>
+      </div>
+      <p class="apr-note">Based on the trading fees of the last ~24 h. Each daily payout streams to stakers over 7 days.</p>
+      <div class="next" id="next-pay">
+        <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" class="ring-bg"/><circle cx="18" cy="18" r="15" class="ring-fg" id="next-ring"/></svg>
+        <span>Next payout in <b id="next-t">—</b></span>
+      </div>
+      <div class="hero-stats">
+        <div><span class="k">Total staked</span><b id="g-staked">—</b><small id="g-stakedusd">&nbsp;</small></div>
+        <div><span class="k">Streaming now / day</span><b id="g-daily">—</b><small id="g-dailytok">&nbsp;</small></div>
+        <div><span class="k">Fees paid to stakers</span><b id="g-paid">—</b><small id="g-paidn">&nbsp;</small></div>
+      </div>
+    </div>
+
+    <!-- fee flow: the Dual Core engine -->
+    <div class="flow card" aria-label="How fees flow">
+      <svg viewBox="0 0 360 318" class="flow-svg core-svg" role="img" aria-labelledby="flow-t">
+        <title id="flow-t">Every trade pays a 1% pool fee. Half of it goes to stakers, half to the treasury.</title>
+        <defs>
+          <radialGradient id="glowN"><stop offset="0" stop-color="#8B7CF6" stop-opacity=".55"/><stop offset=".55" stop-color="#8B7CF6" stop-opacity=".16"/><stop offset="1" stop-color="#8B7CF6" stop-opacity="0"/></radialGradient>
+          <radialGradient id="glowL"><stop offset="0" stop-color="#E84FE0" stop-opacity=".5"/><stop offset=".55" stop-color="#E84FE0" stop-opacity=".14"/><stop offset="1" stop-color="#E84FE0" stop-opacity="0"/></radialGradient>
+          <linearGradient id="gN" x1="0" x2="1"><stop offset="0" stop-color="#8B7CF6"/><stop offset="1" stop-color="#E84FE0"/></linearGradient>
+        </defs>
+        <path id="p1" d="M180 44 V92" class="wire"/>
+        <path id="p2" d="M146 214 C128 238 92 236 92 258" class="wire"/>
+        <path id="p3" d="M214 214 C232 238 268 236 268 258" class="wire"/>
+        <g class="node"><rect x="92" y="8" width="176" height="36" rx="10"/><text x="180" y="31">Trades on NLYRA · 1% fee</text></g>
+        <g transform="translate(180 154)">
+          <circle cx="-26" r="92" fill="url(#glowN)" class="glow"/>
+          <circle cx="26" r="92" fill="url(#glowL)" class="glow g2"/>
+          <g class="orbit"><circle r="70" class="ring-o"/><circle r="3.6" cx="70" class="elec"/><circle r="2.6" cx="-70" class="elec dim"/>
+            <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="16s" repeatCount="indefinite"/></g>
+          <g class="orbit"><circle r="54" class="ring-o"/><circle r="3.2" cy="54" class="elec l"/>
+            <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="11s" repeatCount="indefinite"/></g>
+          <image href="dual-core.svg" x="-46" y="-46" width="92" height="92" class="core-logo"/>
+        </g>
+        <circle r="4" class="spark"><animateMotion dur="1.5s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+        <circle r="4" class="spark"><animateMotion dur="1.5s" begin=".75s" repeatCount="indefinite"><mpath href="#p1"/></animateMotion></circle>
+        <circle r="4.5" class="spark s-l"><animateMotion dur="1.9s" begin=".2s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="4.5" class="spark s-l"><animateMotion dur="1.9s" begin="1.15s" repeatCount="indefinite"><mpath href="#p2"/></animateMotion></circle>
+        <circle r="3.5" class="spark s-d"><animateMotion dur="1.9s" begin=".6s" repeatCount="indefinite"><mpath href="#p3"/></animateMotion></circle>
+        <g class="node you"><rect x="20" y="258" width="144" height="54" rx="12"/><text x="92" y="281" class="big">50%</text><text x="92" y="300">to stakers · you</text></g>
+        <g class="node"><rect x="196" y="258" width="144" height="54" rx="12"/><text x="268" y="281" class="big dim">50%</text><text x="268" y="300">to treasury</text></g>
+      </svg>
+      <p class="flow-note">Paid in <b>WETH + NLYRA</b>, streamed over 7 days. You choose to receive <b>ETH, NLYRA or USDG</b>.</p>
+    </div>
+  </section>
+
+  <!-- ================= STEPS ================= -->
+  <ol class="steps">
+    <li><span>1</span><div><b>Stake NLYRA</b><p>Flexible, or lock 7, 14 or 30 days for more weight.</p></div></li>
+    <li><span>2</span><div><b>Fees stream in</b><p>Every day, half of NLYRA's trading fees are shared among stakers.</p></div></li>
+    <li><span>3</span><div><b>Claim your way</b><p>Take it as ETH, NLYRA or USDG — or compound it for a +5% bonus.</p></div></li>
+  </ol>
+
+  <!-- ================= VAULT ================= -->
+  <section class="vault card">
+    <div class="v-main">
+      <p class="k">Fees in the contract, waiting to be paid to stakers</p>
+      <div class="v-big"><b id="v-usd">$0.00</b><span class="live-dot"></span></div>
+      <div class="toks">
+        <div><img src="img/weth.png" alt="" width="22" height="22"><span id="v-weth">0</span><small>WETH</small></div>
+        <div><img src="dual-core.svg" alt="" width="22" height="22"><span id="v-nlyra">0</span><small>NLYRA</small></div>
+      </div>
+      <div class="tank-wrap"><svg id="tank" class="tank" viewBox="0 0 360 212" role="img" aria-label="Fees waiting to be paid to stakers, one layer per daily payout"></svg></div>
+      <div class="stream-m"><span id="v-streamed">—</span><span id="v-end">—</span></div>
+      <p class="how"><b>How payouts work:</b> fees are collected once a day and each collection is paid out evenly over the next 7 days. Collections stack, so a big trading day keeps paying for a whole week and quiet days are smoothed out.</p>
+    </div>
+    <div class="v-side">
+      <div class="v-tile"><span class="k">Next fee payout</span><b id="v-next">—</b><small id="v-next-s">collected every 24 h · anyone can trigger it</small><button class="btn btn-primary btn-sm" id="b-harvest" hidden>Pay it out now</button></div>
+      <div class="v-tile"><span class="k">Collected since last payout · stakers' half</span><b id="v-est">—</b><small id="v-est-s">live from the pool</small></div>
+      <div class="v-tile"><span class="k">Total fees in the next payout</span><b id="v-vol">—</b><small id="v-vol-s">split 50% stakers · 50% treasury</small></div>
+    </div>
+  </section>
+
+  <!-- ================= APP ================= -->
+  <section class="app card">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="stake" class="on">Stake</button>
+      <button role="tab" data-tab="earn">Earnings <em id="tab-earn-badge" hidden></em></button>
+      <button role="tab" data-tab="locks">My locks <em id="tab-locks-badge" hidden></em></button>
+      <button role="tab" data-tab="move">Move a lock</button>
+    </nav>
+
+    <!-- ---------- STAKE ---------- -->
+    <div class="pane on" data-pane="stake">
+      <div class="cols">
+        <div class="col">
+          <div class="lbl-row"><label for="st-amt" class="lbl">1 · How much?</label><span class="bal">Wallet: <b id="me-bal">—</b></span></div>
+          <div class="amt"><img src="dual-core.svg" alt="" width="28" height="28"><input id="st-amt" inputmode="decimal" placeholder="0" autocomplete="off"><span>NLYRA</span></div>
+          <div class="pcts"><button data-p="25">25%</button><button data-p="50">50%</button><button data-p="75">75%</button><button data-p="100">MAX</button></div>
+
+          <p class="lbl" style="margin-top:22px">2 · Choose a plan</p>
+          <div class="plans" id="plans">
+            <button class="plan" data-t="0"><span class="pn">Flexible</span><b class="apr">—</b><span class="mult"><i style="width:50%"></i></span><small>1× · exit anytime (2-day cooldown)</small></button>
+            <button class="plan" data-t="1"><span class="pn">7 days</span><b class="apr">—</b><span class="mult"><i style="width:62.5%"></i></span><small>1.25× · <span class="unl" data-d="7"></span></small></button>
+            <button class="plan" data-t="2"><span class="pn">14 days</span><b class="apr">—</b><span class="mult"><i style="width:75%"></i></span><small>1.5× · <span class="unl" data-d="14"></span></small></button>
+            <button class="plan best on" data-t="3"><span class="tagb">Best</span><span class="pn">30 days</span><b class="apr">—</b><span class="mult"><i style="width:100%"></i></span><small>2× · <span class="unl" data-d="30"></span></small></button>
+          </div>
+          <button class="btn btn-primary btn-xl" id="b-stake" disabled>Connect wallet to stake</button>
+          <ul class="trust">
+            <li><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg><a href="https://robinhoodchain.blockscout.com/address/0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8?tab=contract" target="_blank" rel="noopener">Contracts verified</a></li>
+            <li><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>No admin can move your tokens</li>
+            <li><svg viewBox="0 0 24 24"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg>Withdrawals can't be paused</li>
+            <li><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/></svg>External audit in progress</li>
+          </ul>
+          <p class="fine">Locks unlock at 00:00 UTC. Your wallet asks you to approve NLYRA first (one time), then to stake.</p>
+          <div class="exit-how">
+            <p class="lbl">How withdrawing works</p>
+            <ul>
+              <li><b>Flexible:</b> request an unstake anytime. After a 2-day cooldown, withdraw. Tokens don't earn during the cooldown, and you can cancel it.</li>
+              <li><b>Locked (7, 14 or 30 days):</b> can't be withdrawn before the unlock date. When it unlocks, request the withdrawal; after a 2-day cooldown, withdraw.</li>
+              <li><b>Not withdrawn after unlock?</b> Your tokens stay staked and keep earning at 1×.</li>
+              <li><b>Rewards</b> can be claimed anytime, locked or not.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="col est">
+          <p class="lbl">Your estimate <span class="ex-chip" id="est-ex" hidden>Example · $1,000 in NLYRA</span></p>
+          <div class="est-big"><b id="est-day">$0.00</b><span>per day</span></div>
+          <div class="est-row"><div><span class="k">Per week</span><b id="est-week">$0</b></div><div><span class="k">Per month</span><b id="est-month">$0</b></div><div><span class="k">APR</span><b id="est-apr">—</b></div></div>
+          <p class="k" style="margin-top:18px">Monthly earnings by plan</p>
+          <svg id="chart-plans" class="chart" viewBox="0 0 320 170" preserveAspectRatio="none" aria-label="Estimated monthly earnings for each plan"></svg>
+          <p class="fine">Estimates use today's fees and today's total stake. Real yield moves with trading volume.</p>
+        </div>
+      </div>
+
+      <div class="unstake" id="unstake-box">
+        <div>
+          <b>Flexible stake</b>
+          <p class="muted" id="flex-line">—</p>
+        </div>
+        <div class="un-actions">
+          <div class="amt sm"><input id="un-amt" inputmode="decimal" placeholder="0" autocomplete="off"><button class="link" id="un-max">MAX</button></div>
+          <button class="btn btn-ghost" id="b-unstake" disabled>Unstake</button>
+          <button class="btn btn-ghost" id="b-withdraw" hidden>Withdraw</button>
+          <button class="btn btn-ghost" id="b-cancelcool" hidden>Re-stake</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- EARNINGS ---------- -->
+    <div class="pane" data-pane="earn">
+      <div class="cols">
+        <div class="col">
+          <p class="lbl">Earned so far</p>
+          <div class="ticker"><b id="rw-usd">$0.000000</b><span class="live-dot"></span></div>
+          <div class="toks">
+            <div><img src="img/weth.png" alt="" width="22" height="22"><span id="rw-weth">0</span><small>WETH</small></div>
+            <div><img src="dual-core.svg" alt="" width="22" height="22"><span id="rw-nlyra">0</span><small>NLYRA</small></div>
+          </div>
+
+          <p class="lbl" style="margin-top:22px">Receive as</p>
+          <div class="coins" id="mode">
+            <button data-m="1" class="on"><img src="img/weth.png" alt="" width="26" height="26"><b>ETH</b><small>as WETH</small></button>
+            <button data-m="2"><img src="dual-core.svg" alt="" width="26" height="26"><b>NLYRA</b><small>all in NLYRA</small></button>
+            <button data-m="3"><img src="img/usdg.png" alt="" width="26" height="26"><b>USDG</b><small>dollars</small></button>
+            <button data-m="0"><span class="duo"><img src="img/weth.png" alt="" width="20" height="20"><img src="dual-core.svg" alt="" width="20" height="20"></span><b>Both</b><small>as they are</small></button>
+          </div>
+          <div class="recv"><span class="k">You receive</span><b id="rw-quote">—</b></div>
+          <details class="more"><summary>Send to a different wallet</summary><input id="claim-to" placeholder="0x…" spellcheck="false" autocomplete="off"></details>
+          <div class="btn-row">
+            <button class="btn btn-primary btn-xl" id="b-claim" disabled>Claim</button>
+            <button class="btn btn-ghost btn-xl" id="b-compound" disabled>Compound +5%</button>
+          </div>
+          <p class="fine">Compound buys NLYRA with your rewards and adds it to a new 30-day lock with a 5% bonus.</p>
+        </div>
+
+        <div class="col">
+          <p class="lbl">Your share of the pool</p>
+          <div class="donut-wrap">
+            <svg id="donut" viewBox="0 0 120 120" class="donut" aria-label="Your share of rewards"></svg>
+            <div class="donut-c"><b id="me-share">—</b><span>of rewards</span></div>
+          </div>
+          <div class="kv">
+            <span>Staked</span><b id="me-staked">—</b>
+            <span>Weight (with lock boost)</span><b id="me-weight">—</b>
+            <span>Your APR</span><b id="me-apr" class="accent">—</b>
+            <span>Earning now</span><b id="me-rate">—</b>
+          </div>
+          <p class="lbl" style="margin-top:22px">Fees paid to stakers</p>
+          <svg id="chart-hist" class="chart" viewBox="0 0 320 140" preserveAspectRatio="none" aria-label="Fees paid to stakers per harvest"></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- LOCKS ---------- -->
+    <div class="pane" data-pane="locks">
+      <div id="locks" class="locks"><p class="empty">Connect your wallet to see your locks.</p></div>
+    </div>
+
+    <!-- ---------- MOVE ---------- -->
+    <div class="pane" data-pane="move">
+      <div class="move-ill">
+        <div class="mv"><span class="mv-n">A</span><b>Your wallet</b><small>offers the lock</small></div>
+        <div class="mv-arrow"><svg viewBox="0 0 80 20"><path d="M2 10 H70 M62 3 L72 10 L62 17"/></svg></div>
+        <div class="mv"><span class="mv-n b">B</span><b>Other wallet</b><small>accepts it</small></div>
+      </div>
+      <p class="muted center">Stake from one wallet, withdraw from another. The lock moves whole — same amount, same unlock date. Rewards earned until the move stay with wallet A.</p>
+      <div class="cols">
+        <div class="col">
+          <p class="lbl">Step 1 · From wallet A: offer a lock</p>
+          <p class="fine" style="margin-top:0">Go to <b>My locks</b> and press <b>Move</b> on the lock you want to send.</p>
+        </div>
+        <div class="col">
+          <p class="lbl">Step 2 · From wallet B: accept it</p>
+          <div class="row-in"><input id="rc-from" placeholder="Wallet A address 0x…" spellcheck="false" autocomplete="off"><button class="btn btn-ghost" id="b-find">Find</button></div>
+          <div id="rc-list" class="rc"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="log-card card">
+    <p class="lbl">Activity</p>
+    <div id="log" class="log"><p class="muted">Your transactions will show up here.</p></div>
+  </section>
+
+  <footer class="foot">
+    <p>Contracts verified on Blockscout:
+      <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8">Staking</a> ·
+      <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x8300Ef5cC02cAb1D141dBE1c0B33d8Ac115F2D48">Fee splitter</a> ·
+      <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x3BcA70536aC7FfB44023e971d204dAb7c23E95D7">Position market</a></p>
+    <p class="muted">Non-custodial: only your wallet can withdraw your stake. External audit in progress.</p>
+  </footer>
+</main>
+
+<div class="modal" id="share" hidden role="dialog" aria-modal="true" aria-labelledby="share-t">
+  <div class="modal-box">
+    <button class="modal-x" id="share-close" aria-label="Close">×</button>
+    <p class="lbl" id="share-t">Share your position</p>
+    <canvas id="share-cv" width="1200" height="630"></canvas>
+    <div class="share-a">
+      <a class="btn btn-primary" id="share-dl" download="nlyra-real-yield.png" href="#">Download image</a>
+      <a class="btn btn-ghost" id="share-xpost" target="_blank" rel="noopener" href="#">Post on X</a>
+      <a class="btn btn-ghost" id="share-tg" target="_blank" rel="noopener" href="#">Telegram</a>
+    </div>
+    <p class="fine">Download the image and attach it to your post.</p>
+  </div>
+</div>
+<script src="ethers.umd.min.js"></script>
+<script src="app.js?v=18"></script>
+</body>
+</html>
