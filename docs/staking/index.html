@@ -246,6 +246,9 @@ input:focus{box-shadow:inset 0 0 0 1.5px var(--neron)}
 .log div{background:var(--nested);border-radius:8px;padding:8px 12px}
 .t-ok{color:var(--ok)} .t-bad{color:var(--bad)} .t-warn{color:var(--warn)}
 .foot{padding-block:26px 40px;text-align:center;font-size:13px;color:var(--ink2);display:grid;gap:6px}
+.audit-badge{justify-self:center;display:block;margin-block:4px 6px;border-radius:10px;transition:opacity .15s}
+.audit-badge:hover{opacity:.85}
+.audit-badge img{display:block;height:48px;width:auto}
 
 /* toast */
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--nested2);box-shadow:0 12px 40px rgba(0,0,0,.5),inset 0 0 0 1px var(--line2);border-radius:12px;padding:12px 16px;font-size:14px;z-index:50;max-width:calc(100% - 32px)}
@@ -597,6 +600,7 @@ img{-webkit-user-drag:none;user-select:none}
       <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8">Staking</a> ·
       <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x8300Ef5cC02cAb1D141dBE1c0B33d8Ac115F2D48">Fee&nbsp;splitter</a> ·
       <a target="_blank" rel="noopener" href="https://robinhoodchain.blockscout.com/address/0x3BcA70536aC7FfB44023e971d204dAb7c23E95D7">Position&nbsp;market</a></p>
+    <a class="audit-badge" target="_blank" rel="noopener" href="https://github.com/Coinsult/Audits/blob/main/Nlyra_RealYieldStaking%20%281%29.pdf" aria-label="Security audit by Coinsult: read the report"><img src="coinsult-audit.svg" alt="Security Audit by Coinsult" width="154" height="48"></a>
     <p>Audited by Coinsult · 0 critical · 0 medium:
       <a target="_blank" rel="noopener" href="https://github.com/Coinsult/Audits/blob/main/Nlyra_RealYieldStaking%20%281%29.pdf">Staking</a> ·
       <a target="_blank" rel="noopener" href="https://github.com/Coinsult/Audits/blob/main/Nlyra_NlyraFeeSplitter%20%281%29.pdf">Fee&nbsp;splitter</a> ·
