@@ -12,7 +12,12 @@
 - Deploy txs: staking `0xe3838ad2813d09497bf1a11d6e83abe5814dd1ba99deb167538ef7efd677efb2` (block 75,661,721), market `0x30d2e3f19ddbe5172e0f38b2c21af507abdf0cb7f1f8fb4d19cadcdf241b3e20` (block 75,661,770).
 - Pons `feeRedirects(NLYRA)` points to the splitter since Sept 29, 2026; the treasury can point it back at any time.
 - The files in `src/` are byte-for-byte the verified sources (line endings aside).
-- External audit: in progress.
+- External audit: **Coinsult**, Sept 30, 2026, on the four contracts at commit `19880c0` (the deployed code). 0 critical,
+  0 medium; every finding is low-risk or informational and has been resolved or acknowledged. Reports:
+  [RealYieldStaking](https://github.com/Coinsult/Audits/blob/main/Nlyra_RealYieldStaking%20%281%29.pdf) ·
+  [NlyraFeeSplitter](https://github.com/Coinsult/Audits/blob/main/Nlyra_NlyraFeeSplitter%20%281%29.pdf) ·
+  [PositionMarket](https://github.com/Coinsult/Audits/blob/main/Nlyra_PositionMarket%20%281%29.pdf) ·
+  [External](https://github.com/Coinsult/Audits/blob/main/Nlyra_External%20%281%29.pdf).
 
 ## Development history
 
@@ -428,7 +433,8 @@ midnights with pending decreases), 14 M. `withdraw` does not depend on this (26k
   paused (no loss: it reverts entirely). The seller collects the ETH with `withdrawProceeds`; it is not sent automatically.
 - **Market price:** set by the seller and fixed; the market does not validate that it is reasonable. A seller's
   typo (a very low price) will sell at that price.
-- There is no external audit. The fork tests use real state but synthetic volume.
+- The external audit (Coinsult, Sept 30, 2026) covered the four contracts as deployed; an audit lowers the risk but
+  cannot prove there are no bugs. The fork tests use real state but synthetic volume.
 
 ## New functions for the frontend (round 3)
 

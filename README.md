@@ -106,6 +106,7 @@ USDG (`0x5fc5360D0400a0Fd4f2af552ADD042D716F1d168`) is a first-class quote asset
 | Sep 26 – 27 | **Risk layer**: sell test, CAN'T SELL gate, bot buy-brake, Risk Level v1, `/api/risk` | hosted service ([example](#risk-layer-hosted-service-closed-source)) |
 | Sep 27 – 28 | **Real Yield Staking v2**: contracts, 211 fork tests, two internal audit rounds | [`staking-v2/`](staking-v2/) (deployed Sep 29, closed beta) |
 | Sep 28 | Staking v2 **position transfers** and the **Position Market** | [`staking-v2/src/PositionMarket.sol`](staking-v2/src/PositionMarket.sol), [`staking-v2/test/r3/`](staking-v2/test/r3/) |
+| Sep 30 | Staking v2 **external audit by Coinsult**: 0 critical, 0 medium | [reports](staking-v2/README.md) |
 
 Spot Grid v4 (Sep 11, [`0x021aee16…3308d`](https://robinhoodchain.blockscout.com/tx/0x021aee16b556303b2cb17cca57ec1cd8afff94399511f1e9ec5220f54c73308d)) and Infinity Grid v4 (Sep 12, [`0xaa42408c…4c9cb`](https://robinhoodchain.blockscout.com/tx/0xaa42408ccf12911d8487d081638241c7de613d8e50a324790d604e311534c9cb)) predate the Buildathon window.
 
@@ -156,7 +157,7 @@ flowchart LR
 | [`launchpad/`](launchpad/) | Architect Launch: tokens born with a pool, LP locked forever, buyback-and-burn treasury | Live |
 | [`dex/`](dex/) | Uniswap V2 and V3 deployed verbatim, plus the single-file swap/liquidity frontend | Live |
 | [`shield/`](shield/) | Lyra Shield: private NLYRA transfers on 0xbow Privacy Pools (zk proofs built in the browser) | Live |
-| [`staking-v2/`](staking-v2/) | Real Yield Staking v2 (Foundry): 50% of NLYRA creator fees streamed to stakers. 211 mainnet-fork tests, two internal audit reports. Deployed at `0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8` | **Live (closed beta)** |
+| [`staking-v2/`](staking-v2/) | Real Yield Staking v2 (Foundry): 50% of NLYRA creator fees streamed to stakers. 211 mainnet-fork tests, two internal audit reports, external audit by Coinsult. Deployed at `0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8` | **Live (closed beta)** |
 | [`newstake/`](newstake/) | The staking v2 page ([nlyra.xyz/newstake](https://nlyra.xyz/newstake)) | Preview |
 | [`desk/`](desk/) | What The Desk is and which contracts it uses (the service itself is closed source) | Live |
 | [`wiki/`](wiki/) | "Bots, from zero", an illustrated guide ([nlyra.xyz/wiki/bots](https://nlyra.xyz/wiki/bots)) | Live |
@@ -169,7 +170,7 @@ flowchart LR
 - **Non-custodial by construction.** Escrowed funds can only go back to the owner, or to the counterparty in the same transaction on OTC fills. No owner function reaches user balances. `rescue` paths are capped at the surplus above escrow.
 - **Verified sources.** Every contract that holds or moves user funds is verified on Blockscout, Sourcify or both. [`deployed/`](deployed/) holds the verified source for each address, so a reviewer can diff it against the working copies in this repo.
 - **Tests on a mainnet fork.** The bot, SendTo, Sniper and OTC suites run against an anvil fork of Robinhood Chain, using the real fee router and real pools (126 checks for the Sniper, 17 for SendTo). Staking v2 has **211 Foundry tests** on a pinned fork, including stateful invariants and a differential model.
-- **Internal audits.** Staking v2 went through two internal review rounds before any deployment; the findings and fixes are in [`AUDIT.md`](staking-v2/AUDIT.md), [`AUDIT-2.md`](staking-v2/AUDIT-2.md) and [`CHANGES.md`](staking-v2/CHANGES.md). The Sniper was redeployed as v2 after a security review, and v1 was paused before it ever held a bot.
+- **Audits.** Staking v2 went through two internal review rounds before any deployment; the findings and fixes are in [`AUDIT.md`](staking-v2/AUDIT.md), [`AUDIT-2.md`](staking-v2/AUDIT-2.md) and [`CHANGES.md`](staking-v2/CHANGES.md). The deployed contracts were then audited externally by Coinsult (Sept 30, 2026): 0 critical, 0 medium, every finding resolved or acknowledged ([reports](staking-v2/README.md)). The Sniper was redeployed as v2 after a security review, and v1 was paused before it ever held a bot.
 - **Known trust assumptions, stated plainly.** Contract ownership sits on single keys, not a multisig. The keeper is a hosted service, so if it stops, bots stop trading, but every withdrawal still works directly on-chain.
 - **Closed-source services.** The Desk, the risk layer, the NERON scanner and the bot keepers are hosted services and are not in this repository. None of them can move user funds. The CAN'T SELL gate and the bot buy-brake are enforced by these services, off-chain.
 
