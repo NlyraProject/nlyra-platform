@@ -23,6 +23,9 @@ These are immutable contracts. Nobody can stop them, including us.
 | Shield PrivacyPool (holds funds) | `0x6e179E19e594e82AB732646b898268F6Fb569E58` |
 | Shield WithdrawalVerifier (zk) | `0xe8868719Dc0aaCa1f7c8aef0dfe9304AF57cA1Cb` |
 | Shield CommitmentVerifier (ragequit) | `0xd1E125953bE2eEe7e59cAEF4789949e70402BEF4` |
+| Real Yield Staking v2 (RealYieldStaking) | `0x5CB0Cb16cA019bcff4E494b32575848E4CdB5aF8` |
+| Real Yield Staking v2 fee splitter | `0x8300Ef5cC02cAb1D141dBE1c0B33d8Ac115F2D48` |
+| Real Yield Staking v2 PositionMarket | `0x3BcA70536aC7FfB44023e971d204dAb7c23E95D7` |
 
 - **DEX**: swap/LP works through the router forever. Frontend in `dex/dex.html` is a single
   static file — host it anywhere, it only talks to the chain through the user's wallet.
@@ -32,6 +35,13 @@ These are immutable contracts. Nobody can stop them, including us.
 - **Shield ragequit**: any depositor can ALWAYS recover their funds to their original
   wallet with only their secret note — no server, no relayer, no ASP required.
   This is the guaranteed exit and it can never be turned off.
+- **Real Yield Staking v2**: no admin can move staked funds and exits are never blocked (the
+  owner can only pause NEW deposits, for at most 30 days). The app is also published on GitHub
+  Pages and needs no NLYRA server: **https://nlyraproject.github.io/nlyra-platform/staking/**
+  (source in [`docs/staking/`](docs/staking)). The daily fee collection `harvest()` is public:
+  when it is due, any user can trigger it from that app (button "Pay it out now") or from the
+  splitter's page on Blockscout. Pons keeps sending NLYRA's creator fees to the splitter unless
+  the treasury wallet points them elsewhere.
 
 ## 2. The Shield — the one platform with off-chain parts
 
