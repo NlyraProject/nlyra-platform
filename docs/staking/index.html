@@ -56,6 +56,12 @@ button{font-family:inherit}
 .btn-wallet{background:var(--nested);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line2);height:40px}
 .btn-wallet .dot{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
 .btn-wallet.on .dot{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+.top-r{display:flex;align-items:center;gap:10px}
+.btn-info{background:transparent;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line2);height:40px;padding:0 14px;font-size:14px;text-decoration:none}
+.btn-info:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--neron)}
+.btn-info .s{display:none}
+@media (max-width:560px){.brand span{display:none}}
+@media (max-width:379px){.btn-info .l{display:none}.btn-info .s{display:inline}}
 .btn-xl{height:52px;font-size:16px;width:100%;margin-top:18px}
 .btn-sm{height:34px;padding:0 12px;font-size:13px}
 .link{background:none;border:0;color:var(--neron);font:600 12px var(--body);cursor:pointer;letter-spacing:.04em}
@@ -362,7 +368,10 @@ img{-webkit-user-drag:none;user-select:none}
 <header class="top">
   <div class="wrap top-in">
     <a class="brand" href="./"><img src="dual-core.svg" alt="" width="30" height="30"><span>NLYRA <em>Real Yield</em></span></a>
-    <button class="btn btn-wallet" id="connect"><span class="dot"></span><span id="connect-t">Connect wallet</span></button>
+    <div class="top-r">
+      <a class="btn btn-info" href="https://nlyra.xyz/newstake/"><span class="l">Info &amp; calculator</span><span class="s">Info</span></a>
+      <button class="btn btn-wallet" id="connect"><span class="dot"></span><span id="connect-t">Connect wallet</span></button>
+    </div>
   </div>
 </header>
 
