@@ -62,6 +62,21 @@ button{font-family:inherit}
 .btn-info .s{display:none}
 @media (max-width:560px){.brand span{display:none}}
 @media (max-width:379px){.btn-info .l{display:none}.btn-info .s{display:inline}}
+/* pending withdrawal, on top of everything (1/10) */
+.cool-banner{display:flex;align-items:center;gap:16px;margin-top:20px;padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid rgba(139,124,246,.45)}
+.cool-banner.ready{border-color:rgba(74,222,128,.55)}
+.cb-ic svg{display:block;width:30px;height:30px;stroke:var(--neron);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.cool-banner.ready .cb-ic svg{stroke:var(--ok)}
+.cb-main{flex:1;min-width:0}
+.cb-k{margin:0;font:600 12px var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--ink2)}
+.cool-banner.ready .cb-k{color:var(--ok)}
+.cb-v{margin:4px 0 2px;font:600 22px var(--display)}
+.cb-t{margin:0 0 10px;font-size:14px;color:var(--ink2)}
+.cb-bar{height:6px;border-radius:999px;background:rgba(154,167,189,.14);overflow:hidden}
+.cb-bar i{display:block;height:100%;width:0;border-radius:999px;background:var(--neron);transition:width .6s}
+.cool-banner.ready .cb-bar i{background:var(--ok)}
+.btn-ready{background:var(--ok);color:#06210f;font-weight:600}
+@media (max-width:560px){.cool-banner{flex-wrap:wrap}.cool-banner .btn{width:100%}}
 .btn-xl{height:52px;font-size:16px;width:100%;margin-top:18px}
 .btn-sm{height:34px;padding:0 12px;font-size:13px}
 .link{background:none;border:0;color:var(--neron);font:600 12px var(--body);cursor:pointer;letter-spacing:.04em}
@@ -376,6 +391,18 @@ img{-webkit-user-drag:none;user-select:none}
 </header>
 
 <main class="wrap">
+  <!-- pending withdrawal (1/10: it used to be one grey line at the bottom of the Stake tab) -->
+  <section class="cool-banner" id="cool-banner" hidden aria-live="polite">
+    <div class="cb-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+    <div class="cb-main">
+      <p class="cb-k" id="cb-k">Withdrawal in progress</p>
+      <p class="cb-v"><b id="cb-amt">—</b> NLYRA</p>
+      <p class="cb-t" id="cb-t">—</p>
+      <div class="cb-bar"><i id="cb-bar"></i></div>
+    </div>
+    <button class="btn btn-ready" id="cb-withdraw" hidden>Withdraw now</button>
+  </section>
+
   <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="hero-copy">
@@ -633,6 +660,6 @@ img{-webkit-user-drag:none;user-select:none}
   </div>
 </div>
 <script src="ethers.umd.min.js"></script>
-<script src="app.js?v=18"></script>
+<script src="app.js?v=19"></script>
 </body>
 </html>

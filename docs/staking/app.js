@@ -285,6 +285,20 @@
     $('b-unstake').disabled = U.flex === 0n;
     $('b-withdraw').hidden = !coolReady;
     $('b-cancelcool').hidden = U.cooling === 0n;
+    // pending withdrawal on top, with the exact time it unlocks in the viewer's own clock (1/10)
+    var cb = $('cool-banner');
+    cb.hidden = U.cooling === 0n;
+    if (U.cooling > 0n) {
+      var cEnd = Number(U.coolEnd) * 1000, cPct = Math.max(0, Math.min(100, (Date.now() - (cEnd - 2 * 86400e3)) / (2 * 86400e3) * 100));
+      cb.classList.toggle('ready', coolReady);
+      $('cb-k').textContent = coolReady ? 'Ready to withdraw' : 'Withdrawal in progress';
+      $('cb-amt').textContent = tok(U.cooling);
+      $('cb-t').textContent = coolReady
+        ? 'The 2-day cooldown is over. Withdraw sends it back to this wallet.'
+        : 'Ready in ' + left(U.coolEnd) + ' · ' + new Date(cEnd).toLocaleString('en-US', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' (your time)';
+      $('cb-bar').style.width = (coolReady ? 100 : cPct).toFixed(1) + '%';
+      $('cb-withdraw').hidden = !coolReady;
+    }
     renderLocks();
     quoteClaim();
     estimate();
@@ -670,6 +684,7 @@
     tx('Unstake ' + kfmt(f18(a)) + ' (2-day cooldown)', function () { return st().requestUnstake(a); });
   };
   $('b-withdraw').onclick = function () { tx('Withdraw', function () { return st().withdraw(); }); };
+  $('cb-withdraw').onclick = $('b-withdraw').onclick;
   $('b-harvest').onclick = async function () {
     if (!me) { await connect(); if (!me) return; }
     tx('Trigger the daily payout', function () { return new E.Contract(SP, SP_ABI, signer).harvest(); });
