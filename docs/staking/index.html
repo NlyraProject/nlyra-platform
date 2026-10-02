@@ -57,11 +57,16 @@ button{font-family:inherit}
 .btn-wallet .dot{width:8px;height:8px;border-radius:50%;background:var(--ink3)}
 .btn-wallet.on .dot{background:var(--ok);box-shadow:0 0 8px var(--ok)}
 .top-r{display:flex;align-items:center;gap:10px}
+.top-l{display:flex;align-items:center;gap:12px;min-width:0}
+.back-desk{display:inline-flex;align-items:center;gap:7px;height:40px;padding:0 13px;border-radius:9px;color:var(--ink2);text-decoration:none;font:600 12.5px var(--body);letter-spacing:.08em;text-transform:uppercase;box-shadow:inset 0 0 0 1px var(--line2);white-space:nowrap;flex:none}
+.back-desk:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--neron)}
+.back-desk .ar{font-size:16px;line-height:1}
+@media (max-width:560px){.back-desk .bl{display:none}.back-desk{padding:0 12px}.top-l{gap:8px}}
 .btn-info{background:transparent;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--line2);height:40px;padding:0 14px;font-size:14px;text-decoration:none}
 .btn-info:hover{color:var(--ink);box-shadow:inset 0 0 0 1px var(--neron)}
 .btn-info .s{display:none}
 @media (max-width:560px){.brand span{display:none}}
-@media (max-width:379px){.btn-info .l{display:none}.btn-info .s{display:inline}}
+@media (max-width:560px){.btn-info .l{display:none}.btn-info .s{display:inline}}  /* 2/10: with '← The Desk' the long label no longer fits on phones */
 /* pending withdrawal, on top of everything (1/10) */
 .cool-banner{display:flex;align-items:center;gap:16px;margin-top:20px;padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid rgba(139,124,246,.45)}
 .cool-banner.ready{border-color:rgba(74,222,128,.55)}
@@ -403,7 +408,11 @@ img{-webkit-user-drag:none;user-select:none}
 <div class="orb a"></div><div class="orb b"></div>
 <header class="top">
   <div class="wrap top-in">
-    <a class="brand" href="./"><img src="dual-core.svg" alt="" width="30" height="30"><span>NLYRA <em>Real Yield</em></span></a>
+    <div class="top-l">
+      <!-- 2/10 (Tok S): from the Desk's STAKE button there was no way back; same idea as the Smart Money page -->
+      <a class="back-desk" href="https://nlyra.xyz/desk" aria-label="Back to The Desk"><span class="ar" aria-hidden="true">←</span><span class="bl">The Desk</span></a>
+      <a class="brand" href="./"><img src="dual-core.svg" alt="" width="30" height="30"><span>NLYRA <em>Real Yield</em></span></a>
+    </div>
     <div class="top-r">
       <a class="btn btn-info" href="https://nlyra.xyz/newstake/"><span class="l">Info &amp; calculator</span><span class="s">Info</span></a>
       <button class="btn btn-wallet" id="connect"><span class="dot"></span><span id="connect-t">Connect wallet</span></button>
