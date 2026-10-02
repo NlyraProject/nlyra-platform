@@ -781,12 +781,77 @@
     $('rw-usd').textContent = '$' + v.toFixed(v >= 100 ? 4 : 6);
   }, 100);
 
+  // ---------- staked by plan ----------
+  // The contract keeps no per-plan totals, so they are rebuilt here: every wallet that ever staked
+  // (Staked events) or received a lock (PositionTransferred) is read straight from the contract.
+  var EV_STAKED = 'event Staked(address indexed user,uint256 amount,uint8 tier,uint256 positionId,uint64 unlockTime)';
+  var EV_MOVED = 'event PositionTransferred(address indexed from,uint256 fromId,address indexed to,uint256 toId,uint256 amount,uint64 unlockTime,uint8 tier,address indexed operator)';
+  var ST_BLOCK = 75661721, TR = null, trAt = 0;
+  async function loadTiers() {
+    if (Date.now() - trAt < 120000) return;
+    trAt = Date.now();
+    var iface = new E.Interface([EV_STAKED, EV_MOVED]);
+    var tS = iface.getEvent('Staked').topicHash, tM = iface.getEvent('PositionTransferred').topicHash;
+    // one event per query: the chain's RPC refuses an OR of topics ("could not coalesce error")
+    var logs = null, provs = [ro, roPub];
+    for (var k = 0; k < provs.length && !logs; k++) {
+      try {
+        var both = await Promise.all([tS, tM].map(function (t) { return provs[k].getLogs({ address: ST, topics: [t], fromBlock: ST_BLOCK, toBlock: 'latest' }); }));
+        logs = both[0].concat(both[1]);
+      } catch (e) {}
+    }
+    if (!logs) { trAt = 0; return; }
+    var who = {};
+    logs.forEach(function (l) { var t = l.topics[0] === tS ? l.topics[1] : l.topics[2]; who[E.getAddress('0x' + t.slice(26))] = 1; });
+    var addrs = Object.keys(who), now = Date.now() / 1000;
+    var sum = [0n, 0n, 0n, 0n], expired = 0n, wallets = 0;
+    for (var i = 0; i < addrs.length; i += 8) {
+      var res = await Promise.all(addrs.slice(i, i + 8).map(function (a) {
+        return Promise.all([stR.userInfo(a), stR.positionsOf(a)]).catch(function () { return null; });
+      }));
+      res.forEach(function (r) {
+        if (!r) return;
+        var flex = r[0].account.flexible, any = flex > 0n;
+        sum[0] += flex;
+        r[1].forEach(function (p) {
+          if (p.amount === 0n) return;
+          any = true;
+          var t = Number(p.tier);
+          if (t >= 1 && t <= 3 && Number(p.unlockTime) > now) sum[t] += p.amount; else expired += p.amount;
+        });
+        if (any) wallets++;
+      });
+    }
+    TR = { sum: sum, expired: expired, wallets: wallets };
+    paintTiers();
+  }
+  function paintTiers() {
+    var box = $('tiers'); if (!box || !TR) return;
+    var tot = TR.sum[0] + TR.sum[1] + TR.sum[2] + TR.sum[3] + TR.expired;
+    box.hidden = tot === 0n;
+    if (tot === 0n) return;
+    var bar = '', grid = '';
+    TR.sum.forEach(function (v, i) {
+      var p = Number(v * 10000n / tot) / 100;
+      bar += '<i class="tb' + i + '" style="width:' + p + '%"></i>';
+      grid += '<div class="tc"><span class="tn"><i class="tdot tb' + i + '"></i>' + TIER_NAME[i] + ' <em>' + BOOST[i] + '×</em></span><b>' + kfmt(f18(v)) + '</b><small>' + num(p, 1) + '%' + (px.nlyra ? ' · ' + usd(f18(v) * px.nlyra) : '') + '</small></div>';
+    });
+    if (TR.expired > 0n) bar += '<i class="tbx" style="width:' + (Number(TR.expired * 10000n / tot) / 100) + '%"></i>';
+    $('tiers-bar').innerHTML = bar;
+    $('tiers-grid').innerHTML = grid;
+    var note = [TR.wallets + (TR.wallets === 1 ? ' wallet' : ' wallets') + ' staking'];
+    if (TR.expired > 0n) note.push(kfmt(f18(TR.expired)) + ' NLYRA in ended locks (1×, ready to withdraw)');
+    if (G.tc > 0n) note.push(kfmt(f18(G.tc)) + ' NLYRA in the 2-day exit cooldown');
+    $('tiers-note').textContent = note.join(' · ');
+  }
+
   var first = true;
   async function refresh() {
     try {
       await prices();
       if (first) { first = false; await loadHistory(); }
       await loadPool(); await loadUser();
+      loadTiers().catch(function () { trAt = 0; });
     } catch (e) { log('<span class="t-bad">Read error:</span> ' + esc(errMsg(e))); }
   }
   refresh();

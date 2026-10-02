@@ -100,6 +100,21 @@ button{font-family:inherit}
 .boost-pill .bt{color:var(--ink3);font-size:12px}
 .plan .pb{display:block;color:var(--lyra);font-size:12px;font-weight:600;margin-top:2px}
 .boostv{color:var(--lyra)}
+/* staked by plan */
+.tiers{padding:18px 20px;display:grid;gap:12px}
+.tiers .lbl{margin:0}
+.tiers-bar{display:flex;height:8px;border-radius:999px;overflow:hidden;background:var(--nested)}
+.tiers-bar i{display:block;height:100%}
+.tb0{background:#5D6A82}.tb1{background:#8B7CF6}.tb2{background:#B466EE}.tb3{background:#E84FE0}.tbx{background:#2A3350}
+.tiers-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+@media (max-width:620px){.tiers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.tc{display:grid;gap:2px;background:var(--nested);border-radius:10px;padding:10px 12px;min-width:0}
+.tc .tn{font-size:12.5px;color:var(--ink2);display:flex;align-items:center;gap:6px}
+.tc .tn em{font-style:normal;color:var(--ink3)}
+.tc b{font:600 18px var(--display);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.tc small{font-size:12px;color:var(--ink3);font-variant-numeric:tabular-nums}
+.tdot{display:inline-block;width:8px;height:8px;border-radius:50%;flex:none}
+.tiers-note{margin:0;font-size:12.5px;color:var(--ink3)}
 .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
 @media (max-width:560px){.hero-stats{grid-template-columns:1fr 1fr}.hero-stats>div:last-child{grid-column:1/-1}}
 .hero-stats>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:3px;min-width:0}
@@ -634,6 +649,14 @@ img{-webkit-user-drag:none;user-select:none}
     </div>
   </section>
 
+  <!-- ================= STAKED BY PLAN ================= -->
+  <section class="tiers card" id="tiers" hidden aria-label="NLYRA staked by plan">
+    <p class="lbl">Staked by plan</p>
+    <div class="tiers-bar" id="tiers-bar"></div>
+    <div class="tiers-grid" id="tiers-grid"></div>
+    <p class="tiers-note" id="tiers-note"></p>
+  </section>
+
   <section class="log-card card">
     <p class="lbl">Activity</p>
     <div id="log" class="log"><p class="muted">Your transactions will show up here.</p></div>
@@ -668,6 +691,6 @@ img{-webkit-user-drag:none;user-select:none}
   </div>
 </div>
 <script src="ethers.umd.min.js"></script>
-<script src="app.js?v=20"></script>
+<script src="app.js?v=21"></script>
 </body>
 </html>
