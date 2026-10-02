@@ -82,9 +82,11 @@
   function paceUsd() {
     // Preferred source: the contract's own tranches (each active daily payout, its size and start).
     // No event history needed, so it can't silently fall back to the 1/7 stream.
+    // Fee part only (eligWeth/eligNlyra = what came from the fee splitter): a treasury boost tranche
+    // must never read as a jump in fees. It is shown apart (boostInfo).
     var tr = (G.tr || []).map(function (t) {
-      return { usd: (f18(t[0]) * px.eth + f18(t[1]) * px.nlyra) * 7 * 86400, start: Number(t[2]) - 7 * 86400 };
-    }).sort(function (a, b) { return a.start - b.start; });
+      return { usd: (f18(t[3]) * px.eth + f18(t[4]) * px.nlyra) * 7 * 86400, start: Number(t[2]) - 7 * 86400 };
+    }).filter(function (x) { return x.usd > 0; }).sort(function (a, b) { return a.start - b.start; });
     if (tr.length) {
       var newest = tr[tr.length - 1];
       var prev = tr.length > 1 ? tr[tr.length - 2].start : (newest.start < FIRST_START + 8 * 86400 ? FIRST_START : newest.start - 86400);
@@ -96,6 +98,33 @@
     var got = f18(last.w) * px.eth + f18(last.n) * px.nlyra + (G.pendUsd || 0);
     var secs = Date.now() / 1000 - start;
     return secs > 3600 ? got / secs * 86400 : dailyUsd();
+  }
+  // TREASURY BOOST: the treasury can top the stream up by sending WETH/NLYRA straight to the staking
+  // contract; sweepDonations (or the next harvest) opens a 7-day tranche with it. Each tranche keeps
+  // its fee part apart (elig*), so whatever is above it is the boost: shown on its own, with its end date.
+  function boostInfo() {
+    var now = Date.now() / 1000, day = 0, end = 0;
+    (G.tr || []).forEach(function (t) {
+      var e = Number(t[2]); if (e <= now) return;
+      var bw = t[0] > t[3] ? t[0] - t[3] : 0n, bn = t[1] > t[4] ? t[1] - t[4] : 0n;
+      if (bw < 1000000n && bn < 1000000000000n) return; // per-second rounding of the fee part, not a boost
+      day += (f18(bw) * px.eth + f18(bn) * px.nlyra) * 86400; end = Math.max(end, e);
+    });
+    return { day: day, end: end };
+  }
+  function paintBoost() {
+    var on = (G.boostApr || 0) >= 0.05, hb = $('h-boost');
+    if (hb) {
+      hb.hidden = !on;
+      if (on) { $('h-boost-apr').textContent = '+' + pct(G.boostApr * 2); $('h-boost-t').textContent = 'until ' + dstr(G.boostEnd) + ' · paid by the NLYRA treasury, not by fees'; }
+    }
+    document.querySelectorAll('.plan').forEach(function (el) {
+      var pb = el.querySelector('.pb');
+      if (!pb) { pb = document.createElement('span'); pb.className = 'pb'; el.insertBefore(pb, el.querySelector('.mult')); }
+      pb.hidden = !on;
+      if (on) pb.textContent = '+' + pct(G.boostApr * BOOST[+el.dataset.t]) + ' treasury boost';
+    });
+    if (on && G.boostDay) $('g-dailytok').textContent += ' · incl. ' + usd(G.boostDay) + ' boost';
   }
   // unlock dates shown on plan cards (locks end at the next 00:00 UTC after N days)
   document.querySelectorAll('.unl').forEach(function (el) { var t = Math.ceil((Date.now() / 1000 + Number(el.dataset.d) * 86400) / 86400) * 86400; el.textContent = 'until ' + dstr(t); });
@@ -220,6 +249,10 @@
     live.classList.toggle('on', d > 0 && !G.paused);
     live.querySelector('span').textContent = G.paused ? 'Paused' : d > 0 ? 'Live · rewards streaming' : 'Live · waiting for first payout';
     document.querySelectorAll('.plan').forEach(function (el) { var a = el.querySelector('.apr'); if (!a.id) a.id = 'plan-apr-' + el.dataset.t; if (G.baseApr) roll(a.id, G.baseApr * BOOST[+el.dataset.t], pct); else a.textContent = '—'; });
+    var bi = boostInfo();
+    G.boostDay = bi.day; G.boostEnd = bi.end;
+    G.boostApr = tbUsd > 0 && bi.day > 0 ? bi.day * 365 / tbUsd * 100 : 0;
+    paintBoost();
     drawHistory();
     estimate();
   }
@@ -270,6 +303,9 @@
     drawDonut(share);
     var myApr = staked > 0n && G.baseApr ? G.baseApr * f18(U.boosted) / f18(staked) : 0;
     if (myApr) roll('me-apr', myApr, pct); else $('me-apr').textContent = '—';
+    var myBoost = staked > 0n && G.boostApr ? G.boostApr * f18(U.boosted) / f18(staked) : 0;
+    $('me-boost-k').hidden = $('me-boost').hidden = !(myBoost >= 0.05);
+    if (myBoost >= 0.05) $('me-boost').textContent = '+' + pct(myBoost) + ' until ' + dstr(G.boostEnd);
     var myDay = dailyUsd() * share;
     $('me-rate').textContent = myDay ? usd(myDay) + ' / day' : '—';
     // live ticker: start from on-chain earned, grow at my share of the stream

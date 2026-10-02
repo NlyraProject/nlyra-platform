@@ -94,6 +94,12 @@ button{font-family:inherit}
 .apr-hero{display:flex;align-items:baseline;gap:12px;margin-top:22px;flex-wrap:wrap}
 .apr-hero b{font:700 clamp(40px,6vw,60px)/1 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
 .apr-note{margin:6px 0 0;font-size:13px;color:var(--ink3);max-width:520px}
+/* treasury boost: shown apart from the fee APR, never added into it */
+.boost-pill{display:inline-flex;flex-wrap:wrap;align-items:baseline;gap:4px 8px;margin:12px 0 0;padding:7px 13px;border-radius:12px;background:rgba(232,79,224,.09);box-shadow:inset 0 0 0 1px rgba(232,79,224,.35);font:500 13px var(--body);color:var(--ink2);max-width:100%}
+.boost-pill b{font:700 17px var(--display);color:var(--lyra);font-variant-numeric:tabular-nums}
+.boost-pill .bt{color:var(--ink3);font-size:12px}
+.plan .pb{display:block;color:var(--lyra);font-size:12px;font-weight:600;margin-top:2px}
+.boostv{color:var(--lyra)}
 .hero-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}
 @media (max-width:560px){.hero-stats{grid-template-columns:1fr 1fr}.hero-stats>div:last-child{grid-column:1/-1}}
 .hero-stats>div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:3px;min-width:0}
@@ -414,6 +420,7 @@ img{-webkit-user-drag:none;user-select:none}
         <b id="h-apr">—</b>
         <span class="k">APR · at the real fee pace</span>
       </div>
+      <p class="boost-pill" id="h-boost" hidden><b id="h-boost-apr">—</b><span>treasury boost</span><span class="bt" id="h-boost-t"></span></p>
       <p class="apr-note">Based on the trading fees of the last ~24 h. Each daily payout streams to stakers over 7 days.</p>
       <div class="next" id="next-pay">
         <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" class="ring-bg"/><circle cx="18" cy="18" r="15" class="ring-fg" id="next-ring"/></svg>
@@ -591,6 +598,7 @@ img{-webkit-user-drag:none;user-select:none}
             <span>Staked</span><b id="me-staked">—</b>
             <span>Weight (with lock boost)</span><b id="me-weight">—</b>
             <span>Your APR</span><b id="me-apr" class="accent">—</b>
+            <span id="me-boost-k" hidden>Treasury boost</span><b id="me-boost" class="boostv" hidden>—</b>
             <span>Earning now</span><b id="me-rate">—</b>
           </div>
           <p class="lbl" style="margin-top:22px">Fees paid to stakers</p>
@@ -660,6 +668,6 @@ img{-webkit-user-drag:none;user-select:none}
   </div>
 </div>
 <script src="ethers.umd.min.js"></script>
-<script src="app.js?v=19"></script>
+<script src="app.js?v=20"></script>
 </body>
 </html>
