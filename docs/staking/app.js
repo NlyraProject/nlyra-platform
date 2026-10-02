@@ -75,9 +75,10 @@
     return m.slice(0, 160);
   }
   function dailyUsd() { return (f18(G.wr || 0n) * px.eth + f18(G.nr || 0n) * px.nlyra) * 86400; }
-  // APR at the REAL fee pace. Each payout streams over 7 days, so the live stream (dailyUsd) only
-  // shows 1/7 of a payout per day during the first week. The pace = last payout to stakers + the fees
-  // already accrued for the next one, over the hours they cover (previous collection -> now).
+  // APR at the fee pace of the LAST 7 DAYS. Each payout streams over 7 days, so the live stream
+  // (dailyUsd) only shows 1/7 of a payout per day during the first week. The pace = every payout to
+  // stakers of the last 7 days + the fees already accrued for the next one, over the time they cover.
+  // (2 Oct: it used to be the LAST payout only, and one slow day took the headline from ~31% to 10%.)
   var FIRST_START = 1790632884; // 28 Sep 22:01:24 UTC: the collection before the first payout
   function paceUsd() {
     // Preferred source: the contract's own tranches (each active daily payout, its size and start).
@@ -87,11 +88,18 @@
     var tr = (G.tr || []).map(function (t) {
       return { usd: (f18(t[3]) * px.eth + f18(t[4]) * px.nlyra) * 7 * 86400, start: Number(t[2]) - 7 * 86400 };
     }).filter(function (x) { return x.usd > 0; }).sort(function (a, b) { return a.start - b.start; });
-    if (tr.length) {
-      var newest = tr[tr.length - 1];
-      var prev = tr.length > 1 ? tr[tr.length - 2].start : (newest.start < FIRST_START + 8 * 86400 ? FIRST_START : newest.start - 86400);
-      var span = Date.now() / 1000 - prev;
-      if (span > 3600) return (newest.usd + (G.pendUsd || 0)) / span * 86400;
+    var now = Date.now() / 1000;
+    var win = tr.filter(function (x) { return x.start >= now - 7 * 86400; });
+    if (win.length) {
+      // each payout covers the time since the collection before it: the previous payout if the contract
+      // still lists it, the very first collection at launch, or else the average gap between payouts
+      var i0 = tr.indexOf(win[0]), from;
+      if (i0 > 0) from = tr[i0 - 1].start;
+      else if (win[0].start < FIRST_START + 8 * 86400) from = FIRST_START;
+      else from = win[0].start - (win.length > 1 ? (win[win.length - 1].start - win[0].start) / (win.length - 1) : 86400);
+      var got = win.reduce(function (a, x) { return a + x.usd; }, 0) + (G.pendUsd || 0);
+      var span = now - from;
+      if (span > 3600) return got / span * 86400;
     }
     if (!H.length) return dailyUsd();
     var last = H[H.length - 1], start = H.length > 1 ? H[H.length - 2].ts : FIRST_START;
@@ -475,7 +483,7 @@
     var apr = G.baseApr ? G.baseApr * BOOST[tier || 0] : 0;
     x.fillStyle = '#9AA7BD'; x.font = '500 26px Inter, sans-serif';
     var url = ONSITE ? location.origin + '/newstake/app/' : location.href.split(/[?#]/)[0];
-    x.fillText((apr ? pct(apr) + ' APR at today\'s fee pace · ' : '') + url.replace(/^https?:\/\//, '').replace(/\/$/, ''), 72, 540);
+    x.fillText((apr ? pct(apr) + ' APR at the 7-day fee pace · ' : '') + url.replace(/^https?:\/\//, '').replace(/\/$/, ''), 72, 540);
     var txt = "I'm staking " + kfmt(amountN) + ' $NLYRA on NLYRA Real Yield (' + (tier ? TIER_DAYS[tier] + '-day lock' : 'flexible') + '). Real ETH from every trade, nothing printed.';
     try { $('share-dl').href = cv.toDataURL('image/png'); } catch (e) {}
     $('share-xpost').href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(txt) + '&url=' + encodeURIComponent(url);
