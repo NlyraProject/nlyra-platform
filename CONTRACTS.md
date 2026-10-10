@@ -54,7 +54,7 @@ Machine-readable address book: [`deployments/desk-addresses.json`](deployments/d
 |---|---|---|---|---|---|---|
 | OTC Desk | `0x9656513aC910a9839B51dB7c92a6914ABB4F52e8` | Peer-to-peer block trades settled atomically from a non-custodial escrow (ETH / USDG / NLYRA); 0.5% fee buys and burns NLYRA. | yes | [`OTC-Desk-0x965651/`](deployed/otc/OTC-Desk-0x965651/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0x9656513aC910a9839B51dB7c92a6914ABB4F52e8) | live |
 
-## Launchpad, presale and bounties
+## Launchpad and bounties
 
 | Contract | Address | What it does | User funds | Source | Blockscout | Status |
 |---|---|---|---|---|---|---|
@@ -66,7 +66,6 @@ Machine-readable address book: [`deployments/desk-addresses.json`](deployments/d
 | Buyback Burner | `0x371bB2107f6E021EF2a5a980a9204F5a73151926` | Launchpad treasury with no owner: 50% ops / 50% market-buys NLYRA to 0xdEaD; anyone can trigger it. | protocol fees | [`Buyback-Burner-0x371bB2/`](deployed/launchpad/Buyback-Burner-0x371bB2/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0x371bB2107f6E021EF2a5a980a9204F5a73151926) | live |
 | Buyback Burner (first deploy) | `0xEb733465797c02146786F453DbC4aD1B701aA36e` | Burner of the first launchpad deployment. | protocol fees | [`Buyback-Burner-first-deploy-0xEb7334/`](deployed/launchpad/Buyback-Burner-first-deploy-0xEb7334/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0xEb733465797c02146786F453DbC4aD1B701aA36e) | retired |
 | Bounty Escrow | `0xf01a4bD90aeF8dD75FCb1EA6a3865Ac4b72DFF2c` | Community bounties escrowed in USDG; no admin withdraw, rejections auto-refund. | yes | [`Bounty-Escrow-0xf01a4b/`](deployed/launchpad/Bounty-Escrow-0xf01a4b/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0xf01a4bD90aeF8dD75FCb1EA6a3865Ac4b72DFF2c) | live |
-| Presale Factory | `0x06d3C711aAFC522931FAA6De895B8755cB84556f` | Architect Presale: contributions sit in the presale contract (never with the creator); soft cap refunds, the raise seeds locked liquidity. | yes | [`Presale-Factory-0x06d3C7/`](deployed/launchpad/Presale-Factory-0x06d3C7/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0x06d3C711aAFC522931FAA6De895B8755cB84556f) | live |
 
 ## Staking and vaults
 

@@ -15,7 +15,7 @@
 | v2: the design documented in this folder | [`0x5fed…b720`](https://robinhoodchain.blockscout.com/address/0x5fedb61690513D9EA1E0123c39f2E02CDAfEb720) | retired (launches keep running) | [`contracts/ArchitectLaunchPool.sol`](contracts/ArchitectLaunchPool.sol) |
 | first deploy of v2 (July 2026) | [`0xd1E5…4D0d`](https://robinhoodchain.blockscout.com/address/0xd1E56b211191dABa8A715D861931173D967a4D0d) | retired | same source |
 
-Presale and bounty contracts, the HR v1 factory and both burners are listed in [`../CONTRACTS.md`](../CONTRACTS.md).
+Bounty contracts, the HR v1 factory and both burners are listed in [`../CONTRACTS.md`](../CONTRACTS.md).
 
 ## Contents
 

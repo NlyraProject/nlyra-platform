@@ -118,7 +118,7 @@
   <details class="lang" data-nav="lang"><summary aria-label="Language"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 2.5 15.3 0 18M12 3c-2.5 2.7-2.5 15.3 0 18"/></svg>EN</summary><div class="menu"><a href="/faq" aria-current="true" hreflang="en">English<i>EN</i></a><a href="/ar/faq" hreflang="ar">العربية<i>AR</i></a><a href="/zh/faq" hreflang="zh-Hans">中文<i>中</i></a></div></details><a class="cta" href="/desk2/">Open the Desk</a>
   <button class="burger" type="button" aria-label="Menu" aria-expanded="false" onclick="var n=document.getElementById('nlnav');var o=n.classList.toggle('open');this.setAttribute('aria-expanded',String(o));"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
 </nav>
-<script>(function(){var n=document.getElementById('nlnav');if(!n)return;var p=location.pathname;var map={'/':'intel','/wallet':'intel','/map':'intel','/premium':'intel','/desk':'trade','/desk2':'trade','/dex':'trade','/stake':'trade','/staking':'trade','/invest':'trade','/presale':'trade','/launch':'build','/api-docs':'build','/bounties':'build','/gov':'build','/chat':'community','/faq':'community','/docs':'community','/report':'community','/stats':'community','/roulette':'play','/slots':'play','/game':'play'};var k=map[p.replace(/\/$/,'')||'/'];if(k){var a=n.querySelector('[data-nav="'+k+'"]');if(a){if(a.tagName==='A')a.setAttribute('aria-current','page');else a.querySelector('summary').setAttribute('aria-current','page');}}document.addEventListener('click',function(e){n.querySelectorAll('details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});})();</script>
+<script>(function(){var n=document.getElementById('nlnav');if(!n)return;var p=location.pathname;var map={'/':'intel','/wallet':'intel','/map':'intel','/premium':'intel','/desk':'trade','/desk2':'trade','/dex':'trade','/stake':'trade','/staking':'trade','/invest':'trade','/launch':'build','/api-docs':'build','/bounties':'build','/gov':'build','/chat':'community','/faq':'community','/docs':'community','/report':'community','/stats':'community','/roulette':'play','/slots':'play','/game':'play'};var k=map[p.replace(/\/$/,'')||'/'];if(k){var a=n.querySelector('[data-nav="'+k+'"]');if(a){if(a.tagName==='A')a.setAttribute('aria-current','page');else a.querySelector('summary').setAttribute('aria-current','page');}}document.addEventListener('click',function(e){n.querySelectorAll('details[open]').forEach(function(d){if(!d.contains(e.target))d.removeAttribute('open');});});})();</script>
 
 
 <header class="wrap">
@@ -145,7 +145,7 @@
     <p><span class="part">It depends on the product</span> &mdash; and anyone who answers this with one word is selling you something.</p>
     <ul>
       <li><b>Not custodial:</b> market swaps, limit orders, providing liquidity, $NLYRA staking. Swaps are atomic; a limit order escrows nothing, you sign a Permit2 witness for exactly one transfer.</li>
-      <li><b>Escrowed:</b> bots, the Ladder, the Martingale, Predict stakes, presale contributions, Shield deposits. <b>These hold your funds inside a contract while they run.</b> The contract is booked to your wallet as the maker and only you can withdraw &mdash; but the money is not sitting in your wallet in the meantime.</li>
+      <li><b>Escrowed:</b> bots, the Ladder, the Martingale, Predict stakes, Shield deposits. <b>These hold your funds inside a contract while they run.</b> The contract is booked to your wallet as the maker and only you can withdraw &mdash; but the money is not sitting in your wallet in the meantime.</li>
     </ul>
     <p>Nobody at NLYRA holds keys to your funds in either case.</p>
     <a class="more" href="/docs#custody">The full custody table &rarr;</a>
@@ -260,7 +260,7 @@
     <p>Every fee is on-chain and traceable. The main flows:</p>
     <ul>
       <li><b>Desk trading, 1%:</b> 30% is credited to your referrer by the router itself, in the asset the fee was taken in, claimable at any time. The other 70% goes to the treasury. The 30% is current policy &mdash; the owner can set the referrer share to zero for future fees.</li>
-      <li><b>Launch and Presale:</b> the protocol's share of pool fees and the 5% presale fee go to the <b>Buyback Burner</b> &mdash; a contract with no owner that anybody can trigger, which sends <b>50% to ops and 50% into market-buying $NLYRA straight to <code>0xdEaD</code></b>.</li>
+      <li><b>Launch:</b> the protocol's share of pool fees goes to the <b>Buyback Burner</b> &mdash; a contract with no owner that anybody can trigger, which sends <b>50% to ops and 50% into market-buying $NLYRA straight to <code>0xdEaD</code></b>.</li>
       <li><b>Liquidity Desk:</b> 20% of profit plus 0.5% on exit, both to the buyback burner.</li>
       <li><b>OTC Desk:</b> 0.5% of every fill, paid by the buyer, to the buyback burner (ETH in the same transaction, NLYRA burned directly, USDG swapped to ETH by the keeper). Contract <code>0x9656513aC910a9839B51dB7c92a6914ABB4F52e8</code>, verified.</li>
       <li><b>DEX:</b> 0.05% of V2 volume and a quarter of each V3 pool's fee tier to the treasury; the rest to liquidity providers.</li>
