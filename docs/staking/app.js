@@ -41,6 +41,17 @@
   var SP_ABI = ['function harvestableIn() view returns (uint256)', 'function harvest()'];
   var LOCKER = '0x736D76699C26D0d966744cAe304C000d471f7F35';
   var LK_ABI = ['function collectFees(address) returns (uint256,uint256)'];
+  // DESK & BOTS (21 Oct 2026): every fee of the Desk and its bots goes through the ArchitectFeeRouter to
+  // the ArchitectFeeSplit. Once a day (06:10 UTC) it sends half to this staking contract as WETH and
+  // sweepDonations opens the 7-day tranche, so those tranches are fees, not treasury boost.
+  var FS = '0x63457eFa7e970760672464ab9E3720097982ED11';
+  var FS_BLOCK = 94323038, FS_START = 1792589932; // 21 Oct 13:38:52 UTC: the router starts paying it
+  var FS_ABI = ['function pending() view returns (uint256 wethLike, uint256 usdg)'];
+  var DISTRIBUTED = 'event Distributed(uint256 wethToStakers,uint256 wethToTreasury,uint256 nlyraToStakers,uint256 nlyraToTreasury,uint256 usdgIn,uint256 wethFromUsdg)';
+  var LOG_WINDOW = 2900000; // the RPCs answer eth_getLogs for at most 10M blocks: read in windows well under it
+  var ROUTER = '0x9d1eA9Abbb99D813b7acA7666285CDed7f833565', TREASURY = '0xe30647793192D15BFA6E53aE8651368d332fe04C';
+  var USDG = '0x5fc5360d0400a0fd4f2af552add042d716f1d168';
+  var ACCRUED = 'event Accrued(address indexed who,address indexed token,uint256 amount)';
   var POOL_ABI = ['function slot0() view returns (uint160 sqrtPriceX96,int24,uint16,uint16,uint16,uint8,bool)', 'function token0() view returns (address)'];
   // On nlyra.xyz the page reads through the NLYRA gateway (/rpc) and takes prices from the Desk API.
   // Anywhere else (GitHub Pages, a local copy) it runs on its own: the public Robinhood Chain RPC, and
@@ -49,9 +60,12 @@
   var roPub = new E.JsonRpcProvider('https://rpc.mainnet.chain.robinhood.com', CHAIN_ID, { staticNetwork: true });
   var ro = ONSITE ? new E.JsonRpcProvider(location.origin + '/rpc', CHAIN_ID, { staticNetwork: true }) : roPub;
   var LOGO = (document.querySelector('link[rel="icon"]') || {}).href || 'dual-core.svg';
-  var stR = new E.Contract(ST, ST_ABI, ro), nlR = new E.Contract(NLYRA, ERC, ro), spR = new E.Contract(SP, SP_ABI, ro), lkR = new E.Contract(LOCKER, LK_ABI, ro);
+  var stR = new E.Contract(ST, ST_ABI, ro), nlR = new E.Contract(NLYRA, ERC, ro), spR = new E.Contract(SP, SP_ABI, ro), lkR = new E.Contract(LOCKER, LK_ABI, ro), fsR = new E.Contract(FS, FS_ABI, ro);
   var eip = null, signer = null, me = null;
   var G = {}, U = {}, px = { nlyra: 0, eth: 0 }, H = [];
+  // Desk & bots: the split's payouts to stakers (dist), what it holds for the next one (pend*), the
+  // router's net fees of the last 7 days (net7, from the fees API) and whether the history loaded (ok)
+  var F = { dist: [], pendW: 0, pendU: 0, pendUsd: 0, net7: null, ok: null };
   var mode = 1, stTier = 3, busy = false, tick = { base: 0, rate: 0, at: 0 };
 
   function $(id) { return document.getElementById(id); }
@@ -103,20 +117,39 @@
     }
     if (!H.length) return dailyUsd();
     var last = H[H.length - 1], start = H.length > 1 ? H[H.length - 2].ts : FIRST_START;
-    var got = f18(last.w) * px.eth + f18(last.n) * px.nlyra + (G.pendUsd || 0);
+    var got = last.w * px.eth + last.n * px.nlyra + (G.pendUsd || 0);
     var secs = Date.now() / 1000 - start;
     return secs > 3600 ? got / secs * 86400 : dailyUsd();
+  }
+  // Desk & bots part of the pace: half of the router's net fees (after referral shares) of the last 7
+  // days, since every router fee is split 50/50 from 21 Oct on. Without the fees API: what the split
+  // actually paid in the last 7 days plus what it holds now, over the time that covers.
+  function deskPaceUsd() {
+    if (F.net7 != null) return F.net7 * 0.5 * px.eth / 7;
+    var now = Date.now() / 1000, from = Math.max(FS_START, now - 7 * 86400);
+    var got = F.dist.filter(function (x) { return x.ts >= from; }).reduce(function (a, x) { return a + x.w * px.eth + x.n * px.nlyra; }, 0) + F.pendUsd;
+    return now - from > 3600 ? got / (now - from) * 86400 : 0;
   }
   // TREASURY BOOST: the treasury can top the stream up by sending WETH/NLYRA straight to the staking
   // contract; sweepDonations (or the next harvest) opens a 7-day tranche with it. Each tranche keeps
   // its fee part apart (elig*), so whatever is above it is the boost: shown on its own, with its end date.
   function boostInfo() {
     var now = Date.now() / 1000, day = 0, end = 0;
-    (G.tr || []).forEach(function (t) {
-      var e = Number(t[2]); if (e <= now) return;
-      var bw = t[0] > t[3] ? t[0] - t[3] : 0n, bn = t[1] > t[4] ? t[1] - t[4] : 0n;
-      if (bw < 1000000n && bn < 1000000000000n) return; // per-second rounding of the fee part, not a boost
-      day += (f18(bw) * px.eth + f18(bn) * px.nlyra) * 86400; end = Math.max(end, e);
+    var trs = (G.tr || []).map(function (t) { return { w: t[0] > t[3] ? t[0] - t[3] : 0n, n: t[1] > t[4] ? t[1] - t[4] : 0n, end: Number(t[2]) }; });
+    // The Desk & bots payouts also arrive as donations, but they are fees: each one comes off the first
+    // tranche opened at or after it (the keeper sweeps right after paying; at worst the next harvest
+    // takes it in, within a day). Only what is left above that is treasury boost.
+    var byStart = trs.slice().sort(function (a, b) { return a.end - b.end; });
+    F.dist.forEach(function (x) {
+      var t = byStart.find(function (t) { var s = t.end - 7 * 86400; return s >= x.ts - 120 && s <= x.ts + 26 * 3600; });
+      if (!t) return;
+      var rw = BigInt(Math.floor(x.w * 1e18 / (7 * 86400))), rn = BigInt(Math.floor(x.n * 1e18 / (7 * 86400)));
+      t.w = t.w > rw ? t.w - rw : 0n; t.n = t.n > rn ? t.n - rn : 0n;
+    });
+    trs.forEach(function (t) {
+      if (t.end <= now) return;
+      if (t.w < 1000000n && t.n < 1000000000000n) return; // per-second rounding of the fee part, not a boost
+      day += (f18(t.w) * px.eth + f18(t.n) * px.nlyra) * 86400; end = Math.max(end, t.end);
     });
     return { day: day, end: end };
   }
@@ -214,23 +247,61 @@
     if (isFinite(ethUsd) && ethUsd > 0) px.eth = ethUsd;
     if (isFinite(nlyEth) && nlyEth > 0 && px.eth) px.nlyra = nlyEth * px.eth;
   }
+  // Payout history: Pons harvests (H) and Desk & bots payouts (F.dist), amounts in WETH / NLYRA.
+  // On nlyra.xyz the fees API keeps them already dated. Elsewhere, or if it is down, they are read from
+  // the chain in RPC-sized windows (one eth_getLogs over the whole range broke once it passed 10M blocks).
   async function loadHistory() {
-    var iface = new E.Interface([HARVESTED]), topic = iface.getEvent('Harvested').topicHash;
-    var provs = [ro, roPub];
+    if (ONSITE) {
+      try {
+        var d = await fetch('/api/fees', { cache: 'no-store' }).then(function (r) { return r.json(); });
+        var rh = d.robinhood, rt = rh.router, pd = (d.live && d.live.pending) || rh.splitter.pending || {};
+        H = rh.pons.harvests.map(function (h) { return { ts: Date.parse(h.date) / 1000, w: h.wethToStakers, n: h.nlyraToStakers }; });
+        F.dist = rh.splitter.distributions.map(function (x) { return { ts: Date.parse(x.date) / 1000, w: x.wethToStakers, n: x.nlyraToStakers || 0 }; });
+        F.net7 = rt.netLast7 != null ? rt.netLast7 : rt.grossWethEq > 0 ? rt.last7 * rt.netWethEq / rt.grossWethEq : rt.last7;
+        if (!F.pendW && !F.pendU) { F.pendW = pd.weth || 0; F.pendU = pd.usdg || 0; }
+        sortHistory(); F.ok = true;
+        return;
+      } catch (e) { /* read it from the chain */ }
+    }
+    F.net7 = null;
+    var hi = new E.Interface([HARVESTED]), di = new E.Interface([DISTRIBUTED]), provs = [ro, roPub];
     for (var k = 0; k < provs.length; k++) {
       try {
-        var pv = provs[k];
-        var logs = await pv.getLogs({ address: SP, topics: [topic], fromBlock: SP_BLOCK, toBlock: 'latest' });
-        var blocks = {}, out = [];
-        for (var i = 0; i < logs.length; i++) {
-          var ev = iface.parseLog(logs[i]);
-          if (!blocks[logs[i].blockNumber]) blocks[logs[i].blockNumber] = await pv.getBlock(logs[i].blockNumber);
-          out.push({ ts: blocks[logs[i].blockNumber].timestamp, w: ev.args.wethToStaking, n: ev.args.nlyraToStaking });
-        }
-        H = out;
+        var pv = provs[k], blocks = {};
+        var stamp = async function (l) { if (!blocks[l.blockNumber]) blocks[l.blockNumber] = await pv.getBlock(l.blockNumber); return blocks[l.blockNumber].timestamp; };
+        var hl = await logsInWindows(pv, SP, hi.getEvent('Harvested').topicHash, SP_BLOCK);
+        var dl = await logsInWindows(pv, FS, di.getEvent('Distributed').topicHash, FS_BLOCK);
+        var h = [], ds = [];
+        for (var i = 0; i < hl.length; i++) { var a = hi.parseLog(hl[i]).args; h.push({ ts: await stamp(hl[i]), w: f18(a.wethToStaking), n: f18(a.nlyraToStaking) }); }
+        for (var j = 0; j < dl.length; j++) { var b = di.parseLog(dl[j]).args; ds.push({ ts: await stamp(dl[j]), w: f18(b.wethToStakers), n: f18(b.nlyraToStakers) }); }
+        H = h; F.dist = ds; sortHistory(); F.ok = true;
+        try { F.net7 = await routerNet7(pv); } catch (e) { /* the pace falls back to what the split paid */ }
         return;
       } catch (e) { /* try the next RPC */ }
     }
+    if (!H.length && !F.dist.length) F.ok = false;
+  }
+  // The router's fees of the last 7 days that were ours (the treasury's, or the split's since 21 Oct),
+  // net of referral shares: the same number the fees API gives, read from the chain.
+  async function routerNet7(pv) {
+    var ai = new E.Interface([ACCRUED]), head = await pv.getBlock('latest'), us = [FS.toLowerCase(), TREASURY.toLowerCase()], net = 0;
+    var perSec = (head.number - FS_BLOCK) / (head.timestamp - FS_START);
+    var logs = await logsInWindows(pv, ROUTER, ai.getEvent('Accrued').topicHash, Math.floor(head.number - perSec * 7 * 86400));
+    logs.forEach(function (l) {
+      var a = ai.parseLog(l).args, t = a.token.toLowerCase();
+      if (us.indexOf(a.who.toLowerCase()) < 0) return;
+      net += t === WETH.toLowerCase() ? f18(a.amount) : t === USDG ? Number(a.amount) / 1e6 / (px.eth || Infinity) : 0;
+    });
+    return net;
+  }
+  async function logsInWindows(pv, address, topic, from) {
+    var head = await pv.getBlockNumber(), out = [];
+    for (var a = from; a <= head; a += LOG_WINDOW) out = out.concat(await pv.getLogs({ address: address, topics: [topic], fromBlock: a, toBlock: Math.min(head, a + LOG_WINDOW - 1) }));
+    return out;
+  }
+  function sortHistory() {
+    H.sort(function (a, b) { return a.ts - b.ts; });
+    F.dist.sort(function (a, b) { return a.ts - b.ts; });
   }
 
   async function loadPool() {
@@ -240,17 +311,21 @@
     G.pw = 0; G.pn = 0;
     try { var q0 = await lkR.collectFees.staticCall(NLYRA, { from: SP }); G.pw = f18(q0[0]); G.pn = f18(q0[1]); } catch (e) { /* NoFeesToCollect */ }
     G.pendUsd = (G.pw * px.eth + G.pn * px.nlyra) * 0.35;
+    try { var fp = await fsR.pending(); F.pendW = f18(fp[0]); F.pendU = Number(fp[1]) / 1e6; } catch (e) { /* keep the last reading */ }
+    F.pendUsd = (F.pendW * px.eth + F.pendU) * 0.5;
     try { G.tr = await stR.tranches(); } catch (e) { G.tr = G.tr || []; }
     var d = dailyUsd(), tbUsd = f18(G.tb) * px.nlyra;
-    G.pace = paceUsd();
+    G.pacePons = paceUsd(); G.paceDesk = deskPaceUsd();
+    G.pace = G.pacePons + G.paceDesk;
     G.baseApr = tbUsd > 0 ? G.pace * 365 / tbUsd * 100 : 0;
     roll('g-staked', f18(G.ts), function (v) { return kfmt(v) + ' NLYRA'; });
     $('g-stakedusd').textContent = px.nlyra ? '≈ ' + usd(f18(G.ts) * px.nlyra) : ' ';
     if (d > 0) roll('g-daily', d, usd); else $('g-daily').textContent = '—';
     $('g-dailytok').textContent = d > 0 ? num(f18(G.wr) * 86400, 5) + ' WETH + ' + kfmt(f18(G.nr) * 86400) + ' NLYRA' : 'starts with the first harvest';
-    var pw = 0, pn = 0; H.forEach(function (h) { pw += f18(h.w); pn += f18(h.n); });
-    if (H.length) roll('g-paid', pw * px.eth + pn * px.nlyra, usd); else $('g-paid').textContent = '—';
-    $('g-paidn').textContent = H.length ? H.length + (H.length === 1 ? ' daily payout' : ' daily payouts') + ' so far' : 'first payout pending';
+    var paid = 0, np = H.length + F.dist.length;
+    H.concat(F.dist).forEach(function (h) { paid += h.w * px.eth + h.n * px.nlyra; });
+    if (np) roll('g-paid', paid, usd); else $('g-paid').textContent = '—';
+    $('g-paidn').textContent = np ? np + (np === 1 ? ' daily payout' : ' daily payouts') + ' so far' : F.ok === false ? 'payout history unavailable right now' : 'first payout pending';
     if (G.baseApr) roll('h-apr', G.baseApr * 2, pct); else $('h-apr').textContent = '—';
     await loadVault(d);
     var live = $('live');
@@ -278,12 +353,13 @@
       $('v-end').textContent = fin > now ? 'fully paid out in ' + left(fin) : '';
       G.nextAt = Date.now() + wait * 1000;
       // fees already earned by the NLYRA position since the last collection (read-only simulation of the collect)
+      // plus what the Desk & bots split holds for its next payout (06:10 UTC); half of that is the stakers'
       var pw = G.pw || 0, pn = G.pn || 0;
-      var gross = pw * px.eth + pn * px.nlyra, toStakers = gross * 0.7 * 0.5;
-      roll('v-est', toStakers, usd);
-      $('v-est-s').textContent = num(pw * .35, 6) + ' WETH + ' + num(pn * .35, 0) + ' NLYRA so far';
-      roll('v-vol', gross * 0.7, usd);
-      $('v-vol-s').textContent = gross ? usd(gross) + ' accrued on Pons − 30% Pons protocol fee · split 50/50 stakers/treasury' : 'split 50% stakers · 50% treasury';
+      var gross = pw * px.eth + pn * px.nlyra, toStakers = gross * 0.7 * 0.5, desk = F.pendUsd * 2;
+      roll('v-est', toStakers + F.pendUsd, usd);
+      $('v-est-s').textContent = num(pw * .35 + F.pendW * .5, 6) + ' WETH + ' + num(pn * .35, 0) + ' NLYRA so far' + (F.pendUsd > 0 ? ' · ' + usd(F.pendUsd) + ' of it from the Desk & bots' : '');
+      roll('v-vol', gross * 0.7 + desk, usd);
+      $('v-vol-s').textContent = (gross ? usd(gross) + ' accrued on Pons − 30% Pons protocol fee' : 'nothing accrued on Pons yet') + ' + ' + usd(desk) + ' from the Desk & bots · split 50/50 stakers/treasury';
     } catch (e) {}
   }
   setInterval(function () {
@@ -293,7 +369,7 @@
     $('v-next').textContent = t; $('next-t').textContent = t;
     // the daily collection is permissionless: when it is due, anyone can trigger it from here
     var due = s <= 0, hb = $('b-harvest');
-    if (hb && hb.hidden === due) { hb.hidden = !due; $('v-next-s').textContent = due ? 'anyone can trigger it · you only pay the gas' : 'collected every 24 h · anyone can trigger it'; }
+    if (hb && hb.hidden === due) { hb.hidden = !due; $('v-next-s').textContent = due ? 'anyone can trigger it · you only pay the gas' : 'Pons every 24 h · Desk & bots daily at 06:10 UTC'; }
     var ring = $('next-ring'); if (ring) ring.style.strokeDashoffset = (94.25 * Math.min(1, s / 86400)).toFixed(2);
   }, 1000);
 
@@ -386,7 +462,7 @@
       var left = Math.max(0, Number(t[2]) - now), u = (f18(t[0]) * px.eth + f18(t[1]) * px.nlyra) * left;
       return { usd: u, end: Number(t[2]), start: Number(t[2]) - 7 * 86400 };
     }).filter(function (l) { return l.usd > 0.005; });
-    var pend = G.pendUsd || 0, tot = layers.reduce(function (a, l) { return a + l.usd; }, 0) + pend;
+    var pend = (G.pendUsd || 0) + (F.pendUsd || 0), tot = layers.reduce(function (a, l) { return a + l.usd; }, 0) + pend;
     var defs = svgEl('defs', {}), cp = svgEl('clipPath', { id: 'tclip' });
     cp.appendChild(svgEl('rect', { x: X, y: Y, width: TW, height: TH, rx: R })); defs.appendChild(cp);
     var lg = svgEl('linearGradient', { id: 'tg', x1: 0, x2: 0, y1: 1, y2: 0 });
@@ -502,14 +578,26 @@
     var s = $('chart-hist'); s.innerHTML = '';
     var W = 320, Hh = 140, top = 20, bottom = 24;
     s.appendChild(svgEl('line', { x1: 0, x2: W, y1: Hh - bottom, y2: Hh - bottom, stroke: 'rgba(154,167,189,.2)' }));
-    if (!H.length) { s.appendChild(svgEl('text', { x: W / 2, y: 60, 'text-anchor': 'middle' }, 'First daily payout pending')); return; }
-    var list = H.slice(-14), vals = list.map(function (h) { return f18(h.w) * px.eth + f18(h.n) * px.nlyra; });
+    var all = H.map(function (h) { return { ts: h.ts, w: h.w, n: h.n, desk: false }; })
+      .concat(F.dist.map(function (x) { return { ts: x.ts, w: x.w, n: x.n, desk: true }; }))
+      .sort(function (a, b) { return a.ts - b.ts; });
+    if (!all.length) { s.appendChild(svgEl('text', { x: W / 2, y: 60, 'text-anchor': 'middle' }, F.ok === false ? 'Payout history unavailable right now' : 'First daily payout pending')); return; }
+    var list = all.slice(-14), vals = list.map(function (h) { return h.w * px.eth + h.n * px.nlyra; });
     var mx = Math.max.apply(null, vals) || 1, n = Math.max(list.length, 7), slot = W / n, bw = Math.min(34, slot * .62);
+    if (F.dist.length) {
+      // legend: which payouts came from Pons and which from the Desk & bots split
+      [['#8B7CF6', 'Pons', 0], ['#4FD1C5', 'Desk & bots', 46]].forEach(function (L) {
+        s.appendChild(svgEl('rect', { x: L[2], y: 0, width: 8, height: 8, rx: 2, fill: L[0] }));
+        s.appendChild(svgEl('text', { x: L[2] + 12, y: 8 }, L[1]));
+      });
+      top = 30;
+    }
     list.forEach(function (h, i) {
       var v = vals[i], ht = Math.max(4, (Hh - top - bottom) * v / mx), x = i * slot + (slot - bw) / 2, y = Hh - bottom - ht;
-      s.appendChild(svgEl('rect', { x: x, y: y, width: bw, height: ht, rx: 5, fill: i === list.length - 1 ? '#E84FE0' : '#8B7CF6' }));
-      s.appendChild(svgEl('text', { x: x + bw / 2, y: Hh - 8, 'text-anchor': 'middle' }, dstr(h.ts)));
-      if (list.length <= 7 || i === list.length - 1) s.appendChild(svgEl('text', { x: x + bw / 2, y: y - 6, 'text-anchor': 'middle', class: 'val' }, usd(v)));
+      s.appendChild(svgEl('rect', { x: x, y: y, width: bw, height: ht, rx: 5, fill: h.desk ? '#4FD1C5' : i === list.length - 1 ? '#E84FE0' : '#8B7CF6' }));
+      var mid = x + bw / 2, edge = mid > W - 18, tx = edge ? x + bw : mid, ta = edge ? 'end' : 'middle';
+      if (list.length <= 7 || i % 2 === (list.length - 1) % 2) s.appendChild(svgEl('text', { x: tx, y: Hh - 8, 'text-anchor': ta }, dstr(h.ts)));
+      if (list.length <= 7 || i === list.length - 1) s.appendChild(svgEl('text', { x: tx, y: y - 6, 'text-anchor': ta, class: 'val' }, usd(v)));
     });
   }
 

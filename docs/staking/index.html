@@ -445,7 +445,7 @@ img{-webkit-user-drag:none;user-select:none}
         <span class="k">APR · 7-day fee average</span>
       </div>
       <p class="boost-pill" id="h-boost" hidden><b id="h-boost-apr">—</b><span>treasury boost</span><span class="bt" id="h-boost-t"></span></p>
-      <p class="apr-note">Based on the trading fees of the last 7 days. Each daily payout streams to stakers over 7 days.</p>
+      <p class="apr-note">Based on the last 7 days of fees: the NLYRA pool on Pons plus the Desk and its bots. Each daily payout streams to stakers over 7 days.</p>
       <div class="next" id="next-pay">
         <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="15" class="ring-bg"/><circle cx="18" cy="18" r="15" class="ring-fg" id="next-ring"/></svg>
         <span>Next payout in <b id="next-t">—</b></span>
@@ -460,7 +460,7 @@ img{-webkit-user-drag:none;user-select:none}
     <!-- fee flow: the Dual Core engine -->
     <div class="flow card" aria-label="How fees flow">
       <svg viewBox="0 0 360 318" class="flow-svg core-svg" role="img" aria-labelledby="flow-t">
-        <title id="flow-t">Every trade pays a 1% pool fee. Half of it goes to stakers, half to the treasury.</title>
+        <title id="flow-t">Fees from the NLYRA pool on Pons and from the Desk and its bots: half goes to stakers, half to the treasury.</title>
         <defs>
           <radialGradient id="glowN"><stop offset="0" stop-color="#8B7CF6" stop-opacity=".55"/><stop offset=".55" stop-color="#8B7CF6" stop-opacity=".16"/><stop offset="1" stop-color="#8B7CF6" stop-opacity="0"/></radialGradient>
           <radialGradient id="glowL"><stop offset="0" stop-color="#E84FE0" stop-opacity=".5"/><stop offset=".55" stop-color="#E84FE0" stop-opacity=".14"/><stop offset="1" stop-color="#E84FE0" stop-opacity="0"/></radialGradient>
@@ -469,7 +469,7 @@ img{-webkit-user-drag:none;user-select:none}
         <path id="p1" d="M180 44 V92" class="wire"/>
         <path id="p2" d="M146 214 C128 238 92 236 92 258" class="wire"/>
         <path id="p3" d="M214 214 C232 238 268 236 268 258" class="wire"/>
-        <g class="node"><rect x="92" y="8" width="176" height="36" rx="10"/><text x="180" y="31">Trades on NLYRA · 1% fee</text></g>
+        <g class="node"><rect x="92" y="8" width="176" height="36" rx="10"/><text x="180" y="31">NLYRA pool + Desk &amp; bots</text></g>
         <g transform="translate(180 154)">
           <circle cx="-26" r="92" fill="url(#glowN)" class="glow"/>
           <circle cx="26" r="92" fill="url(#glowL)" class="glow g2"/>
@@ -512,9 +512,9 @@ img{-webkit-user-drag:none;user-select:none}
       <p class="how"><b>How payouts work:</b> fees are collected once a day and each collection is paid out evenly over the next 7 days. Collections stack, so a big trading day keeps paying for a whole week and quiet days are smoothed out.</p>
     </div>
     <div class="v-side">
-      <div class="v-tile"><span class="k">Next fee payout</span><b id="v-next">—</b><small id="v-next-s">collected every 24 h · anyone can trigger it</small><button class="btn btn-primary btn-sm" id="b-harvest" hidden>Pay it out now</button></div>
+      <div class="v-tile"><span class="k">Next fee payout</span><b id="v-next">—</b><small id="v-next-s">Pons every 24 h · Desk &amp; bots daily at 06:10 UTC</small><button class="btn btn-primary btn-sm" id="b-harvest" hidden>Pay it out now</button></div>
       <div class="v-tile"><span class="k">Collected since last payout · stakers' half</span><b id="v-est">—</b><small id="v-est-s">live from the pool</small></div>
-      <div class="v-tile"><span class="k">Total fees in the next payout</span><b id="v-vol">—</b><small id="v-vol-s">split 50% stakers · 50% treasury</small></div>
+      <div class="v-tile"><span class="k">Total fees in the next payouts</span><b id="v-vol">—</b><small id="v-vol-s">split 50% stakers · 50% treasury</small></div>
     </div>
   </section>
 
@@ -700,6 +700,6 @@ img{-webkit-user-drag:none;user-select:none}
   </div>
 </div>
 <script src="ethers.umd.min.js"></script>
-<script src="app.js?v=22"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>
