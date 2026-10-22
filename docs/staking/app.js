@@ -505,13 +505,14 @@
       am.appendChild(mp); c.appendChild(am); s.appendChild(c);
     });
     s.appendChild(svgEl('text', { x: X + TW + 50, y: Y + TH + 32, class: 'v' }, usd(dailyUsd()) + ' / day to stakers'));
-    // labels on the right, spread so they never overlap
+    // labels on the right, spread so they never overlap; room for 6: the newest payouts (top of the tank) and the next one
     var LX = X + TW + 18, gap = 30, top = Y + 12, bot = Y + TH - 6;
     labels.sort(function (p, q) { return p.y - q.y; });
+    labels = labels.slice(0, 6);
     for (var i = 0; i < labels.length; i++) labels[i].ly = Math.max(labels[i].y, i ? labels[i - 1].ly + gap : top);
     var over = labels.length ? labels[labels.length - 1].ly - bot : 0;
     if (over > 0) for (var j = labels.length - 1; j >= 0; j--) labels[j].ly = Math.min(labels[j].ly - over, j < labels.length - 1 ? labels[j + 1].ly - gap : bot);
-    labels.slice(-6).forEach(function (L) {
+    labels.forEach(function (L) {
       s.appendChild(svgEl('line', { x1: X + TW + 2, x2: LX - 4, y1: L.y, y2: L.ly - 4, class: 'lead' }));
       s.appendChild(svgEl('text', { x: LX, y: L.ly - 6, class: L.ghost ? 'v' : '' }, L.a));
       s.appendChild(svgEl('text', { x: LX, y: L.ly + 9, class: 'v' }, L.b));
