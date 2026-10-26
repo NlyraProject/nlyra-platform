@@ -1,0 +1,35 @@
+{
+  "adapter": {
+    "chainId": 4663,
+    "network": "Robinhood Chain",
+    "address": "0xe7b3171b76B959Db805874926aA0D62b1A5d3264",
+    "contract": "NlyraOFTAdapter",
+    "token": "0xb9d3824149ad8ac984153ceec91d5a2405d1fb95",
+    "endpoint": "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
+    "eid": 30416,
+    "owner": "0xe30647793192D15BFA6E53aE8651368d332fe04C"
+  },
+  "oft": {
+    "chainId": 42161,
+    "network": "Arbitrum One",
+    "address": "0x834e80509b23dC82d79F982510a32348986B06b5",
+    "contract": "NlyraOFT",
+    "endpoint": "0x1a44076050125825900e736c501f859c50fE728c",
+    "eid": 30110,
+    "owner": "0xe30647793192D15BFA6E53aE8651368d332fe04C"
+  },
+  "requiredDVNs": [
+    "LayerZero Labs",
+    "Nethermind"
+  ],
+  "outboundRateLimit": "20000000 NLYRA per day per destination",
+  "deployedOn": "2026-10-19",
+  "arbitrumMarket": {
+    "pool": "0xd072E589D5E3506d40d547787853a143AADD1c14",
+    "dex": "Uniswap v3, 1% fee",
+    "treasuryPositionNFT": 5734299,
+    "positionManager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
+    "weth": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
+  },
+  "ui": "https://nlyra.xyz/bridge"
+}

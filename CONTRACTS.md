@@ -109,6 +109,30 @@ Machine-readable address book: [`deployments/desk-addresses.json`](deployments/d
 | Lyra Roulette v2 | `0x4556051598F568f2626809552d25F8d44BdE0394` | Commit-reveal roulette; the contract holds the bankroll and pays winners itself. | yes | [`Lyra-Roulette-v2-0x455605/`](deployed/games/Lyra-Roulette-v2-0x455605/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0x4556051598F568f2626809552d25F8d44BdE0394) | live |
 | Lyra Slots v2 | `0xC1854d1f194FD38A5A8F3F32432fF97c83C380B3` | Slot machine with public reel weights and payouts; the contract holds the bankroll. | yes | [`Lyra-Slots-v2-0xC1854d/`](deployed/games/Lyra-Slots-v2-0xC1854d/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0xC1854d1f194FD38A5A8F3F32432fF97c83C380B3) | live |
 
+## BNB Chain — The Desk bots (chainId 56)
+
+The same bots on BNB Smart Chain, live since 24 October 2026 behind [nlyra.xyz/bsc](https://nlyra.xyz/bsc). Verified on BscScan (full match); v4.1 also on Sourcify. Working sources and fork tests in [`bsc/`](bsc/), exact verified copies in [`deployed/bsc/`](deployed/bsc/), address book in [`deployments/bsc-addresses.json`](deployments/bsc-addresses.json).
+
+| Contract | Address | What it does | User funds | Source | BscScan | Status |
+|---|---|---|---|---|---|---|
+| Fee Router BSC | `0x0e86a190F7D92031CA181A50E5E21DaBB530c0E6` | Every bot swap on BNB Chain goes through it (PancakeSwap v2 router, v2 pair, v3 pool, v3 multi-hop through the SmartRouter); 1% fee per executed trade, accrued in the quote token for the treasury (fee collector). | moves | [`Fee-Router-BSC-0x0e86a1/`](deployed/bsc/Fee-Router-BSC-0x0e86a1/) | [verified (full)](https://bscscan.com/address/0x0e86a190F7D92031CA181A50E5E21DaBB530c0E6#code) | live |
+| Infinity Grid v4 BSC | `0xE878aa6bE4c5429a5006A516C720A1232Bf18a8a` | Infinity grid in BNB (no ceiling) with floor price, take profit, stop loss and a per-bot gas reserve that pays the keeper for each fill. Port of the Robinhood Chain v4. | yes | [`Infinity-Grid-v4-BSC-0xE878aa/`](deployed/bsc/Infinity-Grid-v4-BSC-0xE878aa/) | [verified (full)](https://bscscan.com/address/0xE878aa6bE4c5429a5006A516C720A1232Bf18a8a#code) | live |
+| Infinity Grid v4.1 BSC | `0x354Ade1eE04D44B21c037Af8A61189d647027cBE` | The same infinity grid quoted in USDT or USDC (ERC-20 quote instead of BNB), with the fee-on-transfer gate. Deployed 26 October 2026. | yes | [`Infinity-Grid-v4.1-BSC-0x354Ade/`](deployed/bsc/Infinity-Grid-v4.1-BSC-0x354Ade/) | [verified (full)](https://bscscan.com/address/0x354Ade1eE04D44B21c037Af8A61189d647027cBE#code) · [Sourcify](https://repo.sourcify.dev/56/0x354Ade1eE04D44B21c037Af8A61189d647027cBE) | live |
+| Spot Grid v4 BSC | `0x8a678c93f745A853865F5718F9fbb6239e1837e1` | Spot grid with a price range (2 to 60 grids) in BNB, compounding, per-bot gas reserve. Port of the Robinhood Chain v4. | yes | [`Spot-Grid-v4-BSC-0x8a678c/`](deployed/bsc/Spot-Grid-v4-BSC-0x8a678c/) | [verified (full)](https://bscscan.com/address/0x8a678c93f745A853865F5718F9fbb6239e1837e1#code) | live |
+
+Operational addresses on BNB Chain: keeper `0xfBc9CFf9579578C942cf9E7ab30189EAb8c0714B` (executes fills, cannot withdraw), treasury `0xe30647793192D15BFA6E53aE8651368d332fe04C` (same as on Robinhood Chain), fee collector `0xbf98Df1Ff6072C7278c58536Ac6dd8C155198d62` (being set up: fees are swapped to BNB, bridged to Robinhood Chain and sent to the Fee Splitter for the stakers). NLYRA itself is not on BNB Chain yet.
+
+## Bridge — NLYRA on Arbitrum One (LayerZero V2 OFT)
+
+Live since 19 October 2026 at [nlyra.xyz/bridge](https://nlyra.xyz/bridge). Sources and tests in [`bridge/`](bridge/), exact verified copies in [`deployed/bridge/`](deployed/bridge/), endpoints and the Arbitrum market in [`deployments/bridge-addresses.json`](deployments/bridge-addresses.json).
+
+| Contract | Address | What it does | User funds | Source | Explorer | Status |
+|---|---|---|---|---|---|---|
+| NLYRA on Arbitrum One (NlyraOFT) | `0x834e80509b23dC82d79F982510a32348986B06b5` | The official NLYRA on Arbitrum One: a LayerZero V2 OFT minted 1:1 against NLYRA locked in the adapter on Robinhood Chain, burned when it goes back. Stock LayerZero OFT plus an owner-settable outbound rate limit (20,000,000 NLYRA per day per destination). | no (it is the token) | [`NlyraOFT-Arbitrum-0x834e80/`](deployed/bridge/NlyraOFT-Arbitrum-0x834e80/) | [verified (full)](https://arbiscan.io/address/0x834e80509b23dC82d79F982510a32348986B06b5#code) · [Sourcify](https://repo.sourcify.dev/42161/0x834e80509b23dC82d79F982510a32348986B06b5) | live |
+| Bridge adapter (NlyraOFTAdapter) | `0xe7b3171b76B959Db805874926aA0D62b1A5d3264` | Locks NLYRA on Robinhood Chain while the same amount circulates on Arbitrum One, unlocks it on the way back. Stock LayerZero V2 OFTAdapter plus the same outbound rate limit. Owner and LayerZero delegate: the treasury. | yes | [`NlyraOFTAdapter-RH-0xe7b317/`](deployed/bridge/NlyraOFTAdapter-RH-0xe7b317/) | [verified (full)](https://robinhoodchain.blockscout.com/address/0xe7b3171b76B959Db805874926aA0D62b1A5d3264?tab=contract) | live |
+
+The NLYRA/WETH market on Arbitrum is a Uniswap v3 pool (1% fee) `0xd072E589D5E3506d40d547787853a143AADD1c14` with treasury liquidity (position NFT #5734299 in the Uniswap v3 position manager `0xC36442b4a4522E871399CD717aBDD847Ab11FE88`); neither contract is ours.
+
 ## Tokens and third-party contracts we use (not ours)
 
 | Contract | Address | Note |

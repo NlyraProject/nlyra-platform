@@ -1,0 +1,27 @@
+{
+  "chainId": 56,
+  "address": "0x0e86a190F7D92031CA181A50E5E21DaBB530c0E6",
+  "contractName": "ArchitectFeeRouterBSC",
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "evmVersion": "cancun",
+  "license": "",
+  "constructorArgs": "0000000000000000000000000bfbcf9fa4f9c56b0f40a671ad40e0805a09186500000000000000000000000010ed43c718714eb63d5aa57b78b54704e256024e000000000000000000000000ca143ce32fe78f1f7019d7d551a6402fc5350c7300000000000000000000000013f4ea83d0bd40e75c8222255bc855a974568dd4000000000000000000000000e30647793192d15bfa6e53ae8651368d332fe04c000000000000000000000000bb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "cancun",
+    "viaIR": true,
+    "metadata": null,
+    "remappings": null
+  },
+  "creation": {
+    "error": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan"
+  },
+  "verifiedSourceFiles": 1
+}

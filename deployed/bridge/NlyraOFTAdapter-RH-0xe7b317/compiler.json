@@ -1,0 +1,37 @@
+{
+  "chainId": 4663,
+  "address": "0xe7b3171b76B959Db805874926aA0D62b1A5d3264",
+  "contractName": "NlyraOFTAdapter",
+  "compiler": "v0.8.22+commit.4fc1097e",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "evmVersion": "paris",
+  "license": "MIT",
+  "constructorArgs": "000000000000000000000000b9d3824149ad8ac984153ceec91d5a2405d1fb950000000000000000000000006f475642a6e85809b1c36fa62763669b1b48dd5b000000000000000000000000e30647793192d15bfa6e53ae8651368d332fe04c",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "paris",
+    "viaIR": false,
+    "metadata": {
+      "useLiteralContent": false,
+      "bytecodeHash": "ipfs",
+      "appendCBOR": true
+    },
+    "remappings": [
+      "forge-std/=lib/forge-std/src/",
+      "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/",
+      "@openzeppelin/contracts-upgradeable/=node_modules/@openzeppelin/contracts-upgradeable/",
+      "@layerzerolabs/=node_modules/@layerzerolabs/",
+      "solidity-bytes-utils/=node_modules/solidity-bytes-utils/"
+    ]
+  },
+  "creation": {
+    "error": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan"
+  },
+  "verifiedSourceFiles": 41
+}

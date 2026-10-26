@@ -1,0 +1,27 @@
+{
+  "chainId": 56,
+  "address": "0x8a678c93f745A853865F5718F9fbb6239e1837e1",
+  "contractName": "ArchitectSpotGridV4BSC",
+  "compiler": "v0.8.24+commit.e11b9ed9",
+  "optimizer": {
+    "enabled": true,
+    "runs": 200
+  },
+  "evmVersion": "cancun",
+  "license": "",
+  "constructorArgs": "0000000000000000000000000e86a190f7d92031ca181a50e5e21dabb530c0e6000000000000000000000000bb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c000000000000000000000000fbc9cff9579578c942cf9e7ab30189eab8c0714b",
+  "settings": {
+    "optimizer": {
+      "enabled": true,
+      "runs": 200
+    },
+    "evmVersion": "cancun",
+    "viaIR": true,
+    "metadata": null,
+    "remappings": null
+  },
+  "creation": {
+    "error": "Free API access is not supported for this chain. Please upgrade your api plan for full chain coverage. https://etherscan"
+  },
+  "verifiedSourceFiles": 2
+}
