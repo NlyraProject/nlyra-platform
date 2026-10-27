@@ -31,5 +31,28 @@
     "positionManager": "0xC36442b4a4522E871399CD717aBDD847Ab11FE88",
     "weth": "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1"
   },
-  "ui": "https://nlyra.xyz/bridge"
+  "ui": {
+    "bridge": "https://nlyra.xyz/bridge",
+    "note": "one page, pick Arbitrum One or BNB Smart Chain as destination"
+  },
+  "oftBsc": {
+    "chainId": 56,
+    "network": "BNB Smart Chain",
+    "address": "0x10Bd775269A3D53b056F43d9f5B3EeAc17166Bec",
+    "contract": "NlyraOFT",
+    "endpoint": "0x1a44076050125825900e736c501f859c50fE728c",
+    "eid": 30102,
+    "owner": "0xe30647793192D15BFA6E53aE8651368d332fe04C",
+    "deployedOn": "2026-10-27",
+    "deployTx": "0xbcf0ffc8699b846298f07e5970a6c4b4fba1e569f8b0511803941430bd2f91ca"
+  },
+  "bnbMarket": {
+    "pool": "0x818DFf9130c4882e4A947F167aFbd6A834c8b3cd",
+    "dex": "PancakeSwap v3, 1% fee",
+    "treasuryPositionNFT": 7720769,
+    "positionManager": "0x46A15B0b27311cedF172AB29E4f4766fbE7F4364",
+    "wbnb": "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c",
+    "factory": "0x0BFbCF9fa4f9C56B0F40a671Ad40E0805A091865",
+    "createdOn": "2026-10-27"
+  }
 }
