@@ -13,7 +13,7 @@
 - **The risk layer** (hosted): a live **sell test** for every token, simulated against the real pool on our own node, and a **Risk Level** computed from launch facts. It blocks can't-sell buys on **The Desk**, blocks bot creation on can't-sell tokens, and brakes bots that would keep buying a trap. Anyone can query it at [`nlyra.xyz/api/risk`](https://nlyra.xyz/api/risk?token=0xb9d3824149ad8ac984153ceec91d5a2405d1fb95). See [Risk layer](#risk-layer-hosted-service-closed-source).
 - **The Desk**, a trading terminal on Robinhood Chain (Arbitrum Orbit, chainId 4663) running on our own full node and indexer, with the **NERON** forensic scanner tagging every new token within seconds.
 - **Non-custodial trading bots** (spot and infinity grids, DCA, TWAP, martingale, ladder, copy trading, launch sniper), an **OTC desk** for block trades, a **launchpad** that locks liquidity forever, a verbatim **Uniswap V2/V3 DEX**, **Lyra Shield** private transfers (Privacy Pools) and **NLYRA staking**. Every bot and escrow is a smart contract where only the user can withdraw. Keepers can execute a strategy but can never move funds anywhere else.
-- **Beyond Robinhood Chain** (October 2026): the Infinity Grid and Spot Grid bots run on **BNB Chain** too, on PancakeSwap ([`bsc/`](bsc/)), and $NLYRA circulates on **Arbitrum One** through a LayerZero V2 bridge ([`bridge/`](bridge/)). Every contract is verified on BscScan, Arbiscan or Blockscout, and listed in [`CONTRACTS.md`](CONTRACTS.md).
+- **Beyond Robinhood Chain** (October 2026): the Infinity Grid and Spot Grid bots run on **BNB Chain** too, on PancakeSwap ([`bsc/`](bsc/)), and $NLYRA circulates on **Arbitrum One** and **BNB Chain** through our LayerZero V2 bridge ([`bridge/`](bridge/); Arbitrum since 19 October, BNB Chain since 27 October 2026). Every contract is verified on BscScan, Arbiscan or Blockscout, and listed in [`CONTRACTS.md`](CONTRACTS.md).
 
 > The Desk, the risk layer, the NERON scanner and the bot keepers are operated by us as hosted services (closed source). Everything that holds user funds, the smart contracts, is open, tested and verified on Blockscout and/or Sourcify.
 
@@ -24,7 +24,7 @@
 | Home | [nlyra.xyz](https://nlyra.xyz) |
 | The Desk (trading terminal) | [nlyra.xyz/desk](https://nlyra.xyz/desk) |
 | Bots on BNB Chain | [nlyra.xyz/bsc](https://nlyra.xyz/bsc) |
-| Bridge to Arbitrum One | [nlyra.xyz/bridge](https://nlyra.xyz/bridge) |
+| Bridge to Arbitrum One or BNB Chain | [nlyra.xyz/bridge](https://nlyra.xyz/bridge) |
 | Real Yield Staking v2 (preview) | [nlyra.xyz/newstake](https://nlyra.xyz/newstake) |
 | OTC Desk | [nlyra.xyz/otc](https://nlyra.xyz/otc) |
 | Bots, from zero (wiki) | [nlyra.xyz/wiki/bots](https://nlyra.xyz/wiki/bots) |
